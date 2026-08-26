@@ -1,0 +1,64 @@
+<section id="tienda">
+  <div class="wrap">
+    <p class="kicker reveal">Tienda</p>
+    <h2 class="sec-title reveal">Se viene la <span class="y">tienda GBF</span></h2>
+
+    <div class="tienda-box reveal">
+      <div>
+        <h3>Primero: stickers.</h3>
+        <p>
+          Los estamos armando con la comunidad ahora mismo. Después: todo lo demás. Si
+          querés enterarte primero cuando salgan, seguinos en redes — ahí está pasando
+          todo.
+        </p>
+      </div>
+      {/* TODO(brief): reemplazar por la imagen del primer sticker. */}
+      <div class="sticker-ph" aria-hidden="true">Acá va<br />el primer<br />sticker</div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tienda-box {
+    border: 1px solid var(--line-2);
+    padding: 56px 40px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 30px;
+    align-items: center;
+  }
+
+  .tienda-box h3 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    color: var(--yellow);
+    margin-bottom: 12px;
+  }
+
+  .tienda-box p {
+    color: var(--dim);
+    max-width: 520px;
+  }
+
+  .sticker-ph {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: var(--magenta);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: var(--font-display);
+    color: #fff;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    transform: rotate(8deg);
+    padding: 18px;
+  }
+
+  @media (max-width: 860px) {
+    .tienda-box {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

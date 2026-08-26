@@ -1,0 +1,28 @@
+---
+import VideoFrame from './VideoFrame.astro';
+---
+
+<section id="trabajos">
+  <div class="wrap">
+    {/* data-focus: el nav centra el reel al clickear "Trabajos" */}
+    <div class="reel-slot reveal" data-focus>
+      <VideoFrame label="Reel 2026 · 1 min" todo="[ reel a subir ]">
+        <p class="kicker">Reel + Trabajos</p>
+        <h2 class="v-title">
+          Ideas que conectan.<br /><span class="y">Historias que trascienden.</span>
+        </h2>
+      </VideoFrame>
+    </div>
+  </div>
+</section>
+
+<style>
+  .reel-slot {
+    /* mismo techo que el video de "¿Qué carajo?": tiene que entrar entero
+       en pantalla cuando el nav lo centra */
+    max-width: min(100%, calc(76vh * 16 / 9));
+    margin-inline: auto;
+  }
+
+  /* la franja de marcas se mudó arriba del todo: ver Marcas.astro */
+</style>

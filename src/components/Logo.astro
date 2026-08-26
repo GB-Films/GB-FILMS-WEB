@@ -1,0 +1,61 @@
+---
+/**
+ * Logo oficial de GB Films, vectorizado desde
+ * 01_Branding/01_Brand-Design/02_Animation/gb-logo.svg
+ *
+ * El original venía con fill:#000 fijo y un viewBox de 1920x1080 con mucho
+ * aire alrededor. Acá va recortado al arte y pintado con currentColor, así se
+ * adapta al contexto (amarillo en el nav, blanco en el footer).
+ *
+ * - variant="lockup"   → monograma GB + palabra FILMS (el logo completo)
+ * - variant="monogram" → solo el monograma GB, para espacios chicos
+ */
+interface Props {
+  variant?: 'lockup' | 'monogram';
+  /** alto en px; el ancho sale del aspect ratio */
+  height?: number;
+  title?: string;
+  class?: string;
+}
+
+const {
+  variant = 'lockup',
+  height = 40,
+  title = 'GB Films',
+  class: extraClass,
+} = Astro.props;
+
+// El monograma ocupa y 128→778; la palabra FILMS baja hasta y 951.
+const viewBox =
+  variant === 'lockup' ? '478.36 128.33 832.64 822.48' : '478.36 128.33 832.64 649.6';
+---
+
+<svg
+  class:list={['logo', extraClass]}
+  viewBox={viewBox}
+  style={`height:${height}px`}
+  role="img"
+  aria-label={title}
+  fill="currentColor"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <polygon
+    points="478.36 777.93 874.21 777.93 874.21 412.53 661.06 412.53 661.06 534.38 742.26 534.33 742.26 645.98 610.31 645.98 610.31 260.14 742.26 260.28 742.26 361.78 874.21 361.78 874.21 128.33 478.36 128.33 478.36 777.93"
+  ></polygon>
+  <path
+    d="M915.15,777.93h395.85v-233.45l-81.2-60.9v-60.9l81.2-61.14v-233.21h-395.85v649.6ZM1047.1,260.28h131.95v50.75l-81.2,60.9v162.4l81.2,60.9v50.75h-131.95v-385.7Z"
+  ></path>
+  {
+    variant === 'lockup' && (
+      <path d="M478.39,818.86l-.12,131.95h832.66v-131.94H478.39ZM628.24,863.24h-38.84v13.87h28.65v16.67h-28.65v30.87h-26.99v-78.86h65.83v17.45ZM735.53,924.66h-26.99v-78.86h26.99v78.86ZM876.97,924.66h-57.15v-78.86h26.99v62.08h30.16v16.78ZM1069.64,924.66h-26.99v-43.51l-18.32,43.51h-22.59l-18.45-43.85v43.85h-26.99v-78.86h32.64l24.38,51.23,23.83-51.23h32.5v78.86ZM1190.56,925.44c-21.62,0-38.42-8.39-39.53-25.28h28.78c.55,5.93,4.82,7.94,9.78,7.94s8.54-2.01,8.54-5.7c-.14-12.64-47.24-6.71-46.83-34.12,0-15.44,15.84-23.71,36.36-23.71,22.31,0,36.91,8.84,37.87,24.5h-29.33c-.28-4.92-3.99-7.16-8.95-7.16-3.99-.11-7.16,1.79-7.16,5.59,0,11.75,46.69,7.94,46.69,33.22,0,13.87-13.22,24.72-36.22,24.72Z" />
+    )
+  }
+</svg>
+
+<style>
+  /* el alto lo fija el prop; el ancho sale solo del viewBox */
+  .logo {
+    display: block;
+    width: auto;
+  }
+</style>

@@ -1,0 +1,211 @@
+/* ==========================================================================
+   Gran Berta Films — tokens + base
+   Portado de sala-oscura-v2.html. Todo lo específico de una sección vive en
+   el <style> de su componente; acá solo lo que se comparte.
+   ========================================================================== */
+
+:root {
+  /* paleta */
+  --yellow: #ffe800;
+  --gold: #ffc600;
+  --magenta: #d50057;
+  --pink: #e81f76;
+  --black: #000;
+  --ink: #f2f2f2;
+  --dim: #9a9a9a;
+
+  /* grises de estructura */
+  --line: #1c1c1c;
+  --line-2: #222;
+  --surface: #0d0d0d;
+  --surface-2: #0a0a0a;
+  --mute: #3a3a3a;
+  --mute-2: #444;
+
+  /* tipografía */
+  --font-display: 'Anton', 'Impact', sans-serif;
+  --font-body: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* layout */
+  --wrap: 1100px;
+  --gutter: 24px;
+  /* Alto del nav fijo. El layout lo mide y lo pisa con el valor real; estos
+     son el fallback para el primer pintado y para cuando no corre el JS. */
+  --nav-h: 62px;
+}
+
+@media (max-width: 860px) {
+  :root {
+    /* los links del nav se apilan en varias líneas */
+    --nav-h: 140px;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--black);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+video {
+  max-width: 100%;
+  display: block;
+}
+
+:focus-visible {
+  outline: 2px solid var(--yellow);
+  outline-offset: 3px;
+}
+
+/* --- utilidades compartidas --------------------------------------------- */
+
+.wrap {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+section {
+  padding: 110px 0;
+  border-top: 1px solid var(--line);
+  /* el nav es fixed: sin esto los anclajes caen debajo de la barra */
+  scroll-margin-top: var(--nav-h);
+}
+
+.kicker {
+  color: var(--pink);
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.sec-title {
+  font-size: clamp(2.2rem, 6vw, 4.2rem);
+  line-height: 1;
+  margin-bottom: 34px;
+}
+
+.sec-title .y {
+  color: var(--yellow);
+}
+
+/* Título que va dentro del recuadro de un video (ver VideoFrame.astro).
+   Más chico que un .sec-title suelto porque compite con la imagen. */
+.v-title {
+  font-size: clamp(1.4rem, 3.6vw, 3.2rem);
+  line-height: 1;
+}
+
+.v-title .y {
+  color: var(--yellow);
+}
+
+/* Botón de play compartido por el video y el reel. Escala con el ancho: en
+   mobile el recuadro 16:9 mide ~184px de alto y un play de 78px lo tapa. */
+.play {
+  width: clamp(52px, 6.5vw, 78px);
+  height: clamp(52px, 6.5vw, 78px);
+  border-radius: 50%;
+  background: var(--yellow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-size: clamp(1.1rem, 1.5vw, 1.6rem);
+  transition: all 0.3s;
+}
+
+/* Reveal on scroll. Va detrás de html.js a propósito: si el JS no corre (error,
+   bloqueado, un bot que no lo ejecuta) el contenido queda visible en vez de
+   quedar en opacity:0 para siempre. La clase .on la agrega el script del layout. */
+html.js .reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s ease;
+}
+
+html.js .reveal.on {
+  opacity: 1;
+  transform: none;
+}
+
+/* salto al contenido para teclado / lectores de pantalla */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--yellow);
+  color: #000;
+  padding: 12px 20px;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- accesibilidad: movimiento reducido --------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html.js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

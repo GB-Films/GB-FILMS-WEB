@@ -1,0 +1,117 @@
+---
+import '@fontsource/anton';
+import '@fontsource-variable/inter';
+import '~/styles/global.css';
+import { site, DOMINIO_PROD } from '~/data/site';
+import BotonWhatsapp from '~/components/BotonWhatsapp.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** ruta relativa dentro de /public */
+  ogImage?: string;
+}
+
+const {
+  title = `${site.name} — ${site.tagline}`,
+  description = site.description,
+  ogImage = '/og.jpg',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImageUrl = new URL(ogImage, Astro.site);
+
+// Cualquier deploy que no sea el dominio real es un preview: no queremos que
+// Google lo indexe antes del lanzamiento. PUBLIC_PREVIEW lo fuerza a mano, para
+// cuando se sube la carpeta dist/ y todavía no se sabe qué URL va a tocar.
+const esPreview =
+  canonical.hostname !== DOMINIO_PROD || import.meta.env.PUBLIC_PREVIEW === '1';
+---
+
+<!doctype html>
+<html lang={site.lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#000000" />
+    {esPreview && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content={site.locale} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    {/* Marca que el JS está vivo antes del primer pintado: las animaciones de
+        entrada cuelgan de html.js, así que sin JS nada queda invisible. */}
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Saltar al contenido</a>
+    <slot />
+
+    {/* Burbuja de WhatsApp: va en el layout para que esté también en el 404 */}
+    <BotonWhatsapp />
+
+    <script>
+      // El nav es fijo y cambia de alto según cuántas líneas ocupen los links.
+      // Publicamos el alto real en --nav-h para que el scroll-margin de las
+      // secciones no deje los títulos tapados al saltar a un ancla.
+      const nav = document.querySelector<HTMLElement>('nav');
+      if (nav) {
+        let pedido = 0;
+        const medir = () => {
+          document.documentElement.style.setProperty('--nav-h', `${nav.offsetHeight}px`);
+        };
+        medir();
+        window.addEventListener(
+          'resize',
+          () => {
+            cancelAnimationFrame(pedido);
+            pedido = requestAnimationFrame(medir);
+          },
+          { passive: true },
+        );
+      }
+
+      // Reveal on scroll. Si el usuario pidió menos movimiento, mostramos todo
+      // de una y no instanciamos el observer.
+      const els = document.querySelectorAll<HTMLElement>('.reveal');
+      const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (quieto || !('IntersectionObserver' in window)) {
+        els.forEach((el) => el.classList.add('on'));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                e.target.classList.add('on');
+                io.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.15 },
+        );
+        els.forEach((el) => io.observe(el));
+      }
+    </script>
+  </body>
+</html>

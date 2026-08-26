@@ -1,0 +1,33 @@
+---
+import Base from '~/layouts/Base.astro';
+import Nav from '~/components/Nav.astro';
+import Hero from '~/components/Hero.astro';
+import Marcas from '~/components/Marcas.astro';
+import Que from '~/components/Que.astro';
+import Nosotros from '~/components/Nosotros.astro';
+import Trabajos from '~/components/Trabajos.astro';
+import Ficcion from '~/components/Ficcion.astro';
+import Tienda from '~/components/Tienda.astro';
+import Contacto from '~/components/Contacto.astro';
+import Universo from '~/components/Universo.astro';
+import Footer from '~/components/Footer.astro';
+---
+
+<Base>
+  <Nav />
+  <main id="main">
+    <Hero />
+    {/* La prueba social va apenas debajo del hero: es lo que da permiso a que
+        crean todo lo que sigue. */}
+    <Marcas />
+    <Que />
+    <Nosotros />
+    <Trabajos />
+    <Ficcion />
+    <Tienda />
+    <Universo />
+    {/* Último antes del footer: la página cierra con el pedido. */}
+    <Contacto />
+  </main>
+  <Footer />
+</Base>

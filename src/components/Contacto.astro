@@ -1,0 +1,121 @@
+---
+import { contacto } from '~/data/site';
+
+const mailto = `mailto:${contacto.email}?subject=${encodeURIComponent(contacto.emailAsunto)}`;
+const waHref = contacto.whatsapp
+  ? `https://wa.me/${contacto.whatsapp}?text=${encodeURIComponent(contacto.whatsappMensaje)}`
+  : null;
+---
+
+<section id="contacto" class="contacto">
+  <div class="wrap">
+    <p class="kicker">Marcas y agencias</p>
+    <h2 class="sec-title">¿Tenés un proyecto?<br />Hagámoslo.</h2>
+    <p class="bajada">
+      Publicidad, contenido digital, videoclips o algo que todavía no tiene nombre.
+      Contanos qué necesitás y te volvemos con una propuesta.
+    </p>
+
+    <div class="botones">
+      {
+        waHref ? (
+          <a class="btn btn-primario" href={waHref} target="_blank" rel="noopener">
+            Escribinos por WhatsApp →
+          </a>
+        ) : (
+          /* TODO: activar cuando exista el WhatsApp Business de GB Films
+             (hoy el número que hay es de Bani VFX). Ver `contacto` en
+             src/data/site.ts — con cargar el número, el botón se activa solo. */
+          <span class="btn btn-primario pendiente" aria-disabled="true">
+            WhatsApp <em>[ número a definir ]</em>
+          </span>
+        )
+      }
+
+      <a class="btn btn-secundario" href={mailto}>{contacto.email}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contacto {
+    background: var(--yellow);
+    color: #000;
+  }
+
+  /* la sección invierte el fondo: el kicker rosa sobre amarillo no lee */
+  .contacto .kicker {
+    color: var(--magenta);
+  }
+
+  .contacto .sec-title {
+    color: #000;
+    margin-bottom: 24px;
+  }
+
+  .bajada {
+    max-width: 560px;
+    font-size: 1.05rem;
+    margin-bottom: 34px;
+  }
+
+  .botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 16px 34px;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 1rem;
+    transition:
+      background 0.3s,
+      color 0.3s;
+  }
+
+  .btn-primario {
+    background: #000;
+    color: var(--yellow);
+  }
+
+  .btn-primario:hover {
+    background: var(--magenta);
+    color: #fff;
+  }
+
+  .btn-secundario {
+    border: 2px solid #000;
+    color: #000;
+    text-transform: none;
+    font-family: var(--font-body);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 14px 30px;
+  }
+
+  .btn-secundario:hover {
+    background: #000;
+    color: var(--yellow);
+  }
+
+  /* mismo peso visual que el botón real, pero sin link */
+  .pendiente {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .pendiente em {
+    font-style: normal;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+  }
+
+  .contacto :focus-visible {
+    outline-color: #000;
+  }
+</style>

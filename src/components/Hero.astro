@@ -1,0 +1,105 @@
+---
+import { site } from '~/data/site';
+---
+
+<header id="top">
+  <div id="glow" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="hero-kicker">{site.name} · {site.city}</p>
+    <h1 class="hero-title">Hacemos<br /><span>Cultura.</span></h1>
+    <p class="hero-sub">
+      Publicidades, contenido digital, videoclips y ficción.<br />
+      <strong>La cultura no se observa, se hace.</strong>
+    </p>
+  </div>
+  <span class="scroll-hint" aria-hidden="true">Scrolleá ↓</span>
+</header>
+
+<style>
+  header {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  .hero-kicker {
+    color: var(--gold);
+    font-size: 0.8rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .hero-title {
+    font-size: clamp(3.6rem, 12vw, 9.5rem);
+    line-height: 0.92;
+    color: var(--yellow);
+    position: relative;
+  }
+
+  .hero-title span {
+    color: var(--ink);
+  }
+
+  .hero-sub {
+    margin-top: 26px;
+    max-width: 520px;
+    color: var(--dim);
+    font-size: 1.05rem;
+  }
+
+  .hero-sub strong {
+    color: var(--ink);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 28px;
+    left: var(--gutter);
+    color: var(--dim);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    animation: blink 2.4s infinite;
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  // El resplandor sigue al mouse. Solo puntero fino: en touch no aporta y
+  // dispararía un reflow por cada movimiento.
+  const header = document.querySelector<HTMLElement>('header#top');
+  const glow = document.getElementById('glow');
+  const fino = window.matchMedia('(pointer: fine)').matches;
+
+  if (header && glow && fino) {
+    header.addEventListener('mousemove', (e) => {
+      const r = header.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width) * 100;
+      const y = ((e.clientY - r.top) / r.height) * 100;
+      glow.style.background =
+        `radial-gradient(600px at ${x}% ${y}%, rgba(255,232,0,.08), transparent 70%),` +
+        ` radial-gradient(ellipse at 80% 20%, rgba(213,0,87,.12), transparent 55%)`;
+    });
+  }
+</script>

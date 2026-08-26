@@ -1,0 +1,206 @@
+---
+/**
+ * Recuadro 16:9 con botón de play. Lo que venga por el slot se dibuja *dentro*
+ * del recuadro, encima del video, y desaparece al apretar play.
+ *
+ * Mientras no haya `videoUrl` el play igual funciona: limpia el recuadro y deja
+ * la marca de pendiente. Cuando llegue la pieza, se pasa la URL y se arma solo.
+ */
+interface Props {
+  /** texto bajo el botón de play, ej. "Mirá el video · 90 seg" */
+  label: string;
+  /** marca de pendiente arriba a la derecha, ej. "[ video a producir ]" */
+  todo?: string;
+  /** URL de embed (YouTube/Vimeo) o archivo .mp4 */
+  videoUrl?: string;
+  class?: string;
+}
+
+const { label, todo, videoUrl, class: extraClass } = Astro.props;
+---
+
+<div class:list={['video-frame', extraClass]} data-video-url={videoUrl}>
+  <div class="overlay" data-overlay>
+    <slot />
+  </div>
+
+  <div class="centro" data-centro>
+    <button type="button" class="play" aria-label={`Reproducir: ${label}`}>
+      <span aria-hidden="true">▶</span>
+    </button>
+    <span class="cap">{label}</span>
+  </div>
+
+  {todo && <span class="todo">{todo}</span>}
+  <div class="player" data-player hidden></div>
+</div>
+
+<style>
+  .video-frame {
+    aspect-ratio: 16 / 9;
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* El contenido del slot flota sobre el video, arriba a la izquierda.
+     pointer-events:none para no robarle el click al play. */
+  .overlay {
+    position: absolute;
+    inset: 0;
+    padding: clamp(20px, 4vw, 48px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    pointer-events: none;
+    z-index: 2;
+    transition:
+      opacity 0.45s ease,
+      transform 0.45s ease;
+  }
+
+  /* velo para que el texto se lea cuando atrás haya video y no fondo plano */
+  .overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.8),
+      rgba(0, 0, 0, 0.25) 55%,
+      transparent
+    );
+  }
+
+  .centro {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    z-index: 3;
+    transition: opacity 0.45s ease;
+  }
+
+  /* tamaño, color y forma vienen de .play en global.css */
+  .play {
+    border: 0;
+    padding: 0;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  .video-frame:hover .play {
+    background: var(--gold);
+    transform: scale(1.06);
+  }
+
+  .cap {
+    color: var(--dim);
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .todo {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 4;
+    color: #333;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: 1px dashed #333;
+    padding: 4px 10px;
+  }
+
+  .player {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .player :global(iframe),
+  .player :global(video) {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  /* En pantallas chicas el recuadro es muy bajo y el play centrado chocaría
+     con el título del slot. Lo mandamos abajo a la derecha. */
+  @media (max-width: 700px) {
+    .centro {
+      align-items: flex-end;
+      justify-content: flex-end;
+      padding: 0 16px 16px;
+      gap: 8px;
+    }
+
+    /* reserva la columna del play para que el título corte antes,
+       sin importar cuán largo sea */
+    .overlay {
+      padding-right: 88px;
+    }
+
+    .cap {
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-align: right;
+    }
+  }
+
+  /* --- después del play --- */
+  .video-frame.playing .overlay {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  .video-frame.playing .centro {
+    opacity: 0;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.video-frame').forEach((frame) => {
+    const play = frame.querySelector<HTMLButtonElement>('.play');
+    const player = frame.querySelector<HTMLElement>('[data-player]');
+    if (!play || !player) return;
+
+    play.addEventListener('click', () => {
+      // Oculta el título y el botón (CSS) y, si hay pieza, la monta.
+      frame.classList.add('playing');
+
+      const url = frame.dataset.videoUrl;
+      if (url && !player.hasChildNodes()) {
+        player.hidden = false;
+        if (/\.(mp4|webm|mov)$/i.test(url)) {
+          const v = document.createElement('video');
+          v.src = url;
+          v.controls = true;
+          v.autoplay = true;
+          v.playsInline = true;
+          player.append(v);
+        } else {
+          const f = document.createElement('iframe');
+          f.src = url + (url.includes('?') ? '&' : '?') + 'autoplay=1';
+          f.allow =
+            'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+          f.allowFullscreen = true;
+          f.title = play.getAttribute('aria-label') ?? 'Video';
+          player.append(f);
+        }
+      }
+
+      // El overlay dejó de estar: que el foco no quede en un botón invisible.
+      play.blur();
+    });
+  });
+</script>

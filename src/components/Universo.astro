@@ -1,0 +1,70 @@
+---
+import { hermanas } from '~/data/trabajos';
+---
+
+<section id="universo">
+  <div class="wrap">
+    <p class="kicker reveal">El universo</p>
+    <h2 class="sec-title reveal">GB Films no está <span class="y">sola</span></h2>
+
+    <div class="hermanas reveal">
+      {
+        hermanas.map((h) => (
+          <article class="hermana">
+            <span class="rol">{h.rol}</span>
+            <h3>{h.nombre}</h3>
+            <p>{h.texto}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="herencia reveal">
+      Gran Berta es el origen y el corazón; Bani VFX y GB Films son sus evoluciones
+      profesionales. <b>No es nostalgia: es herencia activa.</b>
+    </p>
+  </div>
+</section>
+
+<style>
+  .hermanas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 22px;
+  }
+
+  .hermana {
+    border: 1px solid var(--line-2);
+    padding: 34px;
+  }
+
+  .hermana h3 {
+    color: var(--ink);
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+
+  .hermana p {
+    color: var(--dim);
+    font-size: 0.92rem;
+  }
+
+  .hermana .rol {
+    color: var(--pink);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .herencia {
+    margin-top: 40px;
+    color: var(--dim);
+    font-size: 1rem;
+  }
+
+  .herencia b {
+    color: var(--yellow);
+  }
+</style>

@@ -1,0 +1,339 @@
+---
+import { equipo, manifiesto } from '~/data/equipo';
+
+const { destacada } = manifiesto;
+
+// Duplicado para que el loop de la franja no tenga costura; la copia va
+// aria-hidden y sin tab para que no se lea dos veces.
+const copias = [false, true];
+---
+
+<section id="nosotros">
+  <div class="wrap">
+    {/* data-focus: el nav centra este bloque al clickear "Nosotros" */}
+    <div class="intro reveal" data-focus>
+      <h2 class="kicker">Nosotros</h2>
+
+      <blockquote class="manifiesto" data-manifiesto>
+        {
+          manifiesto.estrofas.map((estrofa, e) => (
+            <div class="estrofa">
+              {estrofa.map((frase, f) => (
+                <button
+                  type="button"
+                  class="frase"
+                  aria-pressed={e === destacada.estrofa && f === destacada.frase ? 'true' : 'false'}
+                >
+                  {/* palabra por palabra: cuando la frase está en grande, el
+                      dorado del hover va sobre la palabra y no sobre la fila */}
+                  {frase.map((renglon, i) => (
+                    <>
+                      {i > 0 && <br />}
+                      {renglon.split(' ').map((palabra, p) => (
+                        <>
+                          {p > 0 && ' '}
+                          <span class="palabra">{palabra}</span>
+                        </>
+                      ))}
+                    </>
+                  ))}
+                </button>
+              ))}
+            </div>
+          ))
+        }
+      </blockquote>
+    </div>
+
+  </div>
+
+  <div class="marquee team-franja reveal" data-franja-equipo>
+      <ul class="pista">
+      {
+        copias.map((clon) =>
+        equipo.map((m) => (
+          <li class="card-item" aria-hidden={clon ? 'true' : undefined}>
+          <article class="card">
+            <button type="button" class="mas" aria-expanded="false" tabindex={clon ? -1 : undefined}>
+              <span aria-hidden="true">+</span>
+              <span class="visually-hidden">Ver más sobre {m.nombre}</span>
+            </button>
+            <div class="foto">
+              {m.foto ? (
+                <img src={m.foto} alt={m.nombre} width="300" height="250" loading="lazy" />
+              ) : (
+                <span>[ Foto {m.nombre.split(' ')[0]} ]</span>
+              )}
+            </div>
+            <div class="base">
+              <h3>{m.nombre}</h3>
+              <span class="rol">{m.rol}</span>
+            </div>
+            <div class="velo">
+              <p class="linea">{m.linea}</p>
+              <p>{m.bio}</p>
+            </div>
+          </article>
+          </li>
+        )),
+        )
+      }
+    </ul>
+  </div>
+
+  <div class="wrap">
+    <p class="team-hint reveal">Pasá el mouse (o tocá) para conocerlos de verdad.</p>
+  </div>
+</section>
+
+<style>
+  .intro {
+    margin-bottom: 60px;
+  }
+
+  /* el título de sección repetía el cierre del manifiesto, así que el h2 es
+     ahora el kicker: da estructura al documento sin duplicar la frase */
+  h2.kicker {
+    font-family: var(--font-body);
+    font-weight: 400;
+  }
+
+  .manifiesto {
+    border-left: 4px solid var(--yellow);
+    padding: 8px 0 8px 28px;
+    /* sin tope angosto: la frase destacada tiene que entrar en un renglón */
+    max-width: 100%;
+  }
+
+  .estrofa + .estrofa {
+    margin-top: 26px;
+  }
+
+  /* Cada frase es un botón que ocupa todo el ancho, así el hover responde en
+     toda la fila y no solo sobre las letras. */
+  /* Hover y selección crecen con la MISMA propiedad (font-size). Antes el
+     hover usaba transform y el click font-size: al apretar, el transform se
+     soltaba y la frase pegaba un tirón hacia atrás antes de agrandarse. */
+  .frase {
+    --tam: clamp(1.05rem, 2.2vw, 1.25rem);
+
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: 0;
+    padding: 3px 0;
+    font-family: var(--font-body);
+    font-size: var(--tam);
+    line-height: 1.45;
+    color: var(--ink);
+    cursor: pointer;
+    transition:
+      color 0.3s ease,
+      font-size 0.4s cubic-bezier(0.33, 0, 0.2, 1);
+  }
+
+  .frase:hover {
+    color: var(--gold);
+    font-size: calc(var(--tam) * 1.06);
+  }
+
+  /* la seleccionada es la que se ve en grande */
+  .frase[aria-pressed='true'],
+  .frase[aria-pressed='true']:hover {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    /* el piso es alto a propósito: en mobile el salto tiene que notarse igual */
+    font-size: clamp(1.9rem, 3.4vw, 2.9rem);
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+    color: var(--yellow);
+  }
+
+  /* Ya en grande, el dorado va palabra por palabra en vez de teñir la fila
+     entera. En las que todavía no están seleccionadas el hover sigue siendo de
+     toda la fila: es lo que avisa que se pueden clickear. */
+  .frase[aria-pressed='true'] .palabra {
+    transition: color 0.2s ease;
+  }
+
+  .frase[aria-pressed='true'] .palabra:hover {
+    color: var(--gold);
+  }
+
+  /* Misma franja que la de marcas: se recorta sólo cuando el script toma el
+     control (clase .auto); sin JS queda arrastrable a mano. */
+  .team-franja {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  }
+
+  .team-franja::-webkit-scrollbar {
+    display: none;
+  }
+
+  .team-franja.auto {
+    overflow: hidden;
+  }
+
+  .pista {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    width: max-content;
+    will-change: transform;
+    /* aire para que el recorte no se coma el borde de las tarjetas */
+    padding-block: 2px;
+  }
+
+  .card-item {
+    flex: 0 0 clamp(210px, 18vw, 240px);
+  }
+
+  .card {
+    border: 1px solid var(--line-2);
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    background: var(--surface-2);
+  }
+
+  .card:hover {
+    border-color: var(--yellow);
+  }
+
+  .foto {
+    height: 250px;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: filter 0.4s;
+  }
+
+  .foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .base {
+    padding: 18px 20px;
+  }
+
+  .card h3 {
+    font-size: 1.15rem;
+    color: var(--ink);
+  }
+
+  .rol {
+    color: var(--dim);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-top: 4px;
+    display: block;
+  }
+
+  .mas {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 2;
+    background: none;
+    border: 0;
+    padding: 0;
+    line-height: 1;
+    color: #333;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .velo {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+    padding: 26px 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.45s;
+  }
+
+  .velo .linea {
+    font-family: var(--font-display);
+    color: var(--yellow);
+    font-size: 1.25rem;
+    text-transform: uppercase;
+    line-height: 1.15;
+    margin-bottom: 14px;
+  }
+
+  .velo p {
+    color: var(--dim);
+    font-size: 0.85rem;
+  }
+
+  .card:hover .velo,
+  .card.open .velo {
+    opacity: 1;
+  }
+
+  .card:hover .mas,
+  .card.open .mas {
+    color: var(--yellow);
+    transform: rotate(45deg);
+  }
+
+  .team-hint {
+    color: var(--mute-2);
+    font-size: 0.8rem;
+    margin-top: 22px;
+    letter-spacing: 0.1em;
+  }
+</style>
+
+<script>
+  import { montarFranja } from '~/scripts/franja';
+
+  // Franja del equipo: mismo movimiento que la de marcas. Se frena cuando hay
+  // una tarjeta abierta, para poder leer la bio sin que se escape.
+  const franjaEquipo = document.querySelector<HTMLElement>('[data-franja-equipo]');
+  const pistaEquipo = franjaEquipo?.querySelector<HTMLElement>('.pista');
+  if (franjaEquipo && pistaEquipo) {
+    montarFranja(franjaEquipo, pistaEquipo, {
+      frenada: () => !!franjaEquipo.querySelector('.card.open'),
+    });
+  }
+
+  // Manifiesto: una sola frase destacada a la vez. La que está seleccionada es
+  // la que se ve en grande; el resto vuelve a tamaño de lectura.
+  const manifiesto = document.querySelector<HTMLElement>('[data-manifiesto]');
+  if (manifiesto) {
+    const frases = manifiesto.querySelectorAll<HTMLButtonElement>('.frase');
+    frases.forEach((frase) => {
+      frase.addEventListener('click', () => {
+        frases.forEach((f) => f.setAttribute('aria-pressed', String(f === frase)));
+      });
+    });
+  }
+
+  // El click en cualquier parte de la tarjeta abre el velo (mobile). El botón
+  // "+" no tiene handler propio a propósito: su click burbujea hasta acá, así
+  // Enter/Espacio desde el teclado hacen exactamente lo mismo que el tap.
+  document.querySelectorAll<HTMLElement>('.card').forEach((card) => {
+    card.addEventListener('click', () => {
+      const abierta = card.classList.toggle('open');
+      card.querySelector('.mas')?.setAttribute('aria-expanded', String(abierta));
+    });
+  });
+</script>

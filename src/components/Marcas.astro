@@ -1,0 +1,1001 @@
+---
+import { marcas, urlEmbed, esVertical } from '~/data/trabajos';
+
+/**
+ * Franja de prueba social, justo debajo del hero.
+ *
+ * Los logos desfilan lento y en loop. Se frenan al pasar el mouse, al navegar
+ * con teclado, o mientras haya una tarjeta abierta.
+ *
+ * Híbrido a propósito: no todas las marcas tienen trabajo cargado. Las que sí
+ * son tarjetas que se agrandan al centro de la pantalla y se dan vuelta; las
+ * que no, son solo logo y no se pueden clickear.
+ *
+ * Cuando una marca tiene varios trabajos, al abrirla aparecen tarjetas satélite
+ * a los costados (más chicas, como si estuvieran más lejos). Clickeando una, o
+ * con las flechas, el carrusel rota: la de al lado pasa al centro y la del
+ * centro se corre. La que queda fuera de vista sale y vuelve a entrar por el
+ * otro lado.
+ *
+ * El listado de la franja se renderiza dos veces: la segunda copia hace que el
+ * loop no tenga costura. Va aria-hidden y sin tab para que un lector de
+ * pantalla no lea todo dos veces.
+ */
+const copias = [false, true];
+
+// Se resuelve acá, en el build, para que el script del cliente no tenga que
+// saber nada de formatos de URL.
+const conPiezas = marcas.map((m) => ({
+  ...m,
+  resueltas: (m.piezas ?? []).map((p) => ({
+    src: urlEmbed(p.url),
+    vertical: esVertical(p.url),
+    etiqueta: p.titulo ? `${m.nombre} × ${p.titulo}` : m.nombre,
+  })),
+}));
+---
+
+<section id="marcas" class="franja" aria-labelledby="marcas-label">
+  {/* data-focus: el nav centra este bloque al clickear "Trabajos" */}
+  <div data-focus>
+    <div class="wrap">
+      <p class="franja-label" id="marcas-label">Marcas que confiaron en nosotros</p>
+    </div>
+
+    <div class="marquee" data-marquee>
+    <ul class="pista">
+      {
+        copias.map((clon) =>
+          conPiezas.map((m) => (
+            <li class="marca-item" aria-hidden={clon ? 'true' : undefined}>
+              <div
+                class="flip marco"
+                data-marca={m.nombre}
+                data-piezas={m.resueltas.length ? JSON.stringify(m.resueltas) : undefined}
+              >
+                {m.resueltas.length ? (
+                  <button
+                    type="button"
+                    class="cara frente con-video"
+                    data-abrir
+                    tabindex={clon ? -1 : undefined}
+                    aria-expanded="false"
+                  >
+                    {m.logo ? (
+                      <img src={m.logo} alt={m.nombre} loading="lazy" />
+                    ) : (
+                      <span class="nombre">{m.nombre}</span>
+                    )}
+                    <span class="badge-play" aria-hidden="true">
+                      {m.resueltas.length > 1 ? `▶ ${m.resueltas.length}` : '▶'}
+                    </span>
+                    <span class="visually-hidden">
+                      — ver {m.resueltas.length > 1 ? `${m.resueltas.length} trabajos` : 'el trabajo'}
+                    </span>
+                  </button>
+                ) : (
+                  <div class="cara frente">
+                    {m.logo ? (
+                      <img src={m.logo} alt={m.nombre} loading="lazy" />
+                    ) : (
+                      <span class="nombre">{m.nombre}</span>
+                    )}
+                  </div>
+                )}
+
+                {m.resueltas.length > 0 && (
+                  <div class="cara dorso" data-dorso aria-hidden="true" inert>
+                    <span class="rotulo" data-rotulo>
+                      {m.nombre}
+                    </span>
+                    <div class="visor" data-visor />
+                  </div>
+                )}
+              </div>
+            </li>
+          )),
+        )
+      }
+      </ul>
+    </div>
+  </div>
+
+  <div class="telon" data-telon hidden></div>
+
+  {/* Escenario de la tarjeta abierta. Va fuera de .pista porque .pista tiene
+      un transform (la animación) y eso rompe el posicionamiento en pantalla. */}
+  <div class="escenario" data-escenario hidden>
+    <div class="pila" data-pila>
+      {/* Molde de los satélites. Se clona desde el script: si los creara con
+          createElement no llevarían el atributo de scope de Astro y se
+          quedarían sin ninguno de los estilos de abajo. */}
+      <button
+        type="button"
+        class="satelite marco"
+        data-molde
+        hidden
+        aria-hidden="true"
+        tabindex="-1"
+      >
+        <span class="rotulo"></span>
+        <span class="visor" data-visor></span>
+      </button>
+    </div>
+    <div class="controles" data-controles>
+      <p class="etiqueta" data-etiqueta></p>
+      <div class="pasador" data-pasador hidden>
+        <button type="button" data-prev aria-label="Trabajo anterior">
+          <span aria-hidden="true">‹</span>
+        </button>
+        <span class="contador" data-contador></span>
+        <button type="button" data-next aria-label="Trabajo siguiente">
+          <span aria-hidden="true">›</span>
+        </button>
+      </div>
+      <button type="button" class="cerrar" data-cerrar aria-label="Cerrar">
+        <span aria-hidden="true">✕</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .franja {
+    padding: 42px 0 48px;
+  }
+
+  .franja-label {
+    color: var(--dim);
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  /* Por defecto se puede arrastrar a mano: es el caso en que el script no
+     corre, o en que el usuario pidió menos movimiento. Recién cuando el script
+     toma el control del desplazamiento (clase .auto) se recorta, para que
+     ninguna marca quede inalcanzable. */
+  .marquee {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  }
+
+  .marquee::-webkit-scrollbar {
+    display: none;
+  }
+
+  .marquee.auto:not([data-abierta-activa]) {
+    overflow: hidden;
+  }
+
+  /* El desplazamiento lo maneja el script cuadro a cuadro (ver más abajo): con
+     una animación de CSS no se puede cambiar de dirección y de velocidad según
+     dónde esté el mouse. */
+  .pista {
+    list-style: none;
+    display: flex;
+    gap: 18px;
+    width: max-content;
+    will-change: transform;
+    /* Aire arriba y abajo: sin esto las tarjetas quedan justo sobre el borde
+       del recorte del contenedor y el navegador se come el borde inferior,
+       que en pantallas normales mide menos de 1px real. */
+    padding-block: 2px;
+  }
+
+  /* --- tarjeta en la franja --- */
+
+  .marca-item {
+    flex: 0 0 clamp(200px, 20vw, 260px);
+    aspect-ratio: 16 / 9;
+    position: relative;
+    perspective: 1400px;
+  }
+
+  .flip {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+  }
+
+  .marco {
+    transition:
+      top 0.5s cubic-bezier(0.4, 0.15, 0.2, 1),
+      left 0.5s cubic-bezier(0.4, 0.15, 0.2, 1),
+      width 0.5s cubic-bezier(0.4, 0.15, 0.2, 1),
+      height 0.5s cubic-bezier(0.4, 0.15, 0.2, 1),
+      transform 0.5s cubic-bezier(0.4, 0.15, 0.2, 1),
+      opacity 0.4s ease;
+  }
+
+  .cara {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+  }
+
+  .frente {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    font: inherit;
+    color: var(--mute);
+    transition:
+      color 0.3s,
+      border-color 0.3s;
+  }
+
+  .con-video {
+    cursor: pointer;
+  }
+
+  .con-video:hover {
+    color: var(--ink);
+    border-color: var(--yellow);
+  }
+
+  .nombre {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1.6vw, 1.5rem);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+
+  .frente img {
+    max-width: 78%;
+    max-height: 62%;
+    object-fit: contain;
+  }
+
+  /* marca cuáles tienen trabajo, y cuántos */
+  .badge-play {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    color: var(--yellow);
+    opacity: 0.55;
+    transition: opacity 0.3s;
+  }
+
+  .con-video:hover .badge-play {
+    opacity: 1;
+  }
+
+  /* --- dorso / satélites --- */
+
+  .dorso {
+    transform: rotateY(180deg);
+    background: #000;
+    border-color: var(--yellow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .rotulo {
+    position: absolute;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    letter-spacing: 0.06em;
+    color: var(--mute);
+  }
+
+  .visor {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .visor:empty {
+    background: transparent;
+  }
+
+  .visor :global(iframe),
+  .visor :global(video) {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  /* Los embeds de Instagram se renderizan a su ancho de diseño (400px) y a la
+     altura que ellos mismos informan, y después se escalan para entrar en la
+     tarjeta. Es la única forma de que no les quede scroll interno. */
+  .visor :global(iframe.ig) {
+    flex: none;
+    width: 400px;
+    transform-origin: center center;
+    background: #fff;
+  }
+
+  .satelite {
+    position: absolute;
+    background: #000;
+    border: 1px solid var(--line-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+  }
+
+  .satelite:hover {
+    border-color: var(--yellow);
+  }
+
+  .satelite[hidden] {
+    display: none;
+  }
+
+  .satelite .rotulo {
+    color: var(--dim);
+  }
+
+  .satelite:hover .rotulo {
+    color: var(--yellow);
+  }
+
+  /* --- telón, escenario y controles --- */
+
+  .telon {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    background: rgba(0, 0, 0, 0.92);
+    opacity: 0;
+    transition: opacity 0.45s ease;
+  }
+
+  .telon[hidden] {
+    display: none;
+  }
+
+  .telon.visible {
+    opacity: 1;
+  }
+
+  .escenario {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    pointer-events: none;
+    perspective: 2200px;
+    /* Ojo: NO poner overflow aquí. Aplana el contexto 3D de las tarjetas y la
+       cara frontal se cuela espejada por detrás. Para que los satélites no se
+       vayan de pantalla está el tope en separacion(). */
+  }
+
+  /* Una vez que la tarjeta terminó de girar dejamos de depender del 3D: se
+     esconde la cara frontal y el dorso se muestra siempre. Así, aunque el
+     navegador aplane el contexto, nunca asoma el texto al revés. */
+  .escenario .flip.asentada .frente {
+    display: none;
+  }
+
+  .escenario .flip.asentada .dorso {
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
+  }
+
+  /* Los satélites son clickeables enteros. El visor deja pasar el click: si no,
+     el iframe de Instagram se lo queda y la tarjeta no responde. */
+  .escenario .marco[data-off]:not([data-off='0']) {
+    cursor: pointer;
+  }
+
+  .escenario .marco[data-off]:not([data-off='0']) .visor {
+    pointer-events: none;
+  }
+
+  .escenario[hidden] {
+    display: none;
+  }
+
+  .escenario .marco,
+  .escenario .satelite,
+  .controles {
+    pointer-events: auto;
+  }
+
+  .controles {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .controles.visible {
+    opacity: 1;
+  }
+
+  .etiqueta {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    color: var(--yellow);
+    white-space: nowrap;
+  }
+
+  .pasador {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .pasador[hidden] {
+    display: none;
+  }
+
+  .pasador button {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 0;
+    background: var(--yellow);
+    color: #000;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition:
+      background 0.3s,
+      transform 0.3s;
+  }
+
+  .pasador button:hover {
+    background: var(--magenta);
+    color: #fff;
+    transform: scale(1.08);
+  }
+
+  .contador {
+    color: var(--dim);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    min-width: 34px;
+    text-align: center;
+  }
+
+  .cerrar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: none;
+    border: 1px solid var(--line-2);
+    color: var(--dim);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      color 0.3s,
+      border-color 0.3s;
+  }
+
+  .cerrar:hover {
+    color: var(--yellow);
+    border-color: var(--yellow);
+  }
+
+  @media (max-width: 700px) {
+    .etiqueta {
+      display: none;
+    }
+  }
+
+  /* En pantallas angostas no hay lugar para el coverflow: los satélites
+     quedarían tapados por la tarjeta central, asomando 15px. Se ocultan y la
+     navegación queda a cargo de las flechas, que son bien visibles. */
+  @media (max-width: 760px) {
+    .satelite {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pista {
+      animation: none;
+    }
+
+    .marca-item[aria-hidden='true'] {
+      display: none;
+    }
+
+    .marco,
+    .telon,
+    .controles {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { montarFranja } from '~/scripts/franja';
+
+  type Pieza = { src: string; vertical: boolean; etiqueta: string };
+
+  const marquee = document.querySelector<HTMLElement>('[data-marquee]');
+  const telon = document.querySelector<HTMLElement>('[data-telon]');
+  const escenario = document.querySelector<HTMLElement>('[data-escenario]');
+
+  if (marquee && telon && escenario) {
+    const pila = escenario.querySelector<HTMLElement>('[data-pila]')!;
+    const molde = pila.querySelector<HTMLElement>('[data-molde]')!;
+    const controles = escenario.querySelector<HTMLElement>('[data-controles]')!;
+    const pasador = controles.querySelector<HTMLElement>('[data-pasador]')!;
+
+    const ANCHO_IG = 400;
+    /** Proporción de referencia del embed de Instagram (400 × 640). */
+    const ALTO_IG_REF = 640;
+    const ALTO_CONTROLES = 66;
+    const ESCALA_SATELITE = 0.62;
+    const MS_TRANSICION = 500;
+
+    let abierta: HTMLElement | null = null;
+    let piezas: Pieza[] = [];
+    let marcos: HTMLElement[] = [];
+    let activo = 0;
+    let navegando = false;
+    // Caja del marco central: la comparten todos, los satélites se achican
+    // con transform.
+    let caja = { w: 0, h: 0 };
+
+    // Distingue teclado de mouse: solo el teclado tiene que frenar la franja.
+    let porTeclado = false;
+    document.addEventListener('keydown', () => (porTeclado = true), true);
+    document.addEventListener('pointerdown', () => (porTeclado = false), true);
+
+    // La franja se mueve con el módulo compartido; ver src/scripts/franja.ts.
+    // Se queda quieta con una tarjeta abierta o navegando con teclado.
+    const pista = marquee.querySelector<HTMLElement>('.pista')!;
+    montarFranja(marquee, pista, {
+      frenada: () => !!abierta || (porTeclado && marquee.contains(document.activeElement)),
+    });
+
+    // --- geometría del carrusel -------------------------------------------
+
+    /**
+     * Distancia horizontal entre el centro y un satélite: media tarjeta central
+     * + medio satélite + aire, para que no se pisen. Con tope, para que el
+     * satélite nunca se salga de la pantalla.
+     */
+    const separacion = () => {
+      const ideal = caja.w * (0.5 + ESCALA_SATELITE / 2) + 28;
+      const tope = window.innerWidth / 2 - (caja.w * ESCALA_SATELITE) / 2 - 16;
+      return Math.min(ideal, Math.max(tope, caja.w * 0.55));
+    };
+
+    /** Offset circular con signo: 0 el activo, -1 el de la izquierda, +1 el de la derecha. */
+    const offsetDe = (i: number) => {
+      const n = piezas.length;
+      let off = (((i - activo) % n) + n) % n;
+      if (off > n / 2) off -= n;
+      return off;
+    };
+
+    const transformDe = (el: HTMLElement, off: number) => {
+      const giro = el.classList.contains('flip') ? ' rotateY(180deg)' : '';
+      const escala = off === 0 ? 1 : ESCALA_SATELITE;
+      return `translateX(${off * separacion()}px) scale(${escala})${giro}`;
+    };
+
+    const opacidadDe = (off: number) => (off === 0 ? 1 : Math.abs(off) === 1 ? 0.55 : 0);
+
+    /** Coloca un marco en su posición, animando salvo que se pida lo contrario. */
+    const colocar = (el: HTMLElement, off: number, animar: boolean) => {
+      const previo = el.dataset.off === undefined ? off : Number(el.dataset.off);
+      el.dataset.off = String(off);
+      el.style.zIndex = String(10 - Math.abs(off));
+
+      const aplicar = () => {
+        el.style.transform = transformDe(el, off);
+        el.style.opacity = String(opacidadDe(off));
+      };
+
+      if (!animar) {
+        el.style.transition = 'none';
+        aplicar();
+        void el.offsetWidth;
+        el.style.transition = '';
+        return;
+      }
+
+      // Salto circular (de un extremo al otro): primero se va por donde venía
+      // y después vuelve a entrar por el lado opuesto, en vez de cruzar el
+      // centro por delante de las demás.
+      if (Math.abs(off - previo) > 1) {
+        el.style.transform = transformDe(el, previo < 0 ? previo - 1 : previo + 1);
+        el.style.opacity = '0';
+        window.setTimeout(() => {
+          el.style.transition = 'none';
+          el.style.transform = transformDe(el, off < 0 ? off - 1 : off + 1);
+          void el.offsetWidth;
+          el.style.transition = '';
+          aplicar();
+        }, MS_TRANSICION * 0.45);
+        return;
+      }
+
+      aplicar();
+    };
+
+    /** Reubica todos los marcos y los controles con la caja actual. */
+    const acomodar = (animar = true) => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const total = caja.h + ALTO_CONTROLES;
+      const top = (vh - total) / 2;
+      const left = (vw - caja.w) / 2;
+
+      marcos.forEach((el, i) => {
+        el.style.width = `${caja.w}px`;
+        el.style.height = `${caja.h}px`;
+        el.style.top = `${top}px`;
+        el.style.left = `${left}px`;
+        colocar(el, offsetDe(i), animar);
+      });
+
+      controles.style.top = `${top + caja.h + 16}px`;
+    };
+
+    // --- contenido ---------------------------------------------------------
+
+    /**
+     * La caja se calcula a partir de la altura REAL que informa cada post. Con
+     * una altura fija de referencia, los posts más bajos entraban chicos y
+     * quedaba una franja negra enorme arriba y abajo. Mientras el post no haya
+     * informado todavía, se usa la referencia y después se ajusta.
+     */
+    const alturas: (number | null)[] = [];
+
+    const cajaPara = (i: number) => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const altoDisponible = vh * 0.86 - ALTO_CONTROLES;
+      const anchoMax = vw * 0.92;
+
+      if (piezas[i]?.vertical) {
+        const alto = alturas[i] ?? ALTO_IG_REF;
+        let h = Math.min(altoDisponible, alto);
+        let w = h * (ANCHO_IG / alto);
+        if (w > anchoMax) {
+          w = anchoMax;
+          h = w * (alto / ANCHO_IG);
+        }
+        return { w, h };
+      }
+
+      const w = Math.min(880, anchoMax, altoDisponible * (16 / 9));
+      return { w, h: (w * 9) / 16 };
+    };
+
+    /** Escala el embed para que entre justo en la caja actual. */
+    const encajarIframe = (iframe: HTMLIFrameElement, altoReal: number) => {
+      iframe.style.height = `${altoReal}px`;
+      iframe.style.transform = `scale(${Math.min(caja.w / ANCHO_IG, caja.h / altoReal)})`;
+    };
+
+    /** Reajusta la caja a la pieza activa y reencaja todos los embeds. */
+    const redimensionar = () => {
+      caja = cajaPara(activo);
+      marcos.forEach((m, i) => {
+        const f = m.querySelector<HTMLIFrameElement>('iframe.ig');
+        const alto = alturas[i];
+        if (f && alto) encajarIframe(f, alto);
+      });
+      acomodar();
+    };
+
+    // Instagram avisa la altura por postMessage. Se valida el origen antes de
+    // hacerle caso: es contenido de un tercero.
+    window.addEventListener('message', (ev) => {
+      if (ev.origin !== 'https://www.instagram.com') return;
+
+      const iframe = marcos
+        .map((m) => m.querySelector<HTMLIFrameElement>('iframe.ig'))
+        .find((f) => f && ev.source === f.contentWindow);
+      if (!iframe) return;
+
+      let alto: number | undefined;
+      try {
+        const dato = typeof ev.data === 'string' ? JSON.parse(ev.data) : ev.data;
+        if (dato?.type !== 'MEASURE') return;
+        alto = Number(dato.details?.height);
+      } catch {
+        return;
+      }
+      if (!alto || !Number.isFinite(alto)) return;
+
+      const i = marcos.findIndex((m) => m.querySelector('iframe.ig') === iframe);
+      if (i >= 0) alturas[i] = alto;
+
+      // Si es la que se está viendo, la tarjeta se amolda a su altura real.
+      if (i === activo) redimensionar();
+      else encajarIframe(iframe, alto);
+    });
+
+    const actualizarControles = () => {
+      const pieza = piezas[activo];
+      const etiqueta = controles.querySelector<HTMLElement>('[data-etiqueta]');
+      if (etiqueta && pieza) etiqueta.textContent = pieza.etiqueta;
+      const contador = controles.querySelector<HTMLElement>('[data-contador]');
+      if (contador) contador.textContent = `${activo + 1}/${piezas.length}`;
+    };
+
+    /**
+     * Monta TODAS las piezas de una, al abrir. Es lo que hace que pasar de una
+     * a otra sea instantáneo: antes se creaba el iframe recién al llegar al
+     * centro y se veía el recuadro en blanco mientras Instagram cargaba.
+     */
+    const montarTodas = () => {
+      marcos.forEach((marco, i) => {
+        const pieza = piezas[i];
+        const visor = marco.querySelector<HTMLElement>('[data-visor]');
+        if (!pieza || !visor || visor.hasChildNodes()) return;
+
+        if (/\.(mp4|webm|mov)$/i.test(pieza.src)) {
+          const v = document.createElement('video');
+          v.src = pieza.src;
+          v.controls = true;
+          v.loop = true;
+          v.muted = true;
+          v.playsInline = true;
+          if (i === activo) v.autoplay = true;
+          visor.append(v);
+          return;
+        }
+
+        const f = document.createElement('iframe');
+        f.src = pieza.src;
+        f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+        f.allowFullscreen = true;
+        f.title = pieza.etiqueta;
+
+        if (pieza.vertical) {
+          f.classList.add('ig');
+          f.setAttribute('scrolling', 'no');
+          visor.append(f);
+          // medida de arranque; se afina cuando el embed informa la real
+          encajarIframe(f, ALTO_IG_REF);
+          return;
+        }
+        visor.append(f);
+      });
+    };
+
+    /**
+     * Corta la reproducción de todo lo que no esté en el centro. Como las
+     * piezas se precargan al abrir la marca, la que queda atrás seguiría
+     * sonando si no se la frena.
+     *
+     * Los <video> se pausan y vuelven al principio. Los embeds de Instagram son
+     * de otro origen y no se pueden controlar por JS, así que se descartan y
+     * `montarTodas` los vuelve a crear: quedan en su estado inicial y de paso
+     * se precargan de nuevo mientras están de satélite, listos para cuando les
+     * toque volver al centro.
+     */
+    const frenarLasDeAtras = () => {
+      marcos.forEach((marco, i) => {
+        if (i === activo) return;
+
+        const video = marco.querySelector<HTMLVideoElement>('video');
+        if (video) {
+          video.pause();
+          video.currentTime = 0;
+          return;
+        }
+
+        const visor = marco.querySelector<HTMLElement>('[data-visor]');
+        if (visor?.querySelector('iframe')) visor.replaceChildren();
+      });
+
+      montarTodas();
+
+      // la pieza que llega al centro sí arranca sola (aplica a los .mp4)
+      marcos[activo]?.querySelector<HTMLVideoElement>('video')?.play().catch(() => {});
+    };
+
+    const irA = (destino: number) => {
+      if (navegando || piezas.length < 2) return;
+      const n = piezas.length;
+      activo = ((destino % n) + n) % n;
+      navegando = true;
+      frenarLasDeAtras();
+      redimensionar();
+      actualizarControles();
+      window.setTimeout(() => (navegando = false), MS_TRANSICION);
+    };
+
+    // --- abrir y cerrar ----------------------------------------------------
+
+    const cerrar = () => {
+      if (!abierta) return;
+      const item = abierta;
+      const flip = pila.querySelector<HTMLElement>('.flip')!;
+      const dorso = flip.querySelector<HTMLElement>('[data-dorso]');
+      const boton = flip.querySelector<HTMLButtonElement>('[data-abrir]');
+
+      abierta = null;
+      navegando = false;
+      // Vuelve a modo 3D: la cara frontal tiene que verse mientras gira de vuelta.
+      flip.classList.remove('asentada');
+
+      // Vaciar el visor corta la reproducción; si no, el video sigue sonando.
+      marcos.forEach((m) => m.querySelector<HTMLElement>('[data-visor]')?.replaceChildren());
+      marcos.filter((m) => m !== flip).forEach((m) => m.remove());
+      marcos = [];
+      piezas = [];
+
+      dorso?.setAttribute('aria-hidden', 'true');
+      dorso?.setAttribute('inert', '');
+      boton?.setAttribute('aria-expanded', 'false');
+      controles.classList.remove('visible');
+
+      // Volvemos al hueco que dejó en la franja. Se recalcula ahora, porque la
+      // página pudo haber scrolleado.
+      const hueco = item.getBoundingClientRect();
+      flip.style.top = `${hueco.top}px`;
+      flip.style.left = `${hueco.left}px`;
+      flip.style.width = `${hueco.width}px`;
+      flip.style.height = `${hueco.height}px`;
+      flip.style.transform = 'rotateY(0deg)';
+      flip.style.opacity = '1';
+
+      const limpiar = () => {
+        if (flip.parentElement === pila) item.append(flip);
+        flip.removeAttribute('style');
+        delete flip.dataset.off;
+        escenario.hidden = true;
+        marquee.removeAttribute('data-abierta-activa');
+      };
+      flip.addEventListener('transitionend', limpiar, { once: true });
+      window.setTimeout(limpiar, MS_TRANSICION + 120); // por si no hay transición
+
+      telon.classList.remove('visible');
+      window.setTimeout(() => (telon.hidden = true), 450);
+
+      if (porTeclado) boton?.focus();
+    };
+
+    const abrir = (item: HTMLElement) => {
+      const flip = item.querySelector<HTMLElement>('.flip')!;
+      const crudo = flip.dataset.piezas;
+      if (!crudo) return;
+
+      piezas = JSON.parse(crudo) as Pieza[];
+      activo = 0;
+      abierta = item;
+      marquee.setAttribute('data-abierta-activa', '');
+
+      telon.hidden = false;
+      escenario.hidden = false;
+      void telon.offsetWidth;
+      telon.classList.add('visible');
+
+      // 1. Anotamos dónde estaba y la mudamos al escenario, clavada en esas
+      //    mismas coordenadas: visualmente todavía no se movió nada.
+      const r = flip.getBoundingClientRect();
+      flip.style.position = 'absolute';
+      flip.style.top = `${r.top}px`;
+      flip.style.left = `${r.left}px`;
+      flip.style.width = `${r.width}px`;
+      flip.style.height = `${r.height}px`;
+      flip.style.margin = '0';
+      flip.style.transform = 'rotateY(0deg)';
+      pila.append(flip);
+      void flip.offsetWidth; // reflow: fija el punto de partida
+
+      // 2. Los satélites: uno por cada trabajo extra de la marca. Se clonan del
+      //    molde para que hereden el scope de estilos de Astro.
+      marcos = [flip];
+      const nombre = flip.dataset.marca ?? '';
+      for (let i = 1; i < piezas.length; i++) {
+        const s = molde.cloneNode(true) as HTMLElement;
+        s.removeAttribute('data-molde');
+        s.removeAttribute('hidden');
+        s.removeAttribute('aria-hidden');
+        s.removeAttribute('tabindex');
+        s.setAttribute('aria-label', `Ver trabajo ${i + 1} de ${piezas.length}`);
+        const rotulo = s.querySelector<HTMLElement>('.rotulo');
+        if (rotulo) rotulo.textContent = nombre;
+        // Arrancan donde va a quedar el centro, invisibles: así aparecen
+        // abriéndose hacia los costados junto con el giro de la principal.
+        s.style.opacity = '0';
+        pila.append(s);
+        marcos.push(s);
+      }
+
+      caja = { w: r.width, h: r.height };
+      marcos.slice(1).forEach((s) => colocar(s, 0, false));
+
+      // 3. Al centro, agrandada y dada vuelta. La caja se fija una sola vez y
+      //    se cargan todas las piezas de entrada, para que después cambiar de
+      //    una a otra no tenga ni parpadeo ni cambio de tamaño.
+      flip.style.transform = 'rotateY(180deg)';
+      alturas.length = 0;
+      caja = cajaPara(0);
+      montarTodas();
+      actualizarControles();
+      acomodar();
+
+      pasador.hidden = piezas.length < 2;
+      controles.classList.add('visible');
+
+      // Cuando termina el giro, la tarjeta deja de depender del 3D.
+      window.setTimeout(() => {
+        if (abierta) flip.classList.add('asentada');
+      }, MS_TRANSICION + 40);
+
+      const dorso = flip.querySelector<HTMLElement>('[data-dorso]');
+      dorso?.setAttribute('aria-hidden', 'false');
+      dorso?.removeAttribute('inert');
+      flip.querySelector('[data-abrir]')?.setAttribute('aria-expanded', 'true');
+    };
+
+    // --- eventos -----------------------------------------------------------
+
+    marquee.addEventListener('click', (ev) => {
+      const target = ev.target as HTMLElement;
+      if (!target.closest('[data-abrir]')) return;
+      const item = target.closest<HTMLElement>('.marca-item');
+      if (!item) return;
+
+      const eraLaMisma = abierta === item;
+      cerrar();
+      if (!eraLaMisma) abrir(item);
+    });
+
+    escenario.addEventListener('click', (ev) => {
+      const target = ev.target as HTMLElement;
+      if (target.closest('[data-cerrar]')) return cerrar();
+      if (target.closest('[data-next]')) return irA(activo + 1);
+      if (target.closest('[data-prev]')) return irA(activo - 1);
+
+      // Click en cualquier tarjeta de los costados: esa pasa al centro. Se
+      // navega por su posición actual, no por un índice fijo — si no, al rotar
+      // el carrusel "la de la derecha" dejaba de responder.
+      const marco = target.closest<HTMLElement>('.marco');
+      const off = marco?.dataset.off;
+      if (marco && off !== undefined && off !== '0') irA(activo + Number(off));
+    });
+
+    telon.addEventListener('click', cerrar);
+
+    document.addEventListener('keydown', (ev) => {
+      if (!abierta) return;
+      if (ev.key === 'Escape') cerrar();
+      else if (ev.key === 'ArrowRight') irA(activo + 1);
+      else if (ev.key === 'ArrowLeft') irA(activo - 1);
+    });
+
+    // Al reacomodarse la pantalla el centro calculado deja de valer.
+    window.addEventListener('resize', cerrar);
+
+  }
+</script>

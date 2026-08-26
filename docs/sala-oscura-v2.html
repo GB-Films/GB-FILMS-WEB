@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gran Berta Films — Sala Oscura v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --yellow:#FFE800; --gold:#FFC600; --magenta:#D50057; --pink:#E81F76; --black:#000;
+    --ink:#f2f2f2; --dim:#9a9a9a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--black);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden}
+  h1,h2,h3{font-family:'Anton',sans-serif;font-weight:400;letter-spacing:.01em;text-transform:uppercase}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+  section{padding:110px 0;border-top:1px solid #1c1c1c}
+
+  /* reveal on scroll */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease}
+  .reveal.on{opacity:1;transform:none}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);border-bottom:1px solid #1c1c1c}
+  .nav-in{max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+  .logo{font-family:'Anton',sans-serif;font-size:1.05rem;color:var(--yellow);letter-spacing:.06em}
+  .nav-links{display:flex;gap:18px;flex-wrap:wrap;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .nav-links a:hover{color:var(--yellow)}
+  .nav-cta{margin-left:auto;background:var(--yellow);color:#000;padding:8px 16px;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+  .nav-cta:hover{background:var(--gold)}
+
+  /* HERO */
+  header{min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+  #glow{position:absolute;inset:0;pointer-events:none;opacity:.6}
+  .hero-kicker{color:var(--gold);font-size:.8rem;letter-spacing:.35em;text-transform:uppercase;margin-bottom:18px}
+  .hero-title{font-size:clamp(3.6rem,12vw,9.5rem);line-height:.92;color:var(--yellow);position:relative}
+  .hero-title span{color:var(--ink)}
+  .hero-sub{margin-top:26px;max-width:520px;color:var(--dim);font-size:1.05rem}
+  .hero-sub strong{color:var(--ink)}
+  .scroll-hint{position:absolute;bottom:28px;left:24px;color:var(--dim);font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;animation:blink 2.4s infinite}
+  @keyframes blink{0%,100%{opacity:.35}50%{opacity:1}}
+
+  .kicker{color:var(--pink);font-size:.75rem;letter-spacing:.3em;text-transform:uppercase;margin-bottom:14px}
+  .sec-title{font-size:clamp(2.2rem,6vw,4.2rem);line-height:1;margin-bottom:34px}
+  .sec-title .y{color:var(--yellow)}
+
+  /* VIDEO */
+  .video{aspect-ratio:16/9;background:#0d0d0d;border:1px solid #222;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;margin-bottom:80px;position:relative;overflow:hidden;cursor:pointer}
+  .video:hover .play{background:var(--gold);transform:scale(1.06)}
+  .play{width:78px;height:78px;border-radius:50%;background:var(--yellow);display:flex;align-items:center;justify-content:center;color:#000;font-size:1.6rem;transition:all .3s}
+  .video span{color:var(--dim);font-size:.75rem;letter-spacing:.25em;text-transform:uppercase}
+  .video .todo{position:absolute;top:14px;right:14px;color:#333;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;border:1px dashed #333;padding:4px 10px}
+
+  /* ===== CÍRCULO DORADO INTERACTIVO ===== */
+  .circulo-zone{display:grid;grid-template-columns:minmax(300px,460px) 1fr;gap:60px;align-items:center}
+  .circ-wrap{position:relative;aspect-ratio:1;max-width:460px;margin:0 auto;width:100%}
+  .ring{position:absolute;border-radius:50%;border:1px solid #2a2a2a;cursor:pointer;transition:border-color .4s, box-shadow .4s;display:flex;justify-content:center}
+  .ring:hover{border-color:var(--gold)}
+  .ring.active{border-color:var(--yellow);box-shadow:0 0 40px rgba(255,232,0,.12), inset 0 0 40px rgba(255,232,0,.05)}
+  .ring-que {inset:0}
+  .ring-como{inset:16.5%}
+  .ring-why {inset:33%}
+  .ring-label{position:absolute;top:0;transform:translateY(-50%);background:var(--black);padding:0 12px;font-family:'Anton',sans-serif;font-size:.85rem;letter-spacing:.25em;text-transform:uppercase;color:var(--dim);transition:color .4s;pointer-events:none}
+  .ring:hover .ring-label{color:var(--gold)}
+  .ring.active .ring-label{color:var(--yellow)}
+  .circ-core{position:absolute;inset:41%;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;pointer-events:none}
+  .circ-core span{font-family:'Anton',sans-serif;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:#444;animation:corepulse 3s infinite}
+  @keyframes corepulse{0%,100%{opacity:.4}50%{opacity:1}}
+  .circ-spin{position:absolute;inset:-4%;border-radius:50%;border:1px dashed #1a1a1a;animation:spin 60s linear infinite;pointer-events:none}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .circ-panel{min-height:340px;display:flex;flex-direction:column;justify-content:center}
+  .circ-panel .p-kicker{color:var(--gold);font-size:.75rem;letter-spacing:.3em;text-transform:uppercase;margin-bottom:16px;opacity:0;transition:opacity .5s}
+  .circ-panel .p-frase{font-family:'Anton',sans-serif;font-size:clamp(1.6rem,3.5vw,2.6rem);text-transform:uppercase;line-height:1.1;margin-bottom:20px;opacity:0;transform:translateY(14px);transition:all .5s}
+  .circ-panel .p-frase em{font-style:normal;color:var(--yellow)}
+  .circ-panel .p-body{color:var(--dim);max-width:480px;opacity:0;transform:translateY(14px);transition:all .5s .1s}
+  .circ-panel.show .p-kicker,.circ-panel.show .p-frase,.circ-panel.show .p-body{opacity:1;transform:none}
+  .circ-hint{color:#444;font-size:.8rem;letter-spacing:.1em}
+
+  /* NOSOTROS */
+  .manifiesto{border-left:4px solid var(--yellow);padding:8px 0 8px 28px;margin-bottom:60px;max-width:640px}
+  .manifiesto p{font-size:1.25rem;color:var(--ink);margin-bottom:14px}
+  .manifiesto .fin{color:var(--yellow);font-family:'Anton',sans-serif;font-size:1.6rem;text-transform:uppercase}
+  .team{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:20px}
+  .card{border:1px solid #222;position:relative;cursor:pointer;overflow:hidden;background:#0a0a0a}
+  .card .foto{height:250px;background:#111;display:flex;align-items:center;justify-content:center;color:#333;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;transition:filter .4s}
+  .card .base{padding:18px 20px}
+  .card h3{font-size:1.15rem;color:var(--ink)}
+  .card .rol{color:var(--dim);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;margin-top:4px;display:block}
+  .card .mas{position:absolute;top:14px;right:14px;color:#333;font-size:1.1rem;transition:all .3s}
+  .card .velo{position:absolute;inset:0;background:rgba(0,0,0,.92);padding:26px 22px;display:flex;flex-direction:column;justify-content:center;opacity:0;transition:opacity .45s}
+  .card .velo .linea{font-family:'Anton',sans-serif;color:var(--yellow);font-size:1.25rem;text-transform:uppercase;line-height:1.15;margin-bottom:14px}
+  .card .velo p{color:var(--dim);font-size:.85rem}
+  .card:hover .velo,.card.open .velo{opacity:1}
+  .card:hover .mas,.card.open .mas{color:var(--yellow);transform:rotate(45deg)}
+  .card:hover{border-color:var(--yellow)}
+  .team-hint{color:#444;font-size:.8rem;margin-top:22px;letter-spacing:.1em}
+
+  /* REEL */
+  .reel{aspect-ratio:16/9;background:#0d0d0d;border:1px solid #222;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;margin-bottom:56px}
+  .reel span{color:var(--dim);font-size:.75rem;letter-spacing:.25em;text-transform:uppercase}
+  .marcas{display:flex;flex-wrap:wrap;gap:14px 40px;align-items:center}
+  .marcas span{font-family:'Anton',sans-serif;font-size:1.3rem;color:#3a3a3a;text-transform:uppercase;letter-spacing:.04em;transition:color .3s}
+  .marcas span:hover{color:var(--ink)}
+  .marcas-label{color:var(--dim);font-size:.75rem;letter-spacing:.25em;text-transform:uppercase;margin-bottom:22px}
+
+  /* FICCION */
+  .ips{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px}
+  .ip{aspect-ratio:2/3;background:#0d0d0d;border:1px solid #222;display:flex;flex-direction:column;justify-content:flex-end;padding:18px;position:relative;overflow:hidden;transition:border-color .3s, transform .3s}
+  .ip:hover{border-color:var(--pink);transform:translateY(-4px)}
+  .ip h3{font-size:1.25rem;line-height:1.05}
+  .ip .tipo{color:var(--dim);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;margin-top:6px}
+  .ip.locked{border:1px dashed var(--gold)}
+  .ip.locked h3{color:var(--gold)}
+  .candado{position:absolute;top:14px;right:14px;font-size:1.3rem}
+  .badge{position:absolute;top:16px;left:-32px;background:var(--magenta);color:#fff;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;padding:5px 40px;transform:rotate(-45deg)}
+
+  /* TIENDA */
+  .tienda-box{border:1px solid #222;padding:56px 40px;display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center}
+  .tienda-box h3{font-size:clamp(1.8rem,4vw,3rem);color:var(--yellow);margin-bottom:12px}
+  .tienda-box p{color:var(--dim);max-width:520px}
+  .sticker-ph{width:150px;height:150px;border-radius:50%;background:var(--magenta);display:flex;align-items:center;justify-content:center;text-align:center;font-family:'Anton',sans-serif;color:#fff;font-size:.8rem;text-transform:uppercase;transform:rotate(8deg);padding:18px}
+
+  /* SUMATE */
+  .sumate{background:var(--yellow);color:#000}
+  .sumate .kicker{color:var(--magenta)}
+  .sumate .sec-title{color:#000}
+  .sumate p{max-width:560px;font-size:1.05rem;margin-bottom:30px}
+  .btn-dark{display:inline-block;background:#000;color:var(--yellow);padding:16px 34px;font-family:'Anton',sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:1rem}
+  .btn-dark:hover{background:var(--magenta);color:#fff}
+
+  /* UNIVERSO */
+  .hermanas{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px}
+  .hermana{border:1px solid #222;padding:34px}
+  .hermana h3{color:var(--ink);font-size:1.5rem;margin-bottom:10px}
+  .hermana p{color:var(--dim);font-size:.92rem}
+  .hermana .rol{color:var(--pink);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;display:block;margin-bottom:12px}
+  .herencia{margin-top:40px;color:var(--dim);font-size:1rem}
+  .herencia b{color:var(--yellow)}
+
+  /* FOOTER */
+  footer{border-top:1px solid #1c1c1c;padding:70px 0 50px}
+  .redes{display:flex;gap:26px;flex-wrap:wrap;margin-bottom:40px}
+  .redes a{color:var(--dim);font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid transparent;padding-bottom:3px}
+  .redes a:hover{color:var(--yellow);border-color:var(--yellow)}
+  .foot-slogan{font-family:'Anton',sans-serif;font-size:clamp(2rem,7vw,4.5rem);color:#141414;text-transform:uppercase;line-height:1;transition:color 1.2s}
+  .foot-slogan:hover{color:var(--yellow)}
+  .foot-note{color:#3a3a3a;font-size:.75rem;margin-top:20px}
+  @media(max-width:860px){.circulo-zone{grid-template-columns:1fr}.tienda-box{grid-template-columns:1fr}.nav-cta{display:none}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <a class="logo" href="#top">GB FILMS</a>
+    <div class="nav-links">
+      <a href="#que">¿Qué carajo?</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#trabajos">Trabajos</a>
+      <a href="#ficcion">Ficción</a>
+      <a href="#tienda">Tienda</a>
+      <a href="#universo">Universo</a>
+    </div>
+    <a class="nav-cta" href="#sumate">Trabajemos juntos</a>
+  </div>
+</nav>
+
+<header id="top">
+  <div id="glow"></div>
+  <div class="wrap">
+    <p class="hero-kicker">Gran Berta Films · Buenos Aires</p>
+    <h1 class="hero-title">Hacemos<br><span>Cultura.</span></h1>
+    <p class="hero-sub">Publicidades, contenido digital, videoclips y ficción.<br><strong>La cultura no se observa, se hace.</strong></p>
+  </div>
+  <span class="scroll-hint">Scrolleá ↓</span>
+</header>
+
+<section id="que">
+  <div class="wrap">
+    <p class="kicker reveal">La pregunta que todos se hacen</p>
+    <h2 class="sec-title reveal">¿Qué carajo es<br><span class="y">Gran Berta Films?</span></h2>
+
+    <div class="video reveal">
+      <div class="play">▶</div>
+      <span>Mirá el video · 90 seg</span>
+      <span class="todo">[ video a producir ]</span>
+    </div>
+
+    <div class="circulo-zone reveal">
+      <div class="circ-wrap" id="circ">
+        <div class="circ-spin"></div>
+        <div class="ring ring-que" data-k="que"><span class="ring-label">Qué</span></div>
+        <div class="ring ring-como" data-k="como"><span class="ring-label">Cómo</span></div>
+        <div class="ring ring-why" data-k="why"><span class="ring-label">Por qué</span></div>
+        <div class="circ-core"><span id="core-hint">Tocá<br>los anillos</span></div>
+      </div>
+      <div class="circ-panel" id="panel">
+        <p class="circ-hint" id="start-hint">← Empezá por el centro. Siempre por el centro.</p>
+        <p class="p-kicker" id="p-kicker"></p>
+        <p class="p-frase" id="p-frase"></p>
+        <p class="p-body" id="p-body"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="nosotros">
+  <div class="wrap">
+    <p class="kicker reveal">Nosotros</p>
+    <h2 class="sec-title reveal">Son ellos. Somos nosotros. <span class="y">Sos vos.</span></h2>
+    <div class="manifiesto reveal">
+      <p>Creemos en los que imaginan lo imposible,<br>en los que crean sin pedir permiso,<br>en los que están en cada detalle.</p>
+      <p class="fin">Son ellos, somos nosotros, sos vos.</p>
+    </div>
+    <div class="team reveal">
+      <div class="card">
+        <span class="mas">+</span>
+        <div class="foto">[ Foto Agustín ]</div>
+        <div class="base"><h3>Agustín Stegmann</h3><span class="rol">Fundador · Director</span></div>
+        <div class="velo">
+          <p class="linea">Imagina lo imposible</p>
+          <p>El origen del universo Gran Berta y la brújula de todo lo que hacemos.</p>
+        </div>
+      </div>
+      <div class="card">
+        <span class="mas">+</span>
+        <div class="foto">[ Foto Guido ]</div>
+        <div class="base"><h3>Guido Boetsch</h3><span class="rol">Director · Productor VFX</span></div>
+        <div class="velo">
+          <p class="linea">Crea universos</p>
+          <p>Director y productor de VFX. Donde otros ven un plano, él ve un mundo entero por construir.</p>
+        </div>
+      </div>
+      <div class="card">
+        <span class="mas">+</span>
+        <div class="foto">[ Foto Ame ]</div>
+        <div class="base"><h3>Ame Blanco</h3><span class="rol">Directora de Operaciones · Productora Ejecutiva</span></div>
+        <div class="velo">
+          <p class="linea">Hace que suceda</p>
+          <p>Si algo se filmó, se entregó y salió bien, es porque Ame estuvo ahí antes que todos.</p>
+        </div>
+      </div>
+      <div class="card">
+        <span class="mas">+</span>
+        <div class="foto">[ Foto Santiago ]</div>
+        <div class="base"><h3>Santiago Rey</h3><span class="rol">Director · Director Creativo</span></div>
+        <div class="velo">
+          <p class="linea">El romántico</p>
+          <p>Cree en el cine como se creía antes. Odia la IA, y lo decimos acá porque somos auténticos.</p>
+        </div>
+      </div>
+      <div class="card">
+        <span class="mas">+</span>
+        <div class="foto">[ Foto Tomás ]</div>
+        <div class="base"><h3>Tomás Boetsch</h3><span class="rol">Admin · Finanzas · RRHH</span></div>
+        <div class="velo">
+          <p class="linea">Ama la IA</p>
+          <p>Números, finanzas y recursos humanos. Todo lo contrario a Santiago: la IA es su mejor amiga.</p>
+        </div>
+      </div>
+      <div class="card">
+        <span class="mas">+</span>
+        <div class="foto">[ Foto Toto ]</div>
+        <div class="base"><h3>Toto</h3><span class="rol">Head of Content</span></div>
+        <div class="velo">
+          <p class="linea">Está en cada detalle</p>
+          <p>Head of Content. Y filmmaker, editor, creativo y CM. Sí, todo eso — y lo hace parecer fácil.</p>
+        </div>
+      </div>
+      <div class="card">
+        <span class="mas">+</span>
+        <div class="foto">[ Foto Anita ]</div>
+        <div class="base"><h3>Anita</h3><span class="rol">Directora Creativa</span></div>
+        <div class="velo">
+          <p class="linea">Crea sin pedir permiso</p>
+          <p>Concepto, dirección y el porqué detrás de cada campaña e IP del universo.</p>
+        </div>
+      </div>
+    </div>
+    <p class="team-hint reveal">Pasá el mouse (o tocá) para conocerlos de verdad.</p>
+  </div>
+</section>
+
+<section id="trabajos">
+  <div class="wrap">
+    <p class="kicker reveal">Reel + Trabajos</p>
+    <h2 class="sec-title reveal">Ideas que conectan.<br><span class="y">Historias que trascienden.</span></h2>
+    <div class="reel reveal">
+      <div class="play">▶</div>
+      <span>Reel 2026 · 1 min</span>
+    </div>
+    <p class="marcas-label reveal">Marcas que confiaron en nosotros</p>
+    <div class="marcas reveal">
+      <span>Disney</span><span>Amazon</span><span>Adidas</span><span>Samsung</span><span>Xbox</span><span>ICBC</span><span>Naranja X</span><span>Sprite</span><span>PedidosYa</span>
+    </div>
+  </div>
+</section>
+
+<section id="ficcion">
+  <div class="wrap">
+    <p class="kicker reveal">Ficción</p>
+    <h2 class="sec-title reveal">Historias nuestras.<br><span class="y">Sin brief ni cliente.</span></h2>
+    <div class="ips reveal">
+      <div class="ip"><h3>Rendering</h3><span class="tipo">Ficción</span></div>
+      <div class="ip"><h3>El Condenado</h3><span class="tipo">Ficción</span></div>
+      <div class="ip"><h3>Cucaracha</h3><span class="tipo">Ficción</span></div>
+      <div class="ip"><h3>El Diente Negro</h3><span class="tipo">Ficción</span></div>
+      <div class="ip"><h3>Rumá</h3><span class="tipo">Ficción</span></div>
+      <div class="ip"><h3>Jubilada y Peligrosa</h3><span class="tipo">Ficción</span></div>
+      <div class="ip locked">
+        <span class="candado">🔒</span>
+        <span class="badge">En producción</span>
+        <h3>Modelos del Segundo Piso</h3>
+        <span class="tipo">Próximamente · 2027</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tienda">
+  <div class="wrap">
+    <p class="kicker reveal">Tienda</p>
+    <h2 class="sec-title reveal">Se viene la <span class="y">tienda GBF</span></h2>
+    <div class="tienda-box reveal">
+      <div>
+        <h3>Primero: stickers.</h3>
+        <p>Los estamos armando con la comunidad ahora mismo. Después: todo lo demás. Si querés enterarte primero cuando salgan, seguinos en redes — ahí está pasando todo.</p>
+      </div>
+      <div class="sticker-ph">Acá va<br>el primer<br>sticker</div>
+    </div>
+  </div>
+</section>
+
+<section id="sumate" class="sumate">
+  <div class="wrap">
+    <p class="kicker">Base de datos</p>
+    <h2 class="sec-title">¿Querés hacer cultura con nosotros?</h2>
+    <p>Actores, técnicos, creativos, hacedores de todo tipo: dejanos tus datos y cuando haya un proyecto donde encajes, te llamamos. Así de simple.</p>
+    <a class="btn-dark" href="#">Dejar mis datos →</a>
+  </div>
+</section>
+
+<section id="universo">
+  <div class="wrap">
+    <p class="kicker reveal">El universo</p>
+    <h2 class="sec-title reveal">GB Films no está <span class="y">sola</span></h2>
+    <div class="hermanas reveal">
+      <div class="hermana">
+        <span class="rol">La madre · desde 2015</span>
+        <h3>Gran Berta</h3>
+        <p>El universo original: contenido propio y comunidad. +2M de seguidores, +400M de vistas, 365 vlogs. Si querés, podés.</p>
+      </div>
+      <div class="hermana">
+        <span class="rol">Post-producción</span>
+        <h3>Bani VFX</h3>
+        <p>La empresa de post nacida dentro de Gran Berta. Largometrajes, contenido para The Rock y Zach King, comerciales globales.</p>
+      </div>
+    </div>
+    <p class="herencia reveal">Gran Berta es el origen y el corazón; Bani VFX y GB Films son sus evoluciones profesionales. <b>No es nostalgia: es herencia activa.</b></p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="redes">
+      <a href="#">Instagram</a>
+      <a href="#">TikTok</a>
+      <a href="#">YouTube</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">WhatsApp</a>
+    </div>
+    <p class="foot-slogan">Hacemos Cultura.</p>
+    <p class="foot-note">© 2026 Gran Berta Films · Buenos Aires, Argentina</p>
+  </div>
+</footer>
+
+<script>
+// ---- reveal on scroll ----
+const io = new IntersectionObserver(es=>{
+  es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target);} });
+},{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// ---- hero glow follows mouse ----
+const glow = document.getElementById('glow');
+document.querySelector('header').addEventListener('mousemove', e=>{
+  const r = e.currentTarget.getBoundingClientRect();
+  const x = ((e.clientX-r.left)/r.width)*100, y = ((e.clientY-r.top)/r.height)*100;
+  glow.style.background = `radial-gradient(600px at ${x}% ${y}%, rgba(255,232,0,.08), transparent 70%), radial-gradient(ellipse at 80% 20%, rgba(213,0,87,.12), transparent 55%)`;
+});
+
+// ---- círculo dorado interactivo ----
+const DATA = {
+  why: {k:'Por qué existimos', f:'La cultura no se observa, <em>se hace.</em>',
+        b:'No creemos que la cultura sea algo que pasa mientras trabajamos. Somos parte activa de lo que las personas ven, piensan, sienten y comparten. No vinimos a mirar cómo se hace. Vinimos a hacerlo.'},
+  como:{k:'Cómo lo hacemos', f:'Contamos <em>buenas historias.</em>',
+        b:'Las que entretienen, conectan e inspiran. No historias perfectas: historias vivas, honestas, cargadas de emoción o de verdad. Todo lo que hacemos responde una pregunta: ¿qué historia estás contando con esto?'},
+  que: {k:'Qué hacemos', f:'Publicidades. Contenido. Videoclips. <em>Ficción.</em>',
+        b:'Las publicidades conectan propósito y marcas. El contenido digital nos deja ser ágiles y experimentales. Los videoclips abren el mundo emocional. Y la ficción es el horizonte: historias nuestras, sin brief ni cliente.'}
+};
+const panel = document.getElementById('panel');
+const rings = document.querySelectorAll('.ring');
+const startHint = document.getElementById('start-hint');
+const coreHint = document.getElementById('core-hint');
+let discovered = new Set();
+rings.forEach(ring=>{
+  ring.addEventListener('click', ev=>{
+    ev.stopPropagation();
+    const k = ring.dataset.k;
+    rings.forEach(r=>r.classList.remove('active'));
+    ring.classList.add('active');
+    startHint.style.display='none';
+    panel.classList.remove('show');
+    setTimeout(()=>{
+      document.getElementById('p-kicker').textContent = DATA[k].k;
+      document.getElementById('p-frase').innerHTML = DATA[k].f;
+      document.getElementById('p-body').textContent = DATA[k].b;
+      panel.classList.add('show');
+    },180);
+    discovered.add(k);
+    if(discovered.size===3){ coreHint.innerHTML='Eso<br>somos.'; coreHint.style.color='#FFE800'; }
+  });
+});
+// tap-to-open cards en mobile
+document.querySelectorAll('.card').forEach(c=>{
+  c.addEventListener('click',()=>c.classList.toggle('open'));
+});
+</script>
+</body>
+</html>

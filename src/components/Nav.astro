@@ -1,0 +1,199 @@
+---
+import Logo from './Logo.astro';
+import { navLinks, navCta, site } from '~/data/site';
+---
+
+<nav aria-label="Principal">
+  <div class="nav-in">
+    <a class="logo-link" href="#top" aria-label={`${site.shortName} — inicio`}>
+      <Logo variant="monogram" height={30} />
+    </a>
+    <div class="nav-links">
+      {navLinks.map((l) => <a href={l.href}>{l.label}</a>)}
+    </div>
+    <a class="nav-cta" href={navCta.href}>{navCta.label}</a>
+  </div>
+</nav>
+
+<style>
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav-in {
+    max-width: var(--wrap);
+    margin: 0 auto;
+    padding: 14px var(--gutter);
+    display: flex;
+    align-items: center;
+    /* El logo se despega bastante más de lo que se separan los links entre sí,
+       para que se lea como marca y no como un ítem más del menú.
+       Primer valor = separación entre filas cuando el nav se parte en mobile. */
+    gap: 12px clamp(26px, 4vw, 52px);
+    flex-wrap: wrap;
+  }
+
+  .logo-link {
+    color: var(--yellow);
+    display: block;
+    transition: color 0.3s;
+  }
+
+  .logo-link:hover {
+    color: var(--gold);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 10px clamp(18px, 2.4vw, 32px);
+    flex-wrap: wrap;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  .nav-links a {
+    position: relative;
+    padding-bottom: 4px;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover {
+    color: var(--yellow);
+  }
+
+  /* subrayado que crece desde la izquierda al marcar la sección activa */
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 100%;
+    background: var(--yellow);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease;
+  }
+
+  .nav-links a[aria-current='true'] {
+    color: var(--yellow);
+  }
+
+  .nav-links a[aria-current='true']::after {
+    transform: scaleX(1);
+  }
+
+  .nav-cta {
+    margin-left: auto;
+    background: var(--yellow);
+    color: #000;
+    padding: 8px 16px;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .nav-cta:hover {
+    background: var(--gold);
+  }
+
+  @media (max-width: 860px) {
+    .nav-cta {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const enlaces = [...document.querySelectorAll<HTMLAnchorElement>('.nav-links a')];
+  const quieto = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  // --- 1. Al clickear, llevamos el foco de la sección al centro de la pantalla.
+  // Cada sección puede declarar qué parte suya es la importante con
+  // [data-focus]; si no declara nada, vale el arranque de la sección.
+  const marcar = (hash: string) => {
+    enlaces.forEach((a) =>
+      a.setAttribute('aria-current', String(a.getAttribute('href') === hash)),
+    );
+  };
+
+  document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
+    const hash = a.getAttribute('href');
+    if (!hash || hash === '#') return;
+
+    a.addEventListener('click', (ev) => {
+      const seccion = document.querySelector(hash);
+      if (!seccion) return;
+
+      const foco = seccion.querySelector<HTMLElement>('[data-focus]');
+      ev.preventDefault();
+
+      const comportamiento = quieto.matches ? 'auto' : 'smooth';
+
+      if (foco) {
+        // Se centra dentro del espacio que queda LIBRE debajo del nav fijo.
+        // Con scrollIntoView({block:'center'}) el nav tapaba la parte de arriba
+        // de los bloques altos. Y si el bloque no entra, en vez de recortarlo
+        // por arriba se lo alinea apenas debajo del nav.
+        const altoNav =
+          parseFloat(
+            getComputedStyle(document.documentElement).getPropertyValue('--nav-h'),
+          ) || 0;
+        const libre = window.innerHeight - altoNav;
+        const caja = foco.getBoundingClientRect();
+        const sobra = Math.max(0, (libre - caja.height) / 2);
+
+        window.scrollTo({
+          top: window.scrollY + caja.top - altoNav - sobra,
+          behavior: comportamiento,
+        });
+      } else {
+        seccion.scrollIntoView({ behavior: comportamiento, block: 'start' });
+      }
+
+      history.replaceState(null, '', hash);
+      marcar(hash);
+    });
+  });
+
+  // --- 2. Scrollspy: se ilumina el link de la sección que ocupa el centro.
+  // La banda es una franja fina en el medio del viewport, así no hay dos
+  // secciones compitiendo por estar activas.
+  const objetivos = enlaces
+    .map((a) => {
+      const h = a.getAttribute('href');
+      const el = h && h !== '#' ? document.querySelector(h) : null;
+      return el ? { a, el } : null;
+    })
+    .filter((x): x is { a: HTMLAnchorElement; el: Element } => x !== null);
+
+  if (objetivos.length && 'IntersectionObserver' in window) {
+    const visibles = new Set<Element>();
+
+    const observer = new IntersectionObserver(
+      (entradas) => {
+        entradas.forEach((e) => {
+          if (e.isIntersecting) visibles.add(e.target);
+          else visibles.delete(e.target);
+        });
+
+        // De las que tocan la franja, gana la que esté más arriba en la página.
+        const activa = objetivos.find((o) => visibles.has(o.el));
+        enlaces.forEach((a) => a.setAttribute('aria-current', String(a === activa?.a)));
+      },
+      { rootMargin: '-50% 0px -50% 0px', threshold: 0 },
+    );
+
+    objetivos.forEach((o) => observer.observe(o.el));
+  }
+</script>

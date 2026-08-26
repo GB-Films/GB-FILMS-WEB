@@ -1,0 +1,104 @@
+---
+import Logo from './Logo.astro';
+import { redes, site, contacto, talento } from '~/data/site';
+
+const year = new Date().getFullYear();
+const mailtoTalento = `mailto:${contacto.email}?subject=${encodeURIComponent(talento.asunto)}`;
+---
+
+<footer>
+  <div class="wrap">
+    <a class="foot-logo" href="#top" aria-label={`${site.shortName} — volver arriba`}>
+      <Logo variant="lockup" height={116} />
+    </a>
+    <nav class="redes" aria-label="Redes sociales">
+      {
+        redes.map((r) => (
+          <a href={r.href} rel="noopener" target="_blank">
+            {r.label}
+          </a>
+        ))
+      }
+    </nav>
+    {/* El foco del sitio hoy son las marcas; el talento queda acá abajo para
+        no competir con el CTA comercial. */}
+    <p class="talento">
+      {talento.texto} <a href={mailtoTalento}>{talento.label}</a>.
+    </p>
+    <p class="foot-slogan">{site.tagline}</p>
+    <p class="foot-note">© {year} {site.name} · {site.city}, {site.country}</p>
+  </div>
+</footer>
+
+<style>
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 70px 0 50px;
+  }
+
+  .foot-logo {
+    display: inline-block;
+    color: var(--ink);
+    margin-bottom: 44px;
+    transition: color 0.4s;
+  }
+
+  .foot-logo:hover {
+    color: var(--yellow);
+  }
+
+  .redes {
+    display: flex;
+    gap: 26px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+
+  .redes a {
+    color: var(--dim);
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 3px;
+  }
+
+  .redes a:hover {
+    color: var(--yellow);
+    border-color: var(--yellow);
+  }
+
+  .talento {
+    color: var(--dim);
+    font-size: 0.85rem;
+    margin-bottom: 34px;
+  }
+
+  .talento a {
+    color: var(--yellow);
+    border-bottom: 1px solid transparent;
+  }
+
+  .talento a:hover {
+    border-color: var(--yellow);
+  }
+
+  .foot-slogan {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 7vw, 4.5rem);
+    color: #141414;
+    text-transform: uppercase;
+    line-height: 1;
+    transition: color 1.2s;
+  }
+
+  .foot-slogan:hover {
+    color: var(--yellow);
+  }
+
+  .foot-note {
+    color: var(--mute);
+    font-size: 0.75rem;
+    margin-top: 20px;
+  }
+</style>

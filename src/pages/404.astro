@@ -1,0 +1,61 @@
+---
+import Base from '~/layouts/Base.astro';
+import Nav from '~/components/Nav.astro';
+import Footer from '~/components/Footer.astro';
+---
+
+<Base title="Página no encontrada — Gran Berta Films" description="Esa página no existe.">
+  <Nav />
+  <main id="main" class="cuatrocientos">
+    <div class="wrap">
+      <p class="kicker">Error 404</p>
+      <h1>Acá no hay <span class="y">nada.</span></h1>
+      <p class="txt">
+        Se ve que esta página no llegó a producción. Volvé al principio, que ahí sí está
+        todo.
+      </p>
+      <a class="volver" href="/">← Volver al inicio</a>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .cuatrocientos {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    padding: 160px 0 110px;
+  }
+
+  h1 {
+    font-size: clamp(2.8rem, 10vw, 6rem);
+    line-height: 0.95;
+    margin-bottom: 24px;
+  }
+
+  h1 .y {
+    color: var(--yellow);
+  }
+
+  .txt {
+    color: var(--dim);
+    max-width: 460px;
+    margin-bottom: 34px;
+  }
+
+  .volver {
+    display: inline-block;
+    background: var(--yellow);
+    color: #000;
+    padding: 14px 28px;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .volver:hover {
+    background: var(--magenta);
+    color: #fff;
+  }
+</style>
