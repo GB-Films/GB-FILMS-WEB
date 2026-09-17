@@ -73,7 +73,7 @@ Comprobar antes de transferir:
 
 - `https://granbertafilms.com/`: HTTP 200 con Apache/WordPress.
 - `https://www.granbertafilms.com/`: HTTP 301 hacia el dominio sin `www`.
-- `https://granbertafilms.com/preview/`: HTTP 200, release `20260917T142313Z-74ee38a-preview`, con `noindex`.
+- `https://granbertafilms.com/preview/`: HTTP 200 y `noindex`. La release activa se consulta con `readlink /var/www/granberta-nueva/preview`; el historial queda registrado en `/var/www/granberta-nueva/deployments.jsonl`.
 - A del dominio principal: `34.152.39.181`.
 - CNAME de `www`: `granbertafilms.com`.
 - La zona `granbertafilms` visible en el proyecto `gran-berta-films` usa `ns-cloud-d*` y contiene A `34.47.17.87`, pero no es autoritativa para el dominio. No modificarla como si fuera la zona activa.
