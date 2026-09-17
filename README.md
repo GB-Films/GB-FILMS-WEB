@@ -16,8 +16,22 @@ npm run dev
 | `npm run build`        | build de **producción** a `dist/` (indexable)         |
 | `npm run build:preview`| build de **preview** a `dist/` (con `noindex`)        |
 | `npm run preview`      | sirve el `dist/` ya construido                        |
+| `npm run release:preview` | genera un paquete verificable para `/preview/`     |
+| `npm run release:production` | genera un paquete nuevo para producción          |
 
-## Mostrarlo antes del lanzamiento
+## Actualizarlo desde ChatGPT
+
+La vista previa estable está en:
+
+`https://granbertafilms.com/preview/`
+
+El flujo habitual es: pedir el cambio en ChatGPT, revisar esa URL y, después de
+aprobarlo, publicar una release nueva. Cada paquete lleva un manifiesto y un
+SHA-256; el servidor guarda releases separadas para poder volver a la anterior.
+La configuración y los límites están en `AGENTS.md` y el procedimiento técnico
+en `docs/publicacion-google-cloud.md`.
+
+## Otras formas de mostrarlo antes del lanzamiento
 
 Tres caminos, de menos a más definitivo:
 
@@ -43,13 +57,9 @@ así Google no lo indexa antes de tiempo. Ojo: la URL queda pública para quien 
 tenga — es "no indexado", no "privado". Si necesitás que sea privado de verdad,
 Netlify y Vercel permiten ponerle contraseña al sitio.
 
-**c) Conectado a git (lo que conviene a futuro)** — subí el repo a GitHub y
-enlazalo con Netlify/Vercel/Cloudflare. Cada push redeploya solo, y no hace falta
-tocar nada: `astro.config.mjs` detecta la URL del deploy (`URL`,
-`DEPLOY_PRIME_URL`, `VERCEL_URL`, `CF_PAGES_URL`) y ajusta canonical, Open Graph
-y sitemap. Mientras no sea `granbertafilms.com`, sale con `noindex`.
-
-Cuando el sitio salga en serio, se buildea con `npm run build` y listo.
+Para una publicación manual, `npm run release:preview` deja el paquete dentro de
+`.releases/`. Esa carpeta no se versiona. No reutilizar ese paquete en producción:
+la release final se genera con `npm run release:production`.
 
 ## Estructura
 

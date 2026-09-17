@@ -22,6 +22,7 @@ const SITE =
 
 export default defineConfig({
   site: SITE,
+  base: process.env.PUBLIC_BASE_PATH || '/',
   integrations: [sitemap()],
   build: {
     // Sitio de una sola página: inlinear el CSS crítico evita un round-trip.

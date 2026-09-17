@@ -128,10 +128,11 @@ Dos reglas que hay que sostener si se agregan o mueven secciones:
 
 ## Deploy
 
-`npm run build:preview` marca todo con `noindex` y cierra el `robots.txt`; es lo
-que hay que usar para mostrar el sitio antes del lanzamiento. `npm run build` es
-el de producción. Conectado a git, `astro.config.mjs` detecta solo la URL del
-deploy (Netlify/Vercel/Cloudflare) y ajusta canonical, OG y sitemap.
+`npm run release:preview` genera un paquete verificable para
+`https://granbertafilms.com/preview/`, marcado con `noindex`. Para producción se
+genera otro paquete con `npm run release:production`; nunca se reutiliza el de
+preview. El procedimiento completo y el estado del servidor están en
+`docs/publicacion-google-cloud.md`.
 
 Sobre el dominio, verificado por DNS:
 
@@ -139,9 +140,11 @@ Sobre el dominio, verificado por DNS:
   config del sitio ya usa el apex — no cambiar a `www`.
 - **El correo es independiente del registro A**: cambiar el hosting web no lo
   afecta.
-- El dominio hoy sirve otro sitio. Antes del switch hay que resolver si ese
-  sitio es multilingüe (este es solo español) y mapear redirects, porque sus
-  URLs internas van a dar 404 (este es una sola página con anclas).
+- El dominio hoy sirve WordPress desde la misma VM. La nueva web vive en
+  `/var/www/granberta-nueva`; `/var/www/html` se conserva como rollback.
+- El sitio anterior es multilingüe y tiene URLs propias. Antes del switch hay
+  que acordar sus redirecciones porque la web nueva es una sola página en español.
 
-Procedimiento: deploy a preview → validar → bajar el TTL → cambiar el registro
-A → **no apagar el sitio anterior hasta confirmar** (es el rollback).
+Procedimiento: publicar preview → validar → crear instantánea → generar release
+de producción → cambiar el VirtualHost de Apache → verificar. No hace falta
+cambiar DNS y WordPress se conserva como rollback.

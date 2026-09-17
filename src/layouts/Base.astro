@@ -19,13 +19,16 @@ const {
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImageUrl = new URL(ogImage, Astro.site);
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
+const ogImageUrl = new URL(`${base}${ogImage.replace(/^\//, '')}`, Astro.site);
 
 // Cualquier deploy que no sea el dominio real es un preview: no queremos que
 // Google lo indexe antes del lanzamiento. PUBLIC_PREVIEW lo fuerza a mano, para
 // cuando se sube la carpeta dist/ y todavía no se sabe qué URL va a tocar.
 const esPreview =
-  canonical.hostname !== DOMINIO_PROD || import.meta.env.PUBLIC_PREVIEW === '1';
+  canonical.hostname !== DOMINIO_PROD ||
+  import.meta.env.MODE === 'preview' ||
+  import.meta.env.PUBLIC_PREVIEW === '1';
 ---
 
 <!doctype html>
@@ -35,8 +38,8 @@ const esPreview =
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
+    <link rel="sitemap" href={`${base}sitemap-index.xml`} />
 
     <title>{title}</title>
     <meta name="description" content={description} />

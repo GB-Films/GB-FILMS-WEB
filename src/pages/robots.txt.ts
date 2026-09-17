@@ -8,7 +8,9 @@ import { DOMINIO_PROD } from '~/data/site';
  */
 export const GET: APIRoute = ({ site }) => {
   const esPreview =
-    site?.hostname !== DOMINIO_PROD || import.meta.env.PUBLIC_PREVIEW === '1';
+    site?.hostname !== DOMINIO_PROD ||
+    import.meta.env.MODE === 'preview' ||
+    import.meta.env.PUBLIC_PREVIEW === '1';
 
   const cuerpo = esPreview
     ? ['User-agent: *', 'Disallow: /', ''].join('\n')

@@ -5,7 +5,7 @@ import Footer from '~/components/Footer.astro';
 ---
 
 <Base title="Página no encontrada — Gran Berta Films" description="Esa página no existe.">
-  <Nav />
+  <Nav homeLinks />
   <main id="main" class="cuatrocientos">
     <div class="wrap">
       <p class="kicker">Error 404</p>
@@ -14,10 +14,10 @@ import Footer from '~/components/Footer.astro';
         Se ve que esta página no llegó a producción. Volvé al principio, que ahí sí está
         todo.
       </p>
-      <a class="volver" href="/">← Volver al inicio</a>
+      <a class="volver" href={import.meta.env.BASE_URL}>← Volver al inicio</a>
     </div>
   </main>
-  <Footer />
+  <Footer homeLinks />
 </Base>
 
 <style>

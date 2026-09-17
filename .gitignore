@@ -12,10 +12,10 @@ yarn-error.log*
 pnpm-debug.log*
 
 # environment
-# .env.preview SÍ va al repo: no tiene secretos, solo el flag de noindex.
-.env
-.env.production
-.env.local
+.env*
+
+# Paquetes de publicación locales
+.releases/
 
 # macOS / Windows
 .DS_Store
