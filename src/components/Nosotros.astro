@@ -9,7 +9,7 @@ const copias = [false, true];
 ---
 
 <section id="nosotros">
-  <div class="wrap">
+  <div class="wrap manifiesto-wrap">
     {/* data-focus: el nav centra este bloque al clickear "Nosotros" */}
     <div class="intro reveal" data-focus>
       <h2 class="kicker">Nosotros</h2>
@@ -87,6 +87,15 @@ const copias = [false, true];
 </section>
 
 <style>
+  #nosotros {
+    padding-top: 60px;
+  }
+
+  .manifiesto-wrap {
+    max-width: none;
+    padding-inline: clamp(24px, 5vw, 96px);
+  }
+
   .intro {
     margin-bottom: 60px;
   }
@@ -161,6 +170,28 @@ const copias = [false, true];
     color: var(--gold);
   }
 
+  @media (min-width: 1100px) {
+    .manifiesto {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 0.75fr);
+      gap: clamp(24px, 2.5vw, 48px);
+      align-items: start;
+    }
+
+    .estrofa + .estrofa {
+      margin-top: 0;
+    }
+
+    .frase {
+      --tam: clamp(1.25rem, 1.45vw, 1.65rem);
+    }
+
+    .frase[aria-pressed='true'],
+    .frase[aria-pressed='true']:hover {
+      font-size: clamp(2.3rem, 2.7vw, 3.2rem);
+    }
+  }
+
   /* Misma franja que la de marcas: se recorta sólo cuando el script toma el
      control (clase .auto); sin JS queda arrastrable a mano. */
   .team-franja {
@@ -190,7 +221,7 @@ const copias = [false, true];
   }
 
   .card-item {
-    flex: 0 0 clamp(210px, 18vw, 240px);
+    flex: 0 0 clamp(225px, 19vw, 270px);
   }
 
   .card {
@@ -198,7 +229,7 @@ const copias = [false, true];
     position: relative;
     display: flex;
     flex-direction: column;
-    height: 375px;
+    height: 405px;
     cursor: pointer;
     overflow: hidden;
     background: var(--surface-2);
@@ -209,8 +240,8 @@ const copias = [false, true];
   }
 
   .foto {
-    height: 250px;
-    flex: 0 0 250px;
+    height: 280px;
+    flex: 0 0 280px;
     background: #111;
     display: flex;
     align-items: center;
