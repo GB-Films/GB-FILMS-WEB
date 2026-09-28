@@ -91,6 +91,12 @@ Comprobar antes de transferir:
 - El reel usa el video de YouTube `JZ1AOExsHRM` (57 segundos). El botón de reproducción lo abre embebido y un enlace directo permite verlo en YouTube si el navegador bloquea el reproductor.
 - La release `20260928T221715Z-08dce8b-preview` se validó con SHA-256 `9585081860e9112db254d99b90b3f1c611a006aff4bd3e0c60207a8eadbec9ee` y quedó activa en `/var/www/granberta-nueva/preview`. La URL pública respondió HTTP 200 con el nuevo diseño y el enlace del reel; WordPress siguió separado. La clave SSH temporal se revocó y se borró al terminar.
 
+### Actualización de «Nosotros» del 28 de septiembre de 2026
+
+- El manifiesto ocupa casi todo el ancho de escritorio en tres columnas y conserva una sola columna en móvil. El enlace de navegación centra el texto y las tarjetas del equipo juntos.
+- Las tarjetas del equipo miden hasta 270 × 405 px en escritorio y 225 × 405 px en móvil; sus fotos tienen 280 px de alto. Se comprobó que las biografías no desbordan las tarjetas.
+- La release `20260928T223036Z-b00c53d-preview` se validó con SHA-256 `a978c95ec3e135e21351cb024d2c78a8dab3ba9486429a3b2bb2136aab9661ad` y quedó activa en `/var/www/granberta-nueva/preview`. La URL pública respondió HTTP 200; WordPress siguió separado. La clave SSH temporal se revocó y se borró al terminar.
+
 ## Estado público observado
 
 - `https://granbertafilms.com/`: HTTP 200 con Apache/WordPress.
