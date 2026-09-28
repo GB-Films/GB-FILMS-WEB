@@ -9,7 +9,6 @@ export type Miembro = {
 };
 
 // El orden del array es el orden en pantalla.
-// Faltan fotos de estudio para Toto y Ame.
 export const equipo: Miembro[] = [
   {
     nombre: 'Anita Serrano',
@@ -34,12 +33,14 @@ export const equipo: Miembro[] = [
   },
   {
     nombre: 'Toto Scigliano',
+    foto: 'equipo/toto.webp',
     rol: 'Head of Content',
     linea: 'Está en cada detalle',
     bio: 'Head of Content. Y filmmaker, editor, creativo y CM. Sí, todo eso — y lo hace parecer fácil.',
   },
   {
     nombre: 'Ame Blanco',
+    foto: 'equipo/ame.webp',
     rol: 'Directora de Operaciones · Productora Ejecutiva',
     linea: 'Hace que suceda',
     bio: 'Si algo se filmó, se entregó y salió bien, es porque Ame estuvo ahí antes que todos.',
@@ -57,6 +58,13 @@ export const equipo: Miembro[] = [
     rol: 'Fundador · Director',
     linea: 'Imagina lo imposible',
     bio: 'El origen del universo Gran Berta y la brújula de todo lo que hacemos.',
+  },
+  {
+    nombre: 'Norberto',
+    foto: 'equipo/norberto.webp',
+    rol: 'CEO — Conejo Ejecutivo Oficial',
+    linea: 'El jefe. Sin discusión.',
+    bio: 'No figura en el organigrama, pero todos saben quién manda. Supervisa todo con una siesta estratégica.',
   },
 ];
 
