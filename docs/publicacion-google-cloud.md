@@ -66,7 +66,7 @@ Comprobar antes de transferir:
 - Salida estática; la página no tiene formularios ni servicio de envío de correo. Los enlaces comerciales y de talento usan `agustin@granberta.com`; WhatsApp usa el número configurado en `src/data/site.ts`.
 - Revisión visual en escritorio de 1440 × 900 y móvil de 390 × 844. No se detectaron imágenes rotas, anclas inexistentes, desborde horizontal ni errores de consola en la portada.
 - La portada no presenta imágenes fallidas ni anclas internas inexistentes en la inspección inicial.
-- La imagen para compartir en redes está incluida. Faltan los videos principales y las fotos del equipo; hay contenido de muestra indicado en la página.
+- La imagen para compartir en redes y cinco retratos del equipo están incluidos. Faltan las fotos de Toto y Ame y los videos principales; hay contenido de muestra indicado en la página.
 - `npm audit` informa 6 paquetes con alertas (1 crítica, 4 altas y 1 baja). No se aplicaron actualizaciones automáticas. La propuesta publica solamente archivos estáticos; las dependencias de compilación requieren una revisión aparte antes del lanzamiento definitivo.
 
 ## Estado público observado

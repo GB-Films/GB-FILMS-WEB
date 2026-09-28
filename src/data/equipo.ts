@@ -4,29 +4,30 @@ export type Miembro = {
   /** frase del manifiesto que le corresponde */
   linea: string;
   bio: string;
-  /** ruta a la foto en /public. Sin foto → se muestra el placeholder. */
+  /** Ruta relativa a /public. Sin foto → se muestra el placeholder. */
   foto?: string;
 };
 
 // El orden del array es el orden en pantalla.
-// TODO(brief): sumar las fotos reales en public/equipo/ y completar `foto`.
-// Hay tomas de estudio en Dropbox (01_Branding/04_Studio-Photos) de Anita,
-// Guido, Santi, Tomi y Agus; faltan las de Toto y Ame.
+// Faltan fotos de estudio para Toto y Ame.
 export const equipo: Miembro[] = [
   {
     nombre: 'Anita Serrano',
+    foto: 'equipo/anita.webp',
     rol: 'Directora Creativa',
     linea: 'Crea sin pedir permiso',
     bio: 'La locura y la pasión si estas palabras fueran una persona, en el mejor de los sentidos. Creadora de mundos de terror, humor con una manera única de ver la vida.',
   },
   {
     nombre: 'Guido Boetsch',
+    foto: 'equipo/guido.webp',
     rol: 'Director · Productor VFX',
     linea: 'Crea universos',
     bio: 'Director y productor de VFX. Donde otros ven un plano, él ve un mundo entero por construir.',
   },
   {
     nombre: 'Santiago Rey',
+    foto: 'equipo/santiago.webp',
     rol: 'Director · Director Creativo',
     linea: 'El romántico',
     bio: 'Cree en el cine como se creía antes. Odia la IA, y lo decimos acá porque somos auténticos.',
@@ -45,12 +46,14 @@ export const equipo: Miembro[] = [
   },
   {
     nombre: 'Tomás Boetsch',
+    foto: 'equipo/tomas.webp',
     rol: 'Admin · Finanzas · RRHH',
     linea: 'Ama la IA',
     bio: 'Administración, finanzas y RRHH, y el responsable #1 en que estemos en la vanguardia de la tecnología. Amante de los videojuegos.',
   },
   {
     nombre: 'Agustín Stegmann',
+    foto: 'equipo/agustin.webp',
     rol: 'Fundador · Director',
     linea: 'Imagina lo imposible',
     bio: 'El origen del universo Gran Berta y la brújula de todo lo que hacemos.',
