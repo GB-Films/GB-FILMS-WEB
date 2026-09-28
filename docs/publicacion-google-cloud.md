@@ -103,6 +103,13 @@ Comprobar antes de transferir:
 - La release `20260928T225504Z-c65a9d2-preview` se validó con SHA-256 `4dd4ae165a716e148f5ae16e3f5a778caf3f54b4940d1d3c411473ac049b7e0f` y quedó activa en `/var/www/granberta-nueva/preview`.
 - La página pública cargó con HTTP 200 y la indicación ya no aparece. La clave temporal se revocó del proyecto y se borró de Cloud Shell; WordPress siguió separado.
 
+### Retratos de Ame, Toto y Norberto — 28 de septiembre de 2026
+
+- Se agregaron las fotos optimizadas de Ame Blanco y Toto Scigliano y el retrato de Norberto al carrusel.
+- Norberto aparece como «CEO — Conejo Ejecutivo Oficial», con la línea «El jefe. Sin discusión.» y una bio sobre sus siestas estratégicas.
+- La release `20260928T233456Z-1ac937d-preview` se validó con SHA-256 `cf7531a570326810859cd4a319dff4dc37923a4df3189d7a685ae00548e04b82` y quedó activa en `/var/www/granberta-nueva/preview` con 52 archivos.
+- El navegador público confirmó las tres fotos cargadas y mostró el perfil de Norberto. La clave SSH temporal se revocó y se borró de Cloud Shell; WordPress siguió separado.
+
 ## Estado público observado
 
 - `https://granbertafilms.com/`: HTTP 200 con Apache/WordPress.
