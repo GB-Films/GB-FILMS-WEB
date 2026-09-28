@@ -77,6 +77,14 @@ Comprobar antes de transferir:
 - La release `20260928T205947Z-ace110c-preview` se compiló sin errores, se validó por SHA-256 y se activó en `/var/www/granberta-nueva/preview`. La URL pública carga Noku, las ocho portadas y los cinco retratos; las tarjetas del equipo conservan una altura de 375 px. El sitio WordPress del dominio principal sigue activo y separado.
 - Las claves SSH creadas para esta publicación se revocaron del proyecto y se retiraron de Cloud Shell al finalizar.
 
+### Actualización del carrusel del 28 de septiembre de 2026
+
+- Se retiró la tarjeta «Modelos del Segundo Piso» del carrusel de ficción.
+- Las portadas del carrusel ahora miden hasta 380 × 676 px en escritorio (antes 205 × 364 px) y 280 × 498 px en móvil.
+- Rendering, El Condenado, Cucaracha, El Diente Negro y Noku muestran «Short Film». Se agregó El Sonido del Viento con su portada y la misma clasificación; su ficha queda provisional hasta recibir la sinopsis.
+- La release `20260928T214438Z-028361d-preview` se compiló sin errores, se validó con SHA-256 `d5c660fb9ba2f750b7d0d7022325251ca435a0ce8f4fe50f5cf998b827d79fd4` y se activó en `/var/www/granberta-nueva/preview`.
+- La URL pública respondió HTTP 200, mostró los seis cortos y dejó de incluir «Modelos del Segundo Piso». La clave SSH temporal se revocó del proyecto y se borró de Cloud Shell al terminar.
+
 ## Estado público observado
 
 - `https://granbertafilms.com/`: HTTP 200 con Apache/WordPress.
