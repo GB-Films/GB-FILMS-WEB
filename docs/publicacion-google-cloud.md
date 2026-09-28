@@ -85,6 +85,12 @@ Comprobar antes de transferir:
 - La release `20260928T214438Z-028361d-preview` se compiló sin errores, se validó con SHA-256 `d5c660fb9ba2f750b7d0d7022325251ca435a0ce8f4fe50f5cf998b827d79fd4` y se activó en `/var/www/granberta-nueva/preview`.
 - La URL pública respondió HTTP 200, mostró los seis cortos y dejó de incluir «Modelos del Segundo Piso». La clave SSH temporal se revocó del proyecto y se borró de Cloud Shell al terminar.
 
+### Ajuste de tamaño y reel del 28 de septiembre de 2026
+
+- Se redujo el título «Nuestras historias» y las tarjetas del carrusel a un máximo de 330 × 587 px en escritorio y 255 × 453 px en móvil, con menos espacio sobre la sección.
+- El reel usa el video de YouTube `JZ1AOExsHRM` (57 segundos). El botón de reproducción lo abre embebido y un enlace directo permite verlo en YouTube si el navegador bloquea el reproductor.
+- La release `20260928T221715Z-08dce8b-preview` se validó con SHA-256 `9585081860e9112db254d99b90b3f1c611a006aff4bd3e0c60207a8eadbec9ee` y quedó activa en `/var/www/granberta-nueva/preview`. La URL pública respondió HTTP 200 con el nuevo diseño y el enlace del reel; WordPress siguió separado. La clave SSH temporal se revocó y se borró al terminar.
+
 ## Estado público observado
 
 - `https://granbertafilms.com/`: HTTP 200 con Apache/WordPress.
