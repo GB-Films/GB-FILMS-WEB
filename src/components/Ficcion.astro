@@ -35,9 +35,9 @@ const copias = [false, true];
                     class:list={['poster', { 'poster-contain': ip.posterContain }]}
                     src={ip.poster}
                     alt=""
-                    width={760}
-                    widths={[380, 760]}
-                    sizes="(max-width: 700px) 300px, 380px"
+                    width={660}
+                    widths={[330, 660]}
+                    sizes="(max-width: 700px) 255px, 330px"
                     loading="lazy"
                   />
                 )}
@@ -89,6 +89,15 @@ const copias = [false, true];
 <style>
   /* --- carrusel ---------------------------------------------------------- */
 
+  #ficcion {
+    padding-top: 42px;
+  }
+
+  .sec-title {
+    font-size: clamp(2rem, 5vw, 3.6rem);
+    margin-bottom: 28px;
+  }
+
   /* Misma franja que la de marcas: se recorta sólo cuando el script toma el
      control (clase .auto); sin JS queda arrastrable a mano. */
   .carrusel {
@@ -110,7 +119,7 @@ const copias = [false, true];
   .pista {
     list-style: none;
     display: flex;
-    gap: 18px;
+    gap: 16px;
     width: max-content;
     will-change: transform;
     /* aire para que el recorte no se coma el borde de las tarjetas */
@@ -118,7 +127,7 @@ const copias = [false, true];
   }
 
   .ip-item {
-    flex: 0 0 clamp(280px, 30vw, 380px);
+    flex: 0 0 clamp(255px, 26vw, 330px);
   }
 
   .ip {
@@ -135,7 +144,7 @@ const copias = [false, true];
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 24px;
+    padding: 20px;
     position: relative;
     overflow: hidden;
     transition:
@@ -195,7 +204,7 @@ const copias = [false, true];
   .ip-titulo {
     font-family: var(--font-display);
     text-transform: uppercase;
-    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    font-size: clamp(1.4rem, 2vw, 1.8rem);
     line-height: 1.05;
   }
 
