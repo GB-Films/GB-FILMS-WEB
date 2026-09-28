@@ -6,12 +6,13 @@ import VideoFrame from './VideoFrame.astro';
   <div class="wrap">
     {/* data-focus: el nav centra el reel al clickear "Trabajos" */}
     <div class="reel-slot reveal" data-focus>
-      <VideoFrame label="Reel 2026 · 1 min" todo="[ reel a subir ]">
+      <VideoFrame label="Reel 2026 · 1 min" videoUrl="https://www.youtube.com/embed/JZ1AOExsHRM">
         <p class="kicker">Reel + Trabajos</p>
         <h2 class="v-title">
           Ideas que conectan.<br /><span class="y">Historias que trascienden.</span>
         </h2>
       </VideoFrame>
+      <a class="reel-link" href="https://www.youtube.com/watch?v=JZ1AOExsHRM" target="_blank" rel="noopener noreferrer">Ver reel en YouTube ↗</a>
     </div>
   </div>
 </section>
@@ -22,6 +23,20 @@ import VideoFrame from './VideoFrame.astro';
        en pantalla cuando el nav lo centra */
     max-width: min(100%, calc(76vh * 16 / 9));
     margin-inline: auto;
+  }
+
+  .reel-link {
+    display: inline-block;
+    margin-top: 14px;
+    color: var(--dim);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .reel-link:hover,
+  .reel-link:focus-visible {
+    color: var(--yellow);
   }
 
   /* la franja de marcas se mudó arriba del todo: ver Marcas.astro */
