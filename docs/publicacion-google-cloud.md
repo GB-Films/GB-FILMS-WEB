@@ -97,6 +97,12 @@ Comprobar antes de transferir:
 - Las tarjetas del equipo miden hasta 270 × 405 px en escritorio y 225 × 405 px en móvil; sus fotos tienen 280 px de alto. Se comprobó que las biografías no desbordan las tarjetas.
 - La release `20260928T223036Z-b00c53d-preview` se validó con SHA-256 `a978c95ec3e135e21351cb024d2c78a8dab3ba9486429a3b2bb2136aab9661ad` y quedó activa en `/var/www/granberta-nueva/preview`. La URL pública respondió HTTP 200; WordPress siguió separado. La clave SSH temporal se revocó y se borró al terminar.
 
+### Retiro de indicación del carrusel del equipo — 28 de septiembre de 2026
+
+- Se quitó el texto «Pasá el mouse (o tocá) para conocerlos de verdad.» que aparecía debajo del carrusel.
+- La release `20260928T225504Z-c65a9d2-preview` se validó con SHA-256 `4dd4ae165a716e148f5ae16e3f5a778caf3f54b4940d1d3c411473ac049b7e0f` y quedó activa en `/var/www/granberta-nueva/preview`.
+- La página pública cargó con HTTP 200 y la indicación ya no aparece. La clave temporal se revocó del proyecto y se borró de Cloud Shell; WordPress siguió separado.
+
 ## Estado público observado
 
 - `https://granbertafilms.com/`: HTTP 200 con Apache/WordPress.
