@@ -69,6 +69,13 @@ Comprobar antes de transferir:
 - La imagen para compartir en redes y cinco retratos del equipo están incluidos. Faltan las fotos de Toto y Ame y los videos principales; hay contenido de muestra indicado en la página.
 - `npm audit` informa 6 paquetes con alertas (1 crítica, 4 altas y 1 baja). No se aplicaron actualizaciones automáticas. La propuesta publica solamente archivos estáticos; las dependencias de compilación requieren una revisión aparte antes del lanzamiento definitivo.
 
+## Cambios locales del 28 de septiembre de 2026
+
+- El carrusel del equipo mantiene tarjetas de altura uniforme e incluye cinco retratos. Aún faltan las fotos de Toto y Ame.
+- El carrusel de ficción incluye las portadas de Rendering, El Condenado, Cucaracha y El Diente Negro, más una tarjeta nueva para Noku. Las imágenes proceden de la carpeta `01_Shortfilms` compartida por el equipo y están optimizadas en WebP; las cuatro portadas de proporción 2:3 se muestran completas para conservar los títulos impresos.
+- La ficha de Noku conserva el texto provisional «Ficha en preparación» hasta recibir la sinopsis.
+- Se compiló el paquete de preview sin errores. Las ocho portadas se cargaron en la vista local y las tarjetas conservaron la misma altura. Estos cambios todavía requieren publicación y comprobación en la URL pública de preview.
+
 ## Estado público observado
 
 - `https://granbertafilms.com/`: HTTP 200 con Apache/WordPress.

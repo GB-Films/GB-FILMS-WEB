@@ -1,6 +1,11 @@
 import archivoX from '../assets/ficcion/archivo-x.jpg';
 import jubilada from '../assets/ficcion/jubilada-y-peligrosa.jpg';
 import ruma from '../assets/ficcion/ruma.jpg';
+import rendering from '../assets/ficcion/rendering.webp';
+import elCondenado from '../assets/ficcion/el-condenado.webp';
+import cucaracha from '../assets/ficcion/cucaracha.webp';
+import elDienteNegro from '../assets/ficcion/el-diente-negro.webp';
+import noku from '../assets/ficcion/noku.webp';
 
 export type Pieza = {
   /** URL del trabajo: link de Instagram, embed de YouTube/Vimeo o archivo .mp4 */
@@ -156,14 +161,15 @@ export type Ip = {
   estado?: string;
   /** póster: se importa desde src/assets para que Astro lo optimice */
   poster?: ImageMetadata;
+  /** Preserva las letras impresas en los pósters de proporción 2:3. */
+  posterContain?: boolean;
   /** dónde se puede ver la serie */
   link?: { label: string; url: string };
 };
 
-// TODO(brief): faltan sinopsis, formato, estado y póster de cada IP. La ficha
+// TODO(brief): faltan sinopsis, formato y estado de algunas IP. La ficha
 // ya está armada: en cuanto se completen estos campos aparecen solos.
-// Primero las tres que ya se estrenaron en Shorta (son las que tienen póster y
-// link); después las que todavía no tienen material; al final la que está en
+// Primero las tres que ya se estrenaron en Shorta; al final la que está en
 // producción.
 export const ips: Ip[] = [
   {
@@ -190,10 +196,11 @@ export const ips: Ip[] = [
     poster: ruma,
     link: { label: 'Ver en Shorta', url: 'https://www.shorta.com/series/ruma' },
   },
-  { id: 'rendering', titulo: 'Rendering', tipo: 'Ficción' },
-  { id: 'el-condenado', titulo: 'El Condenado', tipo: 'Ficción' },
-  { id: 'cucaracha', titulo: 'Cucaracha', tipo: 'Ficción' },
-  { id: 'el-diente-negro', titulo: 'El Diente Negro', tipo: 'Ficción' },
+  { id: 'rendering', titulo: 'Rendering', tipo: 'Ficción', poster: rendering, posterContain: true },
+  { id: 'el-condenado', titulo: 'El Condenado', tipo: 'Ficción', poster: elCondenado, posterContain: true },
+  { id: 'cucaracha', titulo: 'Cucaracha', tipo: 'Ficción', poster: cucaracha, posterContain: true },
+  { id: 'el-diente-negro', titulo: 'El Diente Negro', tipo: 'Ficción', poster: elDienteNegro, posterContain: true },
+  { id: 'noku', titulo: 'Noku', tipo: 'Ficción', poster: noku },
   {
     id: 'modelos-del-segundo-piso',
     titulo: 'Modelos del Segundo Piso',

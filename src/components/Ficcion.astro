@@ -32,7 +32,7 @@ const copias = [false, true];
                     tamaño original (el póster de Rumá pesa 1.1 MB). */}
                 {ip.poster && (
                   <Image
-                    class="poster"
+                    class:list={['poster', { 'poster-contain': ip.posterContain }]}
                     src={ip.poster}
                     alt=""
                     width={460}
@@ -166,6 +166,10 @@ const copias = [false, true];
     transition:
       transform 0.4s ease,
       opacity 0.3s ease;
+  }
+
+  .poster-contain {
+    object-fit: contain;
   }
 
   .ip:has(.poster)::after {
