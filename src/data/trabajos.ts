@@ -5,6 +5,7 @@ import rendering from '../assets/ficcion/rendering.webp';
 import elCondenado from '../assets/ficcion/el-condenado.webp';
 import cucaracha from '../assets/ficcion/cucaracha.webp';
 import elDienteNegro from '../assets/ficcion/el-diente-negro.webp';
+import elSonidoDelViento from '../assets/ficcion/el-sonido-del-viento.webp';
 import noku from '../assets/ficcion/noku.webp';
 
 export type Pieza = {
@@ -169,8 +170,7 @@ export type Ip = {
 
 // TODO(brief): faltan sinopsis, formato y estado de algunas IP. La ficha
 // ya está armada: en cuanto se completen estos campos aparecen solos.
-// Primero las tres que ya se estrenaron en Shorta; al final la que está en
-// producción.
+// Primero las tres que ya se estrenaron en Shorta.
 export const ips: Ip[] = [
   {
     id: 'archivo-x',
@@ -196,18 +196,12 @@ export const ips: Ip[] = [
     poster: ruma,
     link: { label: 'Ver en Shorta', url: 'https://www.shorta.com/series/ruma' },
   },
-  { id: 'rendering', titulo: 'Rendering', tipo: 'Ficción', poster: rendering, posterContain: true },
-  { id: 'el-condenado', titulo: 'El Condenado', tipo: 'Ficción', poster: elCondenado, posterContain: true },
-  { id: 'cucaracha', titulo: 'Cucaracha', tipo: 'Ficción', poster: cucaracha, posterContain: true },
-  { id: 'el-diente-negro', titulo: 'El Diente Negro', tipo: 'Ficción', poster: elDienteNegro, posterContain: true },
-  { id: 'noku', titulo: 'Noku', tipo: 'Ficción', poster: noku },
-  {
-    id: 'modelos-del-segundo-piso',
-    titulo: 'Modelos del Segundo Piso',
-    tipo: 'Próximamente · 2027',
-    locked: true,
-    badge: 'En producción',
-  },
+  { id: 'rendering', titulo: 'Rendering', tipo: 'Short Film', poster: rendering, posterContain: true },
+  { id: 'el-condenado', titulo: 'El Condenado', tipo: 'Short Film', poster: elCondenado, posterContain: true },
+  { id: 'cucaracha', titulo: 'Cucaracha', tipo: 'Short Film', poster: cucaracha, posterContain: true },
+  { id: 'el-diente-negro', titulo: 'El Diente Negro', tipo: 'Short Film', poster: elDienteNegro, posterContain: true },
+  { id: 'el-sonido-del-viento', titulo: 'El Sonido del Viento', tipo: 'Short Film', poster: elSonidoDelViento, posterContain: true },
+  { id: 'noku', titulo: 'Noku', tipo: 'Short Film', poster: noku },
 ];
 
 export type Hermana = {
