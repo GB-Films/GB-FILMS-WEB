@@ -116,6 +116,13 @@ Comprobar antes de transferir:
 - En la URL pública se verificaron 42 imágenes de los 21 logos sin imágenes rotas, el reel de fondo reproduciéndose, el enlace al reel de YouTube y la directiva `noindex`. La página, el video y un logo respondieron HTTP 200.
 - El dominio principal continuó respondiendo HTTP 200 con WordPress. La única clave SSH temporal del proyecto se revocó y sus archivos se borraron de Cloud Shell.
 
+### Selector de color y tienda de stickers — 29 de septiembre de 2026
+
+- La release `20260929T021049Z-659eb0b-preview` se validó con SHA-256 `d2dd28e7f4cfea1a3a995b515490750ce898601321caba71bcdcdb95cda87d5e` y quedó activa en `/var/www/granberta-nueva/preview` con 86 archivos. El enlace anterior permanece disponible para revertir.
+- Cada carga elige un acento entre amarillo, rojo, naranja, verde flúor y rosa Bani; el botón del monograma GB cambia al siguiente color. En la URL pública se comprobó el paso de verde flúor a rosa Bani.
+- El reel de fondo se reproduce al entrar en pantalla y usa un desenfoque de 1 px. Se retiraron el círculo «Qué, cómo, por qué» y el reel duplicado. La tienda muestra los nueve stickers de la plancha provista y el botón de compra deshabilitado hasta contar con un enlace.
+- Se comprobaron cargados los nueve stickers y los logos de Gran Berta y Bani VFX, un único botón para el reel y la directiva `noindex, nofollow`. La clave SSH temporal se revocó de los metadatos del proyecto y sus archivos se borraron de Cloud Shell.
+
 ## Estado público observado
 
 - `https://granbertafilms.com/`: HTTP 200 con Apache/WordPress.
