@@ -147,6 +147,13 @@ Comprobar antes de transferir:
 
 ## Estado público observado
 
+### Fichas de proyectos más compactas — 29 de septiembre de 2026
+
+- La release `20260929T142048Z-974f12b-preview` quedó activa en `/var/www/granberta-nueva/preview` tras validar SHA-256 `d4c415dff4b89521fbcc174da88879412e59fe546006c40245cb56f6ddc22f71` y 133 archivos.
+- Las fichas colocan el póster completo a la izquierda y el título, la sinopsis y los datos básicos a la derecha en escritorio; los créditos adicionales quedan más abajo. El acceso a «Volver a nuestras historias» permanece visible mientras se desplaza la ficha.
+- La ficha pública de Noku mostró el póster entero dentro de una pantalla de 720 px de alto y conservó `noindex`; las nueve fichas respondieron HTTP 200. La página principal WordPress respondió HTTP 200 sin cambios.
+- El paquete temporal se retiró de la VM y Cloud Shell. La clave SSH temporal se revocó y borró; el recuento final de claves del proyecto fue cero.
+
 ### Dos carruseles de marcas y nuevos colores — 29 de septiembre de 2026
 
 - La release `20260929T135111Z-d77c7f8-preview` quedó activa en `/var/www/granberta-nueva/preview` tras validar SHA-256 `1f49c0a01c85ad2b94873b4e4058901e526905cd4ceeb97bccb43cfac02afd98` y 133 archivos.
