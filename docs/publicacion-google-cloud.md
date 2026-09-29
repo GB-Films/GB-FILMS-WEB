@@ -123,6 +123,13 @@ Comprobar antes de transferir:
 - El reel de fondo se reproduce al entrar en pantalla y usa un desenfoque de 1 px. Se retiraron el círculo «Qué, cómo, por qué» y el reel duplicado. La tienda muestra los nueve stickers de la plancha provista y el botón de compra deshabilitado hasta contar con un enlace.
 - Se comprobaron cargados los nueve stickers y los logos de Gran Berta y Bani VFX, un único botón para el reel y la directiva `noindex, nofollow`. La clave SSH temporal se revocó de los metadatos del proyecto y sus archivos se borraron de Cloud Shell.
 
+### Paleta, Totem Rental y sticker de Tanga — 29 de septiembre de 2026
+
+- La release `20260929T031044Z-098a9d4-preview` se validó con SHA-256 `bbefc2a12e4df2ce63066bb425a82651684cb95df4a46710f56578b97ed39057` y quedó activa en `/var/www/granberta-nueva/preview` con 89 archivos.
+- Se ajustó el verde para que sea más verde y menos amarillo, se agregó Totem Rental al universo con su logo y enlace, y se incorporó el sticker de Tanga. La ficha final muestra el logo a la izquierda y la descripción a la derecha.
+- La URL pública `/preview/` respondió HTTP 200 y mostró el contenido de Totem. El dominio principal respondió HTTP 200 con su página WordPress.
+- El acceso SSH temporal se quitó de los metadatos del proyecto, se borraron sus claves locales de Cloud Shell y se retiró de la VM el archivo temporal de publicación.
+
 ## Estado público observado
 
 - `https://granbertafilms.com/`: HTTP 200 con Apache/WordPress.
