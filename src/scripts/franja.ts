@@ -62,7 +62,9 @@ export function montarFranja(
     marca = t;
 
     // suaviza el cambio de velocidad para que no salte al mover el mouse
-    vel += (velObjetivo() - vel) * Math.min(1, dt * 9);
+    // Una tarjeta interactiva bajo el puntero debe quedar quieta al hacer clic.
+    if (frenada?.()) vel = 0;
+    else vel += (velObjetivo() - vel) * Math.min(1, dt * 9);
     pos += vel * dt;
     aplicar();
 

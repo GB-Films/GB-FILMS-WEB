@@ -167,34 +167,42 @@ export const marcas: Marca[] = [
 ];
 
 export type Ip = {
-  /** slug estable: se usa para vincular la tarjeta con su ficha */
+  /** slug estable: define la URL pública de su ficha */
   id: string;
   titulo: string;
   tipo: string;
-  /** IP en producción: se muestra con candado y badge */
-  locked?: boolean;
-  badge?: string;
-  /** ficha que se abre al clickear la tarjeta */
+  gancho?: string;
   sinopsis?: string;
-  formato?: string;
-  estado?: string;
+  generos?: string[];
+  anio?: string;
+  duracion?: string;
+  episodios?: number;
+  direccion?: string;
+  guion?: string;
+  elenco?: string[];
   /** póster: se importa desde src/assets para que Astro lo optimice */
   poster?: ImageMetadata;
   /** Preserva las letras impresas en los pósters de proporción 2:3. */
   posterContain?: boolean;
-  /** dónde se puede ver la serie */
+  /** destino externo confirmado (por ejemplo, la serie en Shorta) */
   link?: { label: string; url: string };
 };
 
-// TODO(brief): faltan sinopsis, formato y estado de algunas IP. La ficha
-// ya está armada: en cuanto se completen estos campos aparecen solos.
-// Primero las tres que ya se estrenaron en Shorta.
+// Fuentes editoriales: fichas de Shorta y del WordPress actual de GB Films;
+// para El Condenado y El Sonido del Viento, SINOPSIS-cortos Santi.docx.
+// No inventar sinopsis ni créditos donde todavía no hay información confirmada.
 export const ips: Ip[] = [
   {
     id: 'archivo-x',
     titulo: 'Archivo X',
     tipo: 'Serie',
     poster: archivoX,
+    gancho: 'Un año borrado de la memoria. Demasiadas pistas para ignorar.',
+    sinopsis: 'Tras un accidente en su librería, Martín pierde los recuerdos del último año. Al despertar, cree estar envuelto en una trama criminal relacionada con el dueño de la lavandería del centro comercial, decidido a comprar todos los locales. Mientras intenta reconstruir lo ocurrido, cada mensaje y cada conversación parecen esconder algo; recuperar la memoria podría cambiar por completo lo que cree saber.',
+    generos: ['Comedia', 'Romance'],
+    episodios: 31,
+    direccion: 'Teo Tamales',
+    elenco: ['Benjamín Rojas', 'Adrián Lakerman', 'Candela Molfese', 'Pablo El Pupi'],
     link: { label: 'Ver en Shorta', url: 'https://www.shorta.com/series/archivo-x' },
   },
   {
@@ -202,6 +210,13 @@ export const ips: Ip[] = [
     titulo: 'Jubilada y Peligrosa',
     tipo: 'Serie',
     poster: jubilada,
+    gancho: 'Amalia dejó el espionaje. El espionaje no la dejó a ella.',
+    sinopsis: 'Amalia, una abuela con pasado de agente de inteligencia, no tiene planes de quedarse quieta. Cuando su nieta es tomada como rehén en un supermercado, vuelve a la acción y termina enfrentándose a mafias barriales mientras se convierte, casi sin querer, en una heroína viral.',
+    generos: ['Comedia', 'Familiar'],
+    episodios: 44,
+    direccion: 'Teo Tamales',
+    guion: 'Andrea Ise Lasbaines, Ezequiel Golstein y Javier Correa Cáceres',
+    elenco: ['Romina Sznaider', 'Maite Lanata', 'Fabián Arenillas', 'Chichilo Viale'],
     link: {
       label: 'Ver en Shorta',
       url: 'https://www.shorta.com/series/jubilada-y-peligrosa',
@@ -212,13 +227,40 @@ export const ips: Ip[] = [
     titulo: 'Rumá',
     tipo: 'Serie',
     poster: ruma,
+    gancho: 'Tres streamers. Una casa abandonada. Un vivo que no debió empezar.',
+    sinopsis: 'Tres amigos entran a una casona abandonada a las afueras de Buenos Aires para transmitir en directo. La propiedad arrastra una tragedia que el barrio prefiere callar. Lo que iba a ser contenido para ganar seguidores se transforma en una noche de terror cuando descubren que no están solos.',
+    generos: ['Terror', 'Suspenso'],
+    episodios: 34,
+    direccion: 'Santiago Rey',
+    guion: 'Gabriel Korenfeld',
+    elenco: ['Balthazar Murillo', 'Byron Barbieri', 'Nicolas Borroni'],
     link: { label: 'Ver en Shorta', url: 'https://www.shorta.com/series/ruma' },
   },
   { id: 'rendering', titulo: 'Rendering', tipo: 'Short Film', poster: rendering, posterContain: true },
-  { id: 'el-condenado', titulo: 'El Condenado', tipo: 'Short Film', poster: elCondenado, posterContain: true },
-  { id: 'cucaracha', titulo: 'Cucaracha', tipo: 'Short Film', poster: cucaracha, posterContain: true },
-  { id: 'el-diente-negro', titulo: 'El Diente Negro', tipo: 'Short Film', poster: elDienteNegro, posterContain: true },
-  { id: 'el-sonido-del-viento', titulo: 'El Sonido del Viento', tipo: 'Short Film', poster: elSonidoDelViento, posterContain: true },
+  {
+    id: 'el-condenado', titulo: 'El Condenado', tipo: 'Short Film', poster: elCondenado, posterContain: true,
+    gancho: 'Hay cosas de las que no se puede escapar.',
+    sinopsis: 'Un hombre llega al campo para deshacerse de aquello que lo atormenta. La tarea se convierte en una pesadilla en la que la soledad, la culpa y el miedo desdibujan la frontera entre lo real y lo imaginado.',
+    anio: '2025', duracion: '17 min', direccion: 'Santiago Rey',
+  },
+  {
+    id: 'cucaracha', titulo: 'Cucaracha', tipo: 'Short Film', poster: cucaracha, posterContain: true,
+    gancho: 'Una invasión repulsiva. Una lucha por sobrevivir.',
+    sinopsis: 'Un hombre queda atrapado en medio de una invasión de cucarachas. A medida que la amenaza crece, también lo hacen su desesperación y paranoia. Un cortometraje de horror y suspenso que sigue su lucha por sobrevivir.',
+    generos: ['Horror', 'Suspenso'], direccion: 'Anita Serrano', guion: 'Anita Serrano',
+  },
+  {
+    id: 'el-diente-negro', titulo: 'El Diente Negro', tipo: 'Short Film', poster: elDienteNegro, posterContain: true,
+    gancho: 'Dos historias unidas por un detalle imposible de ignorar.',
+    sinopsis: 'En un asilo, una mujer mayor revive sus traumas. En paralelo, un hombre enfrenta recuerdos oscuros durante un interrogatorio. Un diente negro conecta ambas historias.',
+    generos: ['Horror'], direccion: 'Anita Serrano', guion: 'Anita Serrano',
+  },
+  {
+    id: 'el-sonido-del-viento', titulo: 'El Sonido del Viento', tipo: 'Short Film', poster: elSonidoDelViento, posterContain: true,
+    gancho: 'Una casa, un altillo y los recuerdos que esperan arriba.',
+    sinopsis: 'Román vive solo en una antigua casa a las afueras de Buenos Aires. Después de postergarlo durante mucho tiempo, decide subir al altillo: un espacio polvoriento que guarda los recuerdos a los que todavía no se había animado a enfrentarse.',
+    anio: '2024', duracion: '13 min', direccion: 'Santiago Rey', guion: 'Santiago Rey',
+  },
   { id: 'noku', titulo: 'Noku', tipo: 'Short Film', poster: noku },
 ];
 

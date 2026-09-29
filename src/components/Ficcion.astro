@@ -2,104 +2,56 @@
 import { Image } from 'astro:assets';
 import { ips } from '~/data/trabajos';
 
-// Duplicado para que el loop de la franja no tenga costura.
+// Dos copias permiten que la franja avance sin un corte visible.
 const copias = [false, true];
+const base = import.meta.env.BASE_URL;
 ---
 
 <section id="ficcion">
-  {/* data-focus abarca todo: si centrara sólo la franja, el título quedaría
-      arriba tapado por el nav. */}
   <div data-focus>
     <div class="wrap">
       <h2 class="sec-title reveal">Nuestras <span class="y">historias.</span></h2>
     </div>
 
     <div class="marquee carrusel reveal" data-franja-ficcion>
-        <ul class="pista" aria-label="Proyectos de ficción">
-          {
-            copias.map((clon) =>
+      <ul class="pista" aria-label="Proyectos de ficción">
+        {
+          copias.map((clon) =>
             ips.map((ip) => (
               <li class="ip-item" aria-hidden={clon ? 'true' : undefined}>
-                <button
-                type="button"
-                class:list={['ip', { locked: ip.locked }]}
-                data-ip={ip.id}
-                aria-controls={`ficha-${ip.id}`}
-                aria-expanded="false"
-                tabindex={clon ? -1 : undefined}
-                >
-                {/* width acota el src de respaldo: sin él Astro lo emite en el
-                    tamaño original (el póster de Rumá pesa 1.1 MB). */}
-                {ip.poster && (
-                  <Image
-                    class:list={['poster', { 'poster-contain': ip.posterContain }]}
-                    src={ip.poster}
-                    alt=""
-                    width={660}
-                    widths={[330, 660]}
-                    sizes="(max-width: 700px) 255px, 330px"
-                    loading="lazy"
-                  />
-                )}
-                {ip.locked && (
-                  <>
-                    <span class="candado" aria-hidden="true">
-                      🔒
-                    </span>
-                    {ip.badge && <span class="badge">{ip.badge}</span>}
-                  </>
-                )}
-                <span class="ip-titulo">{ip.titulo}</span>
-                <span class="tipo">{ip.tipo}</span>
-              </button>
-            </li>
-          )),
+                <a class="ip" href={`${base}ficcion/${ip.id}/`} tabindex={clon ? -1 : undefined}>
+                  {ip.poster && (
+                    <Image
+                      class:list={['poster', { 'poster-contain': ip.posterContain }]}
+                      src={ip.poster}
+                      alt=""
+                      width={660}
+                      widths={[330, 660]}
+                      sizes="(max-width: 700px) 255px, 330px"
+                      loading="lazy"
+                    />
+                  )}
+                  <span class="ip-titulo">{ip.titulo}</span>
+                  <span class="tipo">{ip.tipo}</span>
+                  <span class="visually-hidden">Ver ficha del proyecto</span>
+                </a>
+              </li>
+            )),
           )
         }
       </ul>
-    </div>
-
-    <div class="wrap">
-      <div class="fichas">
-        <p class="ficha-hint" data-ficha-hint>
-          Tocá un proyecto para ver de qué se trata.
-        </p>
-        {
-          ips.map((ip) => (
-            <article class="ficha" id={`ficha-${ip.id}`} data-ficha={ip.id}>
-              <h3>{ip.titulo}</h3>
-              <p class="meta">
-                {[ip.formato ?? ip.tipo, ip.estado].filter(Boolean).join(' · ')}
-              </p>
-              {/* TODO(brief): falta la sinopsis de cada IP en src/data/trabajos.ts */}
-              <p class="sinopsis">{ip.sinopsis ?? 'Ficha en preparación.'}</p>
-              {ip.link && (
-                <a class="ver" href={ip.link.url} target="_blank" rel="noopener">
-                  {ip.link.label} →
-                </a>
-              )}
-            </article>
-          ))
-        }
-      </div>
     </div>
   </div>
 </section>
 
 <style>
-  /* --- carrusel ---------------------------------------------------------- */
-
-  #ficcion {
-    padding-top: 42px;
-  }
+  #ficcion { padding-top: 42px; }
 
   .sec-title {
     font-size: clamp(2rem, 5vw, 3.6rem);
     margin-bottom: 28px;
   }
 
-  /* Misma franja que la de marcas: se recorta sólo cuando el script toma el
-     control (clase .auto); sin JS queda arrastrable a mano. */
   .carrusel {
     overflow-x: auto;
     overflow-y: hidden;
@@ -108,13 +60,8 @@ const copias = [false, true];
     mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
   }
 
-  .carrusel::-webkit-scrollbar {
-    display: none;
-  }
-
-  .carrusel.auto {
-    overflow: hidden;
-  }
+  .carrusel::-webkit-scrollbar { display: none; }
+  .carrusel.auto { overflow: hidden; }
 
   .pista {
     list-style: none;
@@ -122,49 +69,33 @@ const copias = [false, true];
     gap: 16px;
     width: max-content;
     will-change: transform;
-    /* aire para que el recorte no se coma el borde de las tarjetas */
     padding-block: 3px;
   }
 
-  .ip-item {
-    flex: 0 0 clamp(255px, 26vw, 330px);
-  }
+  .ip-item { flex: 0 0 clamp(255px, 26vw, 330px); }
 
   .ip {
     width: 100%;
-    /* 9:16, la misma proporción que los pósters: con 2/3 se les recortaba el
-       15,6% del alto y se comía títulos y créditos. */
     aspect-ratio: 9 / 16;
     background: var(--surface);
     border: 1px solid var(--line-2);
     color: inherit;
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     padding: 20px;
     position: relative;
     overflow: hidden;
-    transition:
-      border-color 0.3s,
-      transform 0.3s,
-      box-shadow 0.3s;
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
   }
 
-  .ip:hover {
-    border-color: var(--silver);
+  .ip:hover,
+  .ip:focus-visible {
+    border-color: var(--accent);
+    box-shadow: 0 0 28px color-mix(in srgb, var(--accent) 18%, transparent);
     transform: translateY(-4px);
   }
 
-  .ip[aria-expanded='true'] {
-    border-color: var(--light);
-    box-shadow: 0 0 34px rgba(242, 242, 242, 0.14);
-    transform: translateY(-4px);
-  }
-
-  /* El póster va de fondo; el degradado sostiene la legibilidad del título. */
   .poster {
     position: absolute;
     inset: 0;
@@ -172,14 +103,11 @@ const copias = [false, true];
     height: 100%;
     object-fit: cover;
     z-index: 0;
-    transition:
-      transform 0.4s ease,
-      opacity 0.3s ease;
+    transition: transform 0.4s ease;
   }
 
-  .poster-contain {
-    object-fit: contain;
-  }
+  .poster-contain { object-fit: contain; }
+  .ip:hover .poster { transform: scale(1.05); }
 
   .ip:has(.poster)::after {
     content: '';
@@ -189,17 +117,8 @@ const copias = [false, true];
     background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 12%, rgba(0, 0, 0, 0.25) 55%, transparent);
   }
 
-  .ip:hover .poster {
-    transform: scale(1.05);
-  }
-
   .ip-titulo,
-  .tipo,
-  .candado,
-  .badge {
-    position: relative;
-    z-index: 2;
-  }
+  .tipo { position: relative; z-index: 2; }
 
   .ip-titulo {
     font-family: var(--font-display);
@@ -215,115 +134,6 @@ const copias = [false, true];
     text-transform: uppercase;
     margin-top: 6px;
   }
-
-  .ip.locked {
-    border: 1px dashed var(--silver);
-  }
-
-  .ip.locked .ip-titulo {
-    color: var(--silver);
-  }
-
-  .candado {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    font-size: 1.3rem;
-  }
-
-  .badge {
-    position: absolute;
-    top: 16px;
-    left: -32px;
-    background: var(--red);
-    color: #fff;
-    font-size: 0.62rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    padding: 5px 40px;
-    transform: rotate(-45deg);
-  }
-
-  /* --- ficha del proyecto ------------------------------------------------ */
-
-  /* Sin min-height: el alto lo da lo que haya adentro. Antes reservaba 150px
-     para la ficha aunque no hubiera ninguna abierta, y ese hueco vacío además
-     empujaba el título fuera de pantalla al centrar la sección. */
-  .fichas {
-    margin-top: 28px;
-    border-top: 1px solid var(--line);
-    padding-top: 22px;
-  }
-
-  .ficha-hint {
-    color: var(--mute-2);
-    font-size: 0.8rem;
-    letter-spacing: 0.1em;
-  }
-
-  .ficha[hidden] {
-    display: none;
-  }
-
-  .ficha h3 {
-    font-size: clamp(1.6rem, 3.4vw, 2.4rem);
-    color: var(--light);
-    margin-bottom: 8px;
-  }
-
-  .ficha .meta {
-    color: var(--silver);
-    font-size: 0.72rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-
-  .ficha .sinopsis {
-    color: var(--dim);
-    max-width: 620px;
-  }
-
-  .ver {
-    display: inline-block;
-    margin-top: 18px;
-    background: var(--light);
-    color: #000;
-    padding: 11px 22px;
-    font-family: var(--font-display);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.85rem;
-    transition:
-      background 0.3s,
-      color 0.3s;
-  }
-
-  .ver:hover {
-    background: var(--red);
-    color: #fff;
-  }
-
-  /* Con JS las fichas arrancan ocultas y se van mostrando de a una. Sin JS
-     quedan todas visibles, así el contenido igual se lee y se indexa. */
-  .fichas.js .ficha {
-    animation: entra 0.4s ease both;
-  }
-
-  .fichas:not(.js) .ficha + .ficha {
-    margin-top: 28px;
-  }
-
-  .fichas:not(.js) .ficha-hint {
-    display: none;
-  }
-
-  @keyframes entra {
-    from {
-      opacity: 0;
-      transform: translateY(12px);
-    }
-  }
 </style>
 
 <script>
@@ -331,62 +141,29 @@ const copias = [false, true];
 
   const carrusel = document.querySelector<HTMLElement>('[data-franja-ficcion]');
   const pista = carrusel?.querySelector<HTMLElement>('.pista');
-  const fichas = document.querySelector<HTMLElement>('.fichas');
-
-  if (carrusel && pista && fichas) {
-    const tarjetas = [...pista.querySelectorAll<HTMLButtonElement>('.ip')];
-    const hint = fichas.querySelector<HTMLElement>('[data-ficha-hint]');
-    const suave = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // Estado inicial de las fichas: ocultas, con la pista visible.
-    fichas.classList.add('js');
-    fichas.querySelectorAll<HTMLElement>('.ficha').forEach((f) => (f.hidden = true));
-
-    // Mismo movimiento que la franja de marcas. Se frena con una ficha abierta,
-    // para poder leerla sin que el proyecto se escape de la pantalla.
+  if (carrusel && pista) {
+    const tienePuntero = window.matchMedia('(hover: hover)');
     montarFranja(carrusel, pista, {
-      frenada: () => tarjetas.some((t) => t.getAttribute('aria-expanded') === 'true'),
+      frenada: () => tienePuntero.matches && Boolean(carrusel.querySelector('.ip:hover')),
     });
 
-    // --- click en una tarjeta: abre su ficha ---
-    tarjetas.forEach((tarjeta) => {
-      tarjeta.addEventListener('click', () => {
-        const id = tarjeta.dataset.ip;
-        if (!id) return;
-
-        const yaAbierta = tarjeta.getAttribute('aria-expanded') === 'true';
-
-        tarjetas.forEach((t) => t.setAttribute('aria-expanded', 'false'));
-        fichas.querySelectorAll<HTMLElement>('.ficha').forEach((f) => (f.hidden = true));
-
-        if (yaAbierta) {
-          // segundo click sobre la misma: cierra
-          if (hint) hint.hidden = false;
-          return;
-        }
-
-        tarjetas
-          .filter((t) => t.dataset.ip === id)
-          .forEach((t) => t.setAttribute('aria-expanded', 'true'));
-        if (hint) hint.hidden = true;
-
-        const ficha = fichas.querySelector<HTMLElement>(`[data-ficha="${id}"]`);
-        if (ficha) ficha.hidden = false;
-
-        // La ficha empuja el alto de la sección: si al abrirse queda por debajo
-        // del borde, se la sube lo justo para que se vea entera.
-        if (ficha) {
-          requestAnimationFrame(() => {
-            const caja = ficha.getBoundingClientRect();
-            if (caja.bottom > window.innerHeight - 12) {
-              ficha.scrollIntoView({
-                behavior: suave ? 'smooth' : 'auto',
-                block: 'end',
-              });
-            }
-          });
-        }
-      });
+    let inicioToque = 0;
+    let huboArrastre = false;
+    carrusel.addEventListener('pointerdown', (ev) => {
+      if (ev.pointerType !== 'mouse') {
+        inicioToque = ev.clientX;
+        huboArrastre = false;
+      }
     });
+    carrusel.addEventListener('pointermove', (ev) => {
+      if (ev.pointerType !== 'mouse' && ev.buttons && Math.abs(ev.clientX - inicioToque) > 8) {
+        huboArrastre = true;
+      }
+    });
+    carrusel.addEventListener('click', (ev) => {
+      if (!huboArrastre) return;
+      ev.preventDefault();
+      huboArrastre = false;
+    }, true);
   }
 </script>
