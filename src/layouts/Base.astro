@@ -3,6 +3,7 @@ import '@fontsource/anton';
 import '@fontsource-variable/inter';
 import '~/styles/global.css';
 import { site, DOMINIO_PROD } from '~/data/site';
+import { colores } from '~/data/colores';
 import BotonWhatsapp from '~/components/BotonWhatsapp.astro';
 
 interface Props {
@@ -29,6 +30,12 @@ const esPreview =
   canonical.hostname !== DOMINIO_PROD ||
   import.meta.env.MODE === 'preview' ||
   import.meta.env.PUBLIC_PREVIEW === '1';
+const iniciarColor = `(() => {
+  const colores = ${JSON.stringify(colores)};
+  const indice = Math.floor(Math.random() * colores.length);
+  document.documentElement.style.setProperty('--accent', colores[indice].valor);
+  document.documentElement.dataset.colorIndex = String(indice);
+})();`;
 ---
 
 <!doctype html>
@@ -64,6 +71,7 @@ const esPreview =
     <script is:inline>
       document.documentElement.classList.add('js');
     </script>
+    <script is:inline set:html={iniciarColor}></script>
   </head>
 
   <body>

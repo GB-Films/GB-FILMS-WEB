@@ -59,8 +59,13 @@ confirmada. Si la marca usa otra, se cambia el token `--font-display` en
   ocultan (no entran) y queda solo el pasador.
 - **Carrusel de ficción sin flechas**: usa la misma franja que marcas y equipo.
   Antes tenía flechas; se unificó para que las tres se comporten igual.
-- **El reel lleva el mismo tratamiento que el video de "¿Qué carajo?"**: título
-  dentro del recuadro y centrado al clickear el nav.
+- **El reel completo aparece una sola vez**, dentro de "¿Qué carajo?". La
+  portada usa una copia optimizada y más nítida como fondo.
+- **El monograma del nav cambia el acento**: la visita empieza con uno de cinco
+  colores al azar; cada toque avanza al siguiente. `src/data/colores.ts` guarda
+  los tonos y `--accent` pinta títulos y controles.
+- **La tienda muestra nueve stickers** extraídos de la plancha original. El
+  botón de compra queda desactivado hasta que exista un enlace real.
 - **En mobile el play va abajo a la derecha** y achicado a 52px: el recuadro
   16:9 mide 184px de alto y el play centrado se superponía con el título.
 - **Ficción**: las tres estrenadas van primero porque son las únicas con póster
@@ -113,8 +118,8 @@ Y en el coverflow de marcas, además:
 
 ## Orden de las secciones
 
-Orden en `src/pages/index.astro`: Hero → Marcas → Que → Nosotros →
-Trabajos(reel) → Ficción → Tienda → Universo → **Contacto**.
+Orden en `src/pages/index.astro`: Hero → Marcas → Que(reel) → Nosotros →
+Ficción → Tienda → Universo → **Contacto**.
 
 Dos reglas que hay que sostener si se agregan o mueven secciones:
 

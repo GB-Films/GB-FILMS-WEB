@@ -24,8 +24,7 @@ export type NavLink = { href: string; label: string };
 // recorrer el menú de izquierda a derecha hace saltar hacia atrás, y el
 // scrollspy (que resuelve empates por este orden) enciende el link equivocado.
 export const navLinks: NavLink[] = [
-  // "Trabajos" apunta a la franja de marcas, que es la prueba social y va
-  // primero; el reel queda más abajo, en la sección #trabajos.
+  // "Trabajos" apunta a la franja de marcas, que va primero.
   { href: '#marcas', label: 'Trabajos' },
   { href: '#que', label: '¿Qué carajo?' },
   { href: '#nosotros', label: 'Nosotros' },
@@ -35,6 +34,24 @@ export const navLinks: NavLink[] = [
 ];
 
 export const navCta = { href: '#contacto', label: 'Trabajemos juntos' };
+
+export const tienda = {
+  titulo: 'Conseguí tus',
+  tituloDestacado: 'stickers',
+  descripcion: 'Un pedacito del universo GB Films para llevar a todos lados.',
+  comprarUrl: '', // Activar cuando esté disponible el enlace real de compra.
+  stickers: [
+    { archivo: 'felicidad.webp', descripcion: 'Sticker Felicidad' },
+    { archivo: 'sigannaa.webp', descripcion: 'Sticker de personaje de terror' },
+    { archivo: 'gef.webp', descripcion: 'Sticker de taza GEF' },
+    { archivo: 'claqueta.webp', descripcion: 'Sticker de claqueta Hacemos Cultura' },
+    { archivo: 'papa.webp', descripcion: 'Sticker Si querés podés, papá' },
+    { archivo: 'durazno.webp', descripcion: 'Sticker ilustrado con un durazno' },
+    { archivo: 'mio-tuyo.webp', descripcion: 'Sticker Mío Tuyo' },
+    { archivo: 'gorra.webp', descripcion: 'Sticker de gorra GB Films' },
+    { archivo: 'gb-films.webp', descripcion: 'Sticker del logo GB Films' },
+  ],
+};
 
 /**
  * Contacto comercial. Hoy el sitio apunta a marcas y agencias: por eso los dos

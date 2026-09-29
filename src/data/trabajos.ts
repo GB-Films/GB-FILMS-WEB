@@ -226,17 +226,20 @@ export type Hermana = {
   nombre: string;
   rol: string;
   texto: string;
+  logo: string;
 };
 
 export const hermanas: Hermana[] = [
   {
     nombre: 'Gran Berta',
+    logo: 'universo/gran-berta.webp',
     rol: 'La madre · desde 2015',
     texto:
       'El universo original: contenido propio y comunidad. +2M de seguidores, +400M de vistas, 365 vlogs. Si querés, podés.',
   },
   {
     nombre: 'Bani VFX',
+    logo: 'universo/bani-vfx.webp',
     rol: 'Post-producción',
     texto:
       'La empresa de post nacida dentro de Gran Berta. Largometrajes, contenido para The Rock y Zach King, comerciales globales.',

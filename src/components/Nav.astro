@@ -1,6 +1,6 @@
 ---
 import Logo from './Logo.astro';
-import { navLinks, navCta, site } from '~/data/site';
+import { navLinks, navCta } from '~/data/site';
 
 interface Props { homeLinks?: boolean; }
 const { homeLinks = false } = Astro.props;
@@ -9,9 +9,10 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
 
 <nav aria-label="Principal">
   <div class="nav-in">
-    <a class="logo-link" href={`${prefix}#top`} aria-label={`${site.shortName} — inicio`}>
+    <button class="logo-link" type="button" aria-label="Cambiar color de GB Films" title="Tocá para cambiar el color">
       <Logo variant="monogram" height={30} />
-    </a>
+      <span class="color-hint" aria-hidden="true">Cambiar<br />color ↻</span>
+    </button>
     <div class="nav-links">
       {navLinks.map((l) => <a href={`${prefix}${l.href}`}>{l.label}</a>)}
     </div>
@@ -45,13 +46,28 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
   }
 
   .logo-link {
-    color: var(--light);
-    display: block;
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    padding: 0;
     transition: color 0.3s;
   }
 
   .logo-link:hover {
-    color: var(--silver);
+    filter: brightness(1.18);
+  }
+
+  .color-hint {
+    color: var(--dim);
+    font-size: 0.53rem;
+    line-height: 1.2;
+    letter-spacing: 0.12em;
+    text-align: left;
+    text-transform: uppercase;
   }
 
   .nav-links {
@@ -82,14 +98,14 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
     bottom: 0;
     height: 2px;
     width: 100%;
-    background: var(--light);
+    background: var(--accent);
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.35s ease;
   }
 
   .nav-links a[aria-current='true'] {
-    color: var(--light);
+    color: var(--accent);
   }
 
   .nav-links a[aria-current='true']::after {
@@ -98,7 +114,7 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
 
   .nav-cta {
     margin-left: auto;
-    background: var(--light);
+    background: var(--accent);
     color: #000;
     padding: 8px 16px;
     font-size: 0.72rem;
@@ -119,6 +135,24 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
 </style>
 
 <script>
+  import { colores } from '~/data/colores';
+
+  const logo = document.querySelector<HTMLButtonElement>('.logo-link');
+  if (logo) {
+    const anunciar = () => {
+      const indice = Number(document.documentElement.dataset.colorIndex || '0');
+      logo.setAttribute('aria-label', `Cambiar color. Actual: ${colores[indice].nombre}`);
+    };
+    anunciar();
+    logo.addEventListener('click', () => {
+      const actual = Number(document.documentElement.dataset.colorIndex || '0');
+      const siguiente = (actual + 1) % colores.length;
+      document.documentElement.style.setProperty('--accent', colores[siguiente].valor);
+      document.documentElement.dataset.colorIndex = String(siguiente);
+      anunciar();
+    });
+  }
+
   const enlaces = [...document.querySelectorAll<HTMLAnchorElement>('.nav-links a')];
   const quieto = window.matchMedia('(prefers-reduced-motion: reduce)');
 

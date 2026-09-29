@@ -9,6 +9,7 @@
   --light: #f2f2f2;
   --silver: #a9a9a9;
   --red: #a70d1d;
+  --accent: #ffe600;
   --black: #000;
   --ink: #f2f2f2;
   --dim: #9a9a9a;
@@ -80,7 +81,7 @@ video {
 }
 
 :focus-visible {
-  outline: 2px solid var(--light);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 
@@ -114,7 +115,7 @@ section {
 }
 
 .sec-title .y {
-  color: var(--light);
+  color: var(--accent);
 }
 
 /* Título que va dentro del recuadro de un video (ver VideoFrame.astro).
@@ -125,7 +126,7 @@ section {
 }
 
 .v-title .y {
-  color: var(--light);
+  color: var(--accent);
 }
 
 /* Botón de play compartido por el video y el reel. Escala con el ancho: en
@@ -134,7 +135,7 @@ section {
   width: clamp(52px, 6.5vw, 78px);
   height: clamp(52px, 6.5vw, 78px);
   border-radius: 50%;
-  background: var(--light);
+  background: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;

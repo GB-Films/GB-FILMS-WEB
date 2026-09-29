@@ -11,6 +11,7 @@ import { hermanas } from '~/data/trabajos';
       {
         hermanas.map((h) => (
           <article class="hermana">
+            <div class="hermana-logo"><img src={`${import.meta.env.BASE_URL}${h.logo}`} alt={`Logo de ${h.nombre}`} loading="lazy" decoding="async" /></div>
             <span class="rol">{h.rol}</span>
             <h3>{h.nombre}</h3>
             <p>{h.texto}</p>
@@ -36,6 +37,22 @@ import { hermanas } from '~/data/trabajos';
   .hermana {
     border: 1px solid var(--line-2);
     padding: 34px;
+  }
+
+  .hermana-logo {
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 26px;
+  }
+
+  .hermana-logo img {
+    max-width: min(100%, 300px);
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
   }
 
   .hermana h3 {

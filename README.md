@@ -83,7 +83,7 @@ Buscá `TODO(brief)` para encontrarlos todos:
 
 - **Dominio real** (`astro.config.mjs`) — hoy apunta a
   `granbertafilms.com`. Se usa para canonical, Open Graph y sitemap.
-- El reel completo se reproduce desde YouTube en las dos secciones de video.
+- El reel completo se reproduce desde YouTube en "¿Qué carajo?".
   El fondo de la portada usa una copia optimizada y sin sonido en `public/reel/`
   (2,3 MB), derivada del máster local. Se pausa al salir de la portada y si el
   visitante prefiere menos movimiento.
@@ -102,12 +102,14 @@ Buscá `TODO(brief)` para encontrarlos todos:
   dicen "Ficha en preparación". Los pósters y los links a Shorta ya están
   cargados en las tres series estrenadas; faltan las otras cinco.
 - Las ocho fotos del equipo están cargadas en `public/equipo/`.
-- **Sticker de la tienda**.
+- El enlace de compra de stickers sigue pendiente. Cuando exista, cargarlo en
+  `tienda.comprarUrl` de `src/data/site.ts` para activar el botón.
 - **Formulario de talento** — hoy la captación va por mail, desde una línea en
   el footer (`talento` en `src/data/site.ts`). Si vuelve el formulario, el
   sitio pasa a recolectar datos personales y hace falta una política de
   privacidad.
-- **Logos de marcas** — hoy se listan como texto en `src/data/trabajos.ts`.
+- Los logos de marcas están en `public/marcas/`; las rutas están en
+  `src/data/trabajos.ts`.
 
 ## Notas de implementación
 
@@ -120,13 +122,11 @@ Buscá `TODO(brief)` para encontrarlos todos:
   documento de identidad verbal (tres estrofas, no una).
 - El **nav** hace scrollspy con IntersectionObserver sobre una franja fina en el
   medio del viewport, y al clickear centra el bloque marcado con `[data-focus]`
-  de cada sección (el video en "¿Qué carajo?" y "Trabajos", el carrusel en
-  "Ficción").
+  de cada sección (el video en "¿Qué carajo?" y el carrusel en "Ficción").
 - **`VideoFrame.astro`**: lo que se le pasa por slot se dibuja dentro del
   recuadro y desaparece al apretar play.
-- El **círculo dorado** y las **fichas de ficción** sirven todos los textos en el
-  HTML y el JS los convierte en acordeón. Sin JS el contenido igual se lee y se
-  indexa. Anillos y tarjetas son `<button>`: funcionan con teclado.
+- Las **fichas de ficción** sirven todos los textos en el HTML y el JS los
+  convierte en acordeón. Sin JS el contenido igual se lee y se indexa.
 - **`prefers-reduced-motion`** desactiva animaciones y muestra todo sin el
   reveal por scroll.
 - El alto del nav se mide solo y se publica en `--nav-h`, así los anclajes no

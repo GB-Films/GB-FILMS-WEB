@@ -1,19 +1,30 @@
+---
+import { tienda } from '~/data/site';
+const base = import.meta.env.BASE_URL;
+---
+
 <section id="tienda">
   <div class="wrap">
-    <p class="kicker reveal">Tienda</p>
-    <h2 class="sec-title reveal">Se viene la <span class="y">tienda GBF</span></h2>
+    <p class="kicker reveal">Tienda GB Films</p>
+    <h2 class="sec-title reveal">{tienda.titulo} <span class="y">{tienda.tituloDestacado}</span></h2>
 
     <div class="tienda-box reveal">
-      <div>
-        <h3>Primero: stickers.</h3>
-        <p>
-          Los estamos armando con la comunidad ahora mismo. Después: todo lo demás. Si
-          querés enterarte primero cuando salgan, seguinos en redes — ahí está pasando
-          todo.
-        </p>
+      <p class="tienda-intro">{tienda.descripcion}</p>
+      <div class="stickers" role="list" aria-label="Stickers de GB Films">
+        {tienda.stickers.map((sticker) => (
+          <div class="sticker" role="listitem">
+            <img src={`${base}stickers/${sticker.archivo}`} alt={sticker.descripcion} loading="lazy" decoding="async" />
+          </div>
+        ))}
       </div>
-      {/* TODO(brief): reemplazar por la imagen del primer sticker. */}
-      <div class="sticker-ph" aria-hidden="true">Acá va<br />el primer<br />sticker</div>
+      <div class="tienda-accion">
+        {tienda.comprarUrl ? (
+          <a class="comprar" href={tienda.comprarUrl} target="_blank" rel="noopener noreferrer">Comprar stickers ↗</a>
+        ) : (
+          <button class="comprar" type="button" disabled>Comprar stickers ↗</button>
+        )}
+        {!tienda.comprarUrl && <span class="proximamente">Disponible pronto</span>}
+      </div>
     </div>
   </div>
 </section>
@@ -21,44 +32,94 @@
 <style>
   .tienda-box {
     border: 1px solid var(--line-2);
-    padding: 56px 40px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 30px;
-    align-items: center;
+    background: radial-gradient(ellipse at 50% 50%, #111 0%, #050505 72%);
+    padding: clamp(22px, 3.5vw, 42px);
+    overflow: hidden;
   }
 
-  .tienda-box h3 {
-    font-size: clamp(1.8rem, 4vw, 3rem);
-    color: var(--light);
-    margin-bottom: 12px;
-  }
-
-  .tienda-box p {
+  .tienda-intro {
     color: var(--dim);
-    max-width: 520px;
+    font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+    text-align: center;
   }
 
-  .sticker-ph {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background: #4a4a4a;
+  .stickers {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: center;
+    gap: clamp(6px, 1.8vw, 22px);
+    margin: 22px 0 32px;
+  }
+
+  .sticker {
+    height: clamp(120px, 16vw, 190px);
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    font-family: var(--font-display);
-    color: #fff;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    transform: rotate(8deg);
-    padding: 18px;
   }
 
-  @media (max-width: 860px) {
-    .tienda-box {
-      grid-template-columns: 1fr;
-    }
+  .sticker img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.65));
+    transform: rotate(var(--rot, 0deg)) translateY(var(--offset, 0px));
+    transition: transform 0.25s ease;
+  }
+
+  .sticker img:hover {
+    transform: rotate(0deg) translateY(-7px) scale(1.08);
+  }
+
+  .sticker:nth-child(5n + 1) { --rot: -9deg; --offset: 8px; }
+  .sticker:nth-child(5n + 2) { --rot: 6deg; --offset: -7px; }
+  .sticker:nth-child(5n + 3) { --rot: -4deg; --offset: 4px; }
+  .sticker:nth-child(5n + 4) { --rot: 8deg; --offset: -5px; }
+  .sticker:nth-child(5n) { --rot: -6deg; --offset: 7px; }
+
+  .tienda-accion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .comprar {
+    border: 0;
+    background: var(--accent);
+    color: #000;
+    padding: 14px 30px;
+    font: 1rem var(--font-display);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .comprar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .comprar:not(:disabled):hover {
+    filter: brightness(1.15);
+  }
+
+  .proximamente {
+    color: var(--dim);
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 700px) {
+    .stickers { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .sticker { height: clamp(90px, 29vw, 145px); }
+  }
+
+  @media (max-width: 420px) {
+    .sticker { height: 95px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sticker img { transition: none; }
   }
 </style>
