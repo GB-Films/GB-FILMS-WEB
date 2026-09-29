@@ -83,10 +83,12 @@ Buscá `TODO(brief)` para encontrarlos todos:
 
 - **Dominio real** (`astro.config.mjs`) — hoy apunta a
   `granbertafilms.com`. Se usa para canonical, Open Graph y sitemap.
-- **Imagen de Open Graph** — falta `public/og.jpg` (1200×630).
-- **Video "¿Qué carajo?"** y **Reel 2026** — pasarle `videoUrl` al
-  `<VideoFrame>` (embed de YouTube/Vimeo o `.mp4`). El máster del reel pesa
-  141 MB: conviene subirlo a YouTube/Vimeo antes que servirlo desde el sitio.
+- El reel completo se reproduce desde YouTube en las dos secciones de video.
+  El fondo de la portada usa una copia optimizada y sin sonido en `public/reel/`
+  (2,3 MB), derivada del máster local. Se pausa al salir de la portada y si el
+  visitante prefiere menos movimiento.
+- Los logos de las 21 marcas están en `public/marcas/`. Sus fuentes se registran
+  en `docs/assets-marcas.md`.
 - **Reemplazar los embeds de Instagram** por mp4 o por links de YouTube/Vimeo,
   en `marcas` (`src/data/trabajos.ts`). Instagram le mete su cabecera y el botón
   "Ver perfil" encima del trabajo, y obliga a la tarjeta a abrirse en vertical.
@@ -99,9 +101,7 @@ Buscá `TODO(brief)` para encontrarlos todos:
 - **Sinopsis de las IPs** — `sinopsis` en `src/data/trabajos.ts`. Hoy las fichas
   dicen "Ficha en preparación". Los pósters y los links a Shorta ya están
   cargados en las tres series estrenadas; faltan las otras cinco.
-- **Fotos del equipo** — cargar en `public/equipo/` y completar `foto` en
-  `src/data/equipo.ts`. Hay tomas de estudio de cinco de los siete; faltan las
-  de Toto y Ame.
+- Las ocho fotos del equipo están cargadas en `public/equipo/`.
 - **Sticker de la tienda**.
 - **Formulario de talento** — hoy la captación va por mail, desde una línea en
   el footer (`talento` en `src/data/site.ts`). Si vuelve el formulario, el

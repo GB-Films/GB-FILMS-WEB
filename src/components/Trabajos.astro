@@ -6,7 +6,7 @@ import VideoFrame from './VideoFrame.astro';
   <div class="wrap">
     {/* data-focus: el nav centra el reel al clickear "Trabajos" */}
     <div class="reel-slot reveal" data-focus>
-      <VideoFrame label="Reel 2026 · 1 min" videoUrl="https://www.youtube.com/embed/JZ1AOExsHRM">
+      <VideoFrame label="Reel 2026 · 1 min" videoUrl="https://www.youtube.com/embed/JZ1AOExsHRM" posterUrl={`${import.meta.env.BASE_URL}reel/gb-films-fondo.webp`}>
         <p class="kicker">Reel + Trabajos</p>
         <h2 class="v-title">
           Ideas que conectan.<br /><span class="y">Historias que trascienden.</span>
@@ -36,7 +36,7 @@ import VideoFrame from './VideoFrame.astro';
 
   .reel-link:hover,
   .reel-link:focus-visible {
-    color: var(--yellow);
+    color: var(--light);
   }
 
   /* la franja de marcas se mudó arriba del todo: ver Marcas.astro */

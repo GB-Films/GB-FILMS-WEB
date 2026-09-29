@@ -1,7 +1,7 @@
 /**
- * Círculo dorado (Sinek): tres anillos concéntricos. El usuario abre cada uno
+ * Círculo (Sinek): tres anillos concéntricos. El usuario abre cada uno
  * y el panel de la derecha muestra el contenido. `frase` admite <em> para
- * resaltar en amarillo.
+ * resaltar con el color claro de la marca.
  */
 export type Anillo = {
   key: 'que' | 'como' | 'why';

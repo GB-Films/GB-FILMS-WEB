@@ -7,7 +7,7 @@ import { anillos } from '~/data/circulo';
   <div class="wrap">
     {/* data-focus: el nav centra este bloque en pantalla al clickear "¿Qué carajo?" */}
     <div class="video-slot reveal" data-focus>
-      <VideoFrame label="Mirá el video · 90 seg" todo="[ video a producir ]">
+      <VideoFrame label="Reel GB Films · 1 min" videoUrl="https://www.youtube.com/embed/JZ1AOExsHRM" posterUrl={`${import.meta.env.BASE_URL}reel/gb-films-fondo.webp`}>
         <p class="kicker v-kicker">La pregunta que todos se hacen</p>
         <h2 class="v-title">
           ¿Qué carajo es<br /><span class="y">Gran Berta Films?</span>
@@ -105,14 +105,14 @@ import { anillos } from '~/data/circulo';
   }
 
   .ring:hover {
-    border-color: var(--gold);
+    border-color: var(--silver);
   }
 
   .ring[aria-expanded='true'] {
-    border-color: var(--yellow);
+    border-color: var(--light);
     box-shadow:
-      0 0 40px rgba(255, 232, 0, 0.12),
-      inset 0 0 40px rgba(255, 232, 0, 0.05);
+      0 0 40px rgba(242, 242, 242, 0.12),
+      inset 0 0 40px rgba(242, 242, 242, 0.05);
   }
 
   .ring-que {
@@ -141,11 +141,11 @@ import { anillos } from '~/data/circulo';
   }
 
   .ring:hover .ring-label {
-    color: var(--gold);
+    color: var(--silver);
   }
 
   .ring[aria-expanded='true'] .ring-label {
-    color: var(--yellow);
+    color: var(--light);
   }
 
   .circ-core {
@@ -169,7 +169,7 @@ import { anillos } from '~/data/circulo';
   }
 
   .circ-core span.done {
-    color: var(--yellow);
+    color: var(--light);
   }
 
   @keyframes corepulse {
@@ -224,7 +224,7 @@ import { anillos } from '~/data/circulo';
   }
 
   .p-kicker {
-    color: var(--gold);
+    color: var(--silver);
     font-size: 0.75rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
@@ -241,7 +241,7 @@ import { anillos } from '~/data/circulo';
 
   .p-frase :global(em) {
     font-style: normal;
-    color: var(--yellow);
+    color: var(--light);
   }
 
   .p-body {

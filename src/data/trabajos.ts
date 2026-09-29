@@ -17,7 +17,7 @@ export type Pieza = {
 
 export type Marca = {
   nombre: string;
-  /** logo en /public/marcas/. Sin logo se muestra el nombre en Anton. */
+  /** logo en public/marcas/, relativo al BASE_URL del sitio. */
   logo?: string;
   /** Trabajos de esa marca. Sin piezas, la tarjeta es solo logo y no se clickea. */
   piezas?: Pieza[];
@@ -45,6 +45,7 @@ export function esVertical(url: string): boolean {
 export const marcas: Marca[] = [
   {
     nombre: 'Netflix',
+    logo: 'marcas/netflix-mono.webp',
     piezas: [
       { url: 'https://www.instagram.com/p/DSp6FnfAFvt/', titulo: 'Stranger Things' },
       { url: 'https://www.instagram.com/p/DSIXPVvAib2/', titulo: 'Stranger Things' },
@@ -53,6 +54,7 @@ export const marcas: Marca[] = [
   },
   {
     nombre: 'Prime Video',
+    logo: 'marcas/prime-video-mono.webp',
     piezas: [
       { url: 'https://www.instagram.com/p/DZVvhd4ODQP/', titulo: 'Spider-Noir' },
       { url: 'https://www.instagram.com/p/DNoMQFEA_2O/' },
@@ -60,6 +62,7 @@ export const marcas: Marca[] = [
   },
   {
     nombre: 'Samsung',
+    logo: 'marcas/samsung-mono.webp',
     piezas: [
       { url: 'https://www.instagram.com/p/DMtCnCfS6Ax/' },
       { url: 'https://www.instagram.com/reel/DXKIOdQk15C/' },
@@ -67,6 +70,7 @@ export const marcas: Marca[] = [
   },
   {
     nombre: 'Microsoft',
+    logo: 'marcas/microsoft-mono.webp',
     piezas: [
       { url: 'https://www.instagram.com/p/DMLqEvtvv7k/', titulo: 'Minecraft' },
       { url: 'https://www.instagram.com/p/DMdpWQ4PVp0/', titulo: 'Minecraft' },
@@ -74,6 +78,7 @@ export const marcas: Marca[] = [
   },
   {
     nombre: 'Xbox',
+    logo: 'marcas/xbox-mono.webp',
     piezas: [
       { url: 'https://www.instagram.com/reel/DYPsUV-yh19/', titulo: 'Forza Horizon' },
       { url: 'https://www.instagram.com/reel/DYScISPkpR0/', titulo: 'Forza Horizon' },
@@ -82,6 +87,7 @@ export const marcas: Marca[] = [
   },
   {
     nombre: 'HBO Max',
+    logo: 'marcas/hbo-max-mono.webp',
     piezas: [
       { url: 'https://www.instagram.com/p/C8nTxrhvhk3/', titulo: 'House of the Dragon' },
     ],
@@ -90,40 +96,49 @@ export const marcas: Marca[] = [
     // Misma pieza que HBO Max: fue una acción de las dos marcas juntas, y
     // cuenta como antecedente para las dos.
     nombre: 'Mercado Libre',
+    logo: 'marcas/mercado-libre-mono.webp',
     piezas: [
       { url: 'https://www.instagram.com/p/C8nTxrhvhk3/', titulo: 'House of the Dragon' },
     ],
   },
   {
     nombre: 'Axe',
+    logo: 'marcas/axe-mono.webp',
     piezas: [{ url: 'https://www.instagram.com/p/C8XQ3xsuMa3/' }],
   },
   {
     nombre: 'ICBC',
+    logo: 'marcas/icbc-mono.webp',
     piezas: [{ url: 'https://www.instagram.com/reel/DCSRGsSP_1E/' }],
   },
   {
     nombre: 'Alfajores Jorgito',
+    logo: 'marcas/jorgito-mono.webp',
     piezas: [{ url: 'https://www.instagram.com/p/DZzqHtzOk6S/' }],
   },
   {
     nombre: 'Sprite',
+    logo: 'marcas/sprite-mono.webp',
     piezas: [{ url: 'https://www.instagram.com/p/DUT8Umzj3is/' }],
   },
   {
     nombre: 'Shell',
+    logo: 'marcas/shell-mono.webp',
     piezas: [{ url: 'https://www.instagram.com/p/DQIJh4-jWD9/' }],
   },
   {
     nombre: 'Conmebol',
+    logo: 'marcas/conmebol-mono.webp',
     piezas: [{ url: 'https://www.instagram.com/p/DHoUxSdOufj/' }],
   },
   {
     nombre: '9GAG',
+    logo: 'marcas/9gag-mono.webp',
     piezas: [{ url: 'https://www.instagram.com/p/C9QpsQnPcwH/', titulo: 'PUBG Mobile' }],
   },
   {
     nombre: 'Trenet',
+    logo: 'marcas/trenet-mono.webp',
     piezas: [
       { url: 'https://www.instagram.com/p/DR5xKbKDePM/' },
       { url: 'https://www.instagram.com/p/DSVxXIcj3fT/' },
@@ -132,20 +147,23 @@ export const marcas: Marca[] = [
   },
   {
     nombre: 'Andes',
+    logo: 'marcas/andes-mono.webp',
     piezas: [{ url: 'https://www.instagram.com/p/C_bkKcFvaPv/' }],
   },
   {
     nombre: 'Baldo',
+    logo: 'marcas/baldo-mono.webp',
     piezas: [{ url: 'https://www.instagram.com/p/DZK0cjyh9j3/' }],
   },
   {
     nombre: 'ZonaProp',
+    logo: 'marcas/zonaprop-mono.webp',
     piezas: [{ url: 'https://www.instagram.com/p/DNDliYaA_KH/' }],
   },
   // Sin piezas: pesan por el nombre, pero no se pueden clickear.
-  { nombre: 'Disney' },
-  { nombre: 'Adidas' },
-  { nombre: 'PedidosYa' },
+  { nombre: 'Disney', logo: 'marcas/disney-mono.webp' },
+  { nombre: 'Adidas', logo: 'marcas/adidas-mono.webp' },
+  { nombre: 'PedidosYa', logo: 'marcas/pedidosya-mono.webp' },
 ];
 
 export type Ip = {

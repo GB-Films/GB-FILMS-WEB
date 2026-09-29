@@ -62,7 +62,7 @@ const conPiezas = marcas.map((m) => ({
                     aria-expanded="false"
                   >
                     {m.logo ? (
-                      <img src={m.logo} alt={m.nombre} loading="lazy" />
+                      <img src={`${import.meta.env.BASE_URL}${m.logo}`} alt={m.nombre} decoding="async" />
                     ) : (
                       <span class="nombre">{m.nombre}</span>
                     )}
@@ -76,7 +76,7 @@ const conPiezas = marcas.map((m) => ({
                 ) : (
                   <div class="cara frente">
                     {m.logo ? (
-                      <img src={m.logo} alt={m.nombre} loading="lazy" />
+                      <img src={`${import.meta.env.BASE_URL}${m.logo}`} alt={m.nombre} decoding="async" />
                     ) : (
                       <span class="nombre">{m.nombre}</span>
                     )}
@@ -241,7 +241,7 @@ const conPiezas = marcas.map((m) => ({
 
   .con-video:hover {
     color: var(--ink);
-    border-color: var(--yellow);
+    border-color: var(--light);
   }
 
   .nombre {
@@ -265,7 +265,7 @@ const conPiezas = marcas.map((m) => ({
     right: 10px;
     font-size: 0.6rem;
     letter-spacing: 0.08em;
-    color: var(--yellow);
+    color: var(--light);
     opacity: 0.55;
     transition: opacity 0.3s;
   }
@@ -279,7 +279,7 @@ const conPiezas = marcas.map((m) => ({
   .dorso {
     transform: rotateY(180deg);
     background: #000;
-    border-color: var(--yellow);
+    border-color: var(--light);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -339,7 +339,7 @@ const conPiezas = marcas.map((m) => ({
   }
 
   .satelite:hover {
-    border-color: var(--yellow);
+    border-color: var(--light);
   }
 
   .satelite[hidden] {
@@ -351,7 +351,7 @@ const conPiezas = marcas.map((m) => ({
   }
 
   .satelite:hover .rotulo {
-    color: var(--yellow);
+    color: var(--light);
   }
 
   /* --- telón, escenario y controles --- */
@@ -436,7 +436,7 @@ const conPiezas = marcas.map((m) => ({
     text-transform: uppercase;
     font-size: 0.82rem;
     letter-spacing: 0.12em;
-    color: var(--yellow);
+    color: var(--light);
     white-space: nowrap;
   }
 
@@ -455,7 +455,7 @@ const conPiezas = marcas.map((m) => ({
     height: 42px;
     border-radius: 50%;
     border: 0;
-    background: var(--yellow);
+    background: var(--light);
     color: #000;
     font-family: var(--font-display);
     font-size: 1.3rem;
@@ -470,7 +470,7 @@ const conPiezas = marcas.map((m) => ({
   }
 
   .pasador button:hover {
-    background: var(--magenta);
+    background: var(--red);
     color: #fff;
     transform: scale(1.08);
   }
@@ -499,8 +499,8 @@ const conPiezas = marcas.map((m) => ({
   }
 
   .cerrar:hover {
-    color: var(--yellow);
-    border-color: var(--yellow);
+    color: var(--light);
+    border-color: var(--light);
   }
 
   @media (max-width: 700px) {

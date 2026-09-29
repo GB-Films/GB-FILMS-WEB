@@ -45,13 +45,13 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
   }
 
   .logo-link {
-    color: var(--yellow);
+    color: var(--light);
     display: block;
     transition: color 0.3s;
   }
 
   .logo-link:hover {
-    color: var(--gold);
+    color: var(--silver);
   }
 
   .nav-links {
@@ -71,7 +71,7 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
   }
 
   .nav-links a:hover {
-    color: var(--yellow);
+    color: var(--light);
   }
 
   /* subrayado que crece desde la izquierda al marcar la sección activa */
@@ -82,14 +82,14 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
     bottom: 0;
     height: 2px;
     width: 100%;
-    background: var(--yellow);
+    background: var(--light);
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.35s ease;
   }
 
   .nav-links a[aria-current='true'] {
-    color: var(--yellow);
+    color: var(--light);
   }
 
   .nav-links a[aria-current='true']::after {
@@ -98,7 +98,7 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
 
   .nav-cta {
     margin-left: auto;
-    background: var(--yellow);
+    background: var(--light);
     color: #000;
     padding: 8px 16px;
     font-size: 0.72rem;
@@ -108,7 +108,7 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
   }
 
   .nav-cta:hover {
-    background: var(--gold);
+    background: var(--silver);
   }
 
   @media (max-width: 860px) {

@@ -1,9 +1,13 @@
 ---
 import { site } from '~/data/site';
+const reelBackground = `${import.meta.env.BASE_URL}reel/gb-films-fondo.mp4`;
+const reelPoster = `${import.meta.env.BASE_URL}reel/gb-films-fondo.webp`;
 ---
 
 <header id="top">
-  <div id="glow" aria-hidden="true"></div>
+  <div class="hero-media" aria-hidden="true">
+    <video src={reelBackground} poster={reelPoster} muted loop playsinline preload="metadata"></video>
+  </div>
   <div class="wrap">
     <p class="hero-kicker">{site.name} · {site.city}</p>
     <h1 class="hero-title">Hacemos<br /><span>Cultura.</span></h1>
@@ -26,15 +30,38 @@ import { site } from '~/data/site';
     overflow: hidden;
   }
 
-  #glow {
+  .hero-media {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    opacity: 0.6;
+    overflow: hidden;
+    background: #111;
+  }
+
+  .hero-media video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.05);
+    filter: grayscale(1) blur(8px) brightness(0.7);
+  }
+
+  .hero-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.46) 65%, rgba(0, 0, 0, 0.65));
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
   }
 
   .hero-kicker {
-    color: var(--gold);
+    color: var(--silver);
     font-size: 0.8rem;
     letter-spacing: 0.35em;
     text-transform: uppercase;
@@ -44,7 +71,7 @@ import { site } from '~/data/site';
   .hero-title {
     font-size: clamp(3.6rem, 12vw, 9.5rem);
     line-height: 0.92;
-    color: var(--yellow);
+    color: var(--silver);
     position: relative;
   }
 
@@ -72,6 +99,7 @@ import { site } from '~/data/site';
     letter-spacing: 0.25em;
     text-transform: uppercase;
     animation: blink 2.4s infinite;
+    z-index: 1;
   }
 
   @keyframes blink {
@@ -83,23 +111,24 @@ import { site } from '~/data/site';
       opacity: 1;
     }
   }
+
 </style>
 
 <script>
-  // El resplandor sigue al mouse. Solo puntero fino: en touch no aporta y
-  // dispararía un reflow por cada movimiento.
-  const header = document.querySelector<HTMLElement>('header#top');
-  const glow = document.getElementById('glow');
-  const fino = window.matchMedia('(pointer: fine)').matches;
+  const hero = document.querySelector<HTMLElement>('header#top');
+  const video = hero?.querySelector<HTMLVideoElement>('.hero-media video');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  if (header && glow && fino) {
-    header.addEventListener('mousemove', (e) => {
-      const r = header.getBoundingClientRect();
-      const x = ((e.clientX - r.left) / r.width) * 100;
-      const y = ((e.clientY - r.top) / r.height) * 100;
-      glow.style.background =
-        `radial-gradient(600px at ${x}% ${y}%, rgba(255,232,0,.08), transparent 70%),` +
-        ` radial-gradient(ellipse at 80% 20%, rgba(213,0,87,.12), transparent 55%)`;
+  if (hero && video) {
+    const observer = new IntersectionObserver(([entry]) => {
+      const shouldPlay = entry.isIntersecting && !reducedMotion.matches;
+      if (shouldPlay) video.play().catch(() => {});
+      else video.pause();
+    }, { threshold: 0.05 });
+    observer.observe(hero);
+    reducedMotion.addEventListener('change', () => {
+      if (reducedMotion.matches) video.pause();
+      else if (hero.getBoundingClientRect().bottom > 0) video.play().catch(() => {});
     });
   }
 </script>
