@@ -1,8 +1,6 @@
 ---
 import { equipo, manifiesto } from '~/data/equipo';
 
-const { destacada } = manifiesto;
-
 // Duplicado para que el loop de la franja no tenga costura; la copia va
 // aria-hidden y sin tab para que no se lea dos veces.
 const copias = [false, true];
@@ -13,37 +11,21 @@ const copias = [false, true];
   <div data-focus>
   <div class="wrap manifiesto-wrap">
     <div class="intro reveal">
-      <h2 class="kicker">Nosotros</h2>
+      <h2 class="nosotros-title">Nosotros</h2>
 
-      <blockquote class="manifiesto" data-manifiesto>
-        {
-          manifiesto.estrofas.map((estrofa, e) => (
-            <div class="estrofa">
-              {estrofa.map((frase, f) => (
-                <button
-                  type="button"
-                  class="frase"
-                  aria-pressed={e === destacada.estrofa && f === destacada.frase ? 'true' : 'false'}
-                >
-                  {/* palabra por palabra: cuando la frase está en grande, el
-                      gris del hover va sobre la palabra y no sobre la fila */}
-                  {frase.map((renglon, i) => (
-                    <>
-                      {i > 0 && <br />}
-                      {renglon.split(' ').map((palabra, p) => (
-                        <>
-                          {p > 0 && ' '}
-                          <span class="palabra">{palabra}</span>
-                        </>
-                      ))}
-                    </>
-                  ))}
-                </button>
-              ))}
-            </div>
-          ))
-        }
-      </blockquote>
+      <div class="manifiesto-layout" data-manifiesto>
+        <div class="manifiesto-copy">
+          {manifiesto.estrofas.slice(0, 2).map((estrofa) => (
+            <p>{estrofa.map((frase) => frase.join(' ')).join(' ')}</p>
+          ))}
+        </div>
+
+        <div class="manifiesto-cierre" aria-label="Son ellos, somos nosotros, sos vos">
+          {manifiesto.estrofas[2].map((frase, i) => (
+            <p class:list={['cierre-line', { 'cierre-accent': i === 2 }]}>{frase.join(' ')}</p>
+          ))}
+        </div>
+      </div>
     </div>
 
   </div>
@@ -99,95 +81,80 @@ const copias = [false, true];
     margin-bottom: 60px;
   }
 
-  /* el título de sección repetía el cierre del manifiesto, así que el h2 es
-     ahora el kicker: da estructura al documento sin duplicar la frase */
-  h2.kicker {
-    font-family: var(--font-body);
-    font-weight: 400;
+  .nosotros-title {
+    position: relative;
+    width: fit-content;
+    margin-bottom: clamp(28px, 4vw, 56px);
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    line-height: 0.86;
+    letter-spacing: -0.025em;
   }
 
-  .manifiesto {
-    border-left: 4px solid var(--accent);
-    padding: 8px 0 8px 28px;
-    /* sin tope angosto: la frase destacada tiene que entrar en un renglón */
-    max-width: 100%;
-  }
-
-  .estrofa + .estrofa {
-    margin-top: 26px;
-  }
-
-  /* Cada frase es un botón que ocupa todo el ancho, así el hover responde en
-     toda la fila y no solo sobre las letras. */
-  /* Hover y selección crecen con la MISMA propiedad (font-size). Antes el
-     hover usaba transform y el click font-size: al apretar, el transform se
-     soltaba y la frase pegaba un tirón hacia atrás antes de agrandarse. */
-  .frase {
-    --tam: clamp(1.05rem, 2.2vw, 1.25rem);
-
+  .nosotros-title::after {
+    content: '';
     display: block;
-    width: 100%;
-    text-align: left;
-    background: none;
-    border: 0;
-    padding: 3px 0;
-    font-family: var(--font-body);
-    font-size: var(--tam);
-    line-height: 1.45;
-    color: var(--ink);
-    cursor: pointer;
-    transition:
-      color 0.3s ease,
-      font-size 0.4s cubic-bezier(0.33, 0, 0.2, 1);
+    width: clamp(48px, 7vw, 96px);
+    height: 5px;
+    margin-top: 16px;
+    background: var(--accent);
   }
 
-  .frase:hover {
+  .manifiesto-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+    gap: clamp(36px, 7vw, 120px);
+    align-items: center;
+  }
+
+  .manifiesto-copy {
+    border-left: 3px solid var(--accent);
+    padding: 4px 0 4px clamp(18px, 2.2vw, 32px);
     color: var(--silver);
-    font-size: calc(var(--tam) * 1.06);
+    font-size: clamp(1rem, 1.35vw, 1.3rem);
+    line-height: 1.65;
   }
 
-  /* la seleccionada es la que se ve en grande */
-  .frase[aria-pressed='true'],
-  .frase[aria-pressed='true']:hover {
-    font-family: var(--font-display);
-    text-transform: uppercase;
-    /* el piso es alto a propósito: en mobile el salto tiene que notarse igual */
-    font-size: clamp(1.9rem, 3.4vw, 2.9rem);
+  .manifiesto-copy p + p {
+    margin-top: 1.25em;
+  }
+
+  .manifiesto-cierre {
+    display: grid;
+    gap: clamp(4px, 0.8vw, 12px);
+  }
+
+  .cierre-line {
+    font-size: clamp(1.8rem, 3.5vw, 3.7rem);
+    font-weight: 600;
+    letter-spacing: -0.045em;
     line-height: 1.05;
-    letter-spacing: 0.01em;
+  }
+
+  .cierre-accent {
     color: var(--accent);
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 5vw, 5.3rem);
+    font-weight: 400;
+    letter-spacing: 0.005em;
+    text-transform: uppercase;
   }
 
-  /* Ya en grande, el gris va palabra por palabra en vez de teñir la fila
-     entera. En las que todavía no están seleccionadas el hover sigue siendo de
-     toda la fila: es lo que avisa que se pueden clickear. */
-  .frase[aria-pressed='true'] .palabra {
-    transition: color 0.2s ease;
-  }
-
-  .frase[aria-pressed='true'] .palabra:hover {
-    color: var(--silver);
-  }
-
-  @media (min-width: 1100px) {
-    .manifiesto {
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 0.75fr);
-      gap: clamp(24px, 2.5vw, 48px);
-      align-items: start;
+  @media (max-width: 860px) {
+    .manifiesto-layout {
+      grid-template-columns: 1fr;
+      gap: 30px;
     }
 
-    .estrofa + .estrofa {
-      margin-top: 0;
+    .manifiesto-cierre {
+      padding-left: clamp(20px, 5vw, 36px);
     }
 
-    .frase {
-      --tam: clamp(1.25rem, 1.45vw, 1.65rem);
+    .cierre-line {
+      font-size: clamp(1.65rem, 6vw, 2.8rem);
     }
 
-    .frase[aria-pressed='true'],
-    .frase[aria-pressed='true']:hover {
-      font-size: clamp(2.3rem, 2.7vw, 3.2rem);
+    .cierre-accent {
+      font-size: clamp(2.5rem, 9vw, 4.2rem);
     }
   }
 
@@ -341,18 +308,6 @@ const copias = [false, true];
   if (franjaEquipo && pistaEquipo) {
     montarFranja(franjaEquipo, pistaEquipo, {
       frenada: () => !!franjaEquipo.querySelector('.card.open'),
-    });
-  }
-
-  // Manifiesto: una sola frase destacada a la vez. La que está seleccionada es
-  // la que se ve en grande; el resto vuelve a tamaño de lectura.
-  const manifiesto = document.querySelector<HTMLElement>('[data-manifiesto]');
-  if (manifiesto) {
-    const frases = manifiesto.querySelectorAll<HTMLButtonElement>('.frase');
-    frases.forEach((frase) => {
-      frase.addEventListener('click', () => {
-        frases.forEach((f) => f.setAttribute('aria-pressed', String(f === frase)));
-      });
     });
   }
 
