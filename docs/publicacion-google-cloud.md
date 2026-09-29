@@ -147,6 +147,13 @@ Comprobar antes de transferir:
 
 ## Estado público observado
 
+### Dos carruseles de marcas y nuevos colores — 29 de septiembre de 2026
+
+- La release `20260929T135111Z-d77c7f8-preview` quedó activa en `/var/www/granberta-nueva/preview` tras validar SHA-256 `1f49c0a01c85ad2b94873b4e4058901e526905cd4ceeb97bccb43cfac02afd98` y 133 archivos.
+- Incluye el enlace de Gran Berta a `https://granberta.com/`, el arrastre con mouse del carrusel de ficción, acentos cian y blanco, botón flotante de WhatsApp coordinado con el acento y favicon con el monograma oficial GB Films.
+- Las 21 marcas se distribuyen sin repetirse entre dos carruseles que avanzan en sentidos opuestos. La URL pública mostró ambas filas, sin marcas compartidas, y respondió HTTP 200 con `noindex`. El favicon respondió HTTP 200 y la portada principal de WordPress siguió intacta.
+- Se retiró el paquete temporal de la VM y de Cloud Shell, se revocó y borró la clave SSH temporal, y el recuento final de claves del proyecto volvió a cero.
+
 - `https://granbertafilms.com/`: HTTP 200 con Apache/WordPress.
 - `https://www.granbertafilms.com/`: HTTP 301 hacia el dominio sin `www`.
 - `https://granbertafilms.com/preview/`: HTTP 200 y `noindex`. La release activa se consulta con `readlink /var/www/granberta-nueva/preview`; el historial queda registrado en `/var/www/granberta-nueva/deployments.jsonl`.
