@@ -110,6 +110,12 @@ Comprobar antes de transferir:
 - La release `20260928T233456Z-1ac937d-preview` se validó con SHA-256 `cf7531a570326810859cd4a319dff4dc37923a4df3189d7a685ae00548e04b82` y quedó activa en `/var/www/granberta-nueva/preview` con 52 archivos.
 - El navegador público confirmó las tres fotos cargadas y mostró el perfil de Norberto. La clave SSH temporal se revocó y se borró de Cloud Shell; WordPress siguió separado.
 
+### Logos, reel y paleta — 29 de septiembre de 2026
+
+- La release `20260929T001858Z-d927b16-preview` quedó activa en `/var/www/granberta-nueva/preview` con 75 archivos, tras validar SHA-256 `0628a799c2f3cbda2b3258275fe967c20c5859ace661d2243acf7ddf075706c5`.
+- En la URL pública se verificaron 42 imágenes de los 21 logos sin imágenes rotas, el reel de fondo reproduciéndose, el enlace al reel de YouTube y la directiva `noindex`. La página, el video y un logo respondieron HTTP 200.
+- El dominio principal continuó respondiendo HTTP 200 con WordPress. La única clave SSH temporal del proyecto se revocó y sus archivos se borraron de Cloud Shell.
+
 ## Estado público observado
 
 - `https://granbertafilms.com/`: HTTP 200 con Apache/WordPress.
