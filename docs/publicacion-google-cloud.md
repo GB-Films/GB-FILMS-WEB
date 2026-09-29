@@ -174,6 +174,13 @@ Comprobar antes de transferir:
 - El carrusel de personas permite arrastrar con el botón izquierdo del mouse o con gesto táctil horizontal mediante Pointer Events; `touch-action: pan-y` deja pasar el desplazamiento vertical de la página. Se verificó el movimiento con mouse en la URL pública sin abrir una ficha por accidente. El navegador disponible no aplicó el tamaño móvil solicitado, por lo que no se pudo confirmar el gesto táctil en una emulación o teléfono real.
 - `/preview/` y el WordPress principal respondieron HTTP 200. Se comprobó `noindex`; el acceso SSH temporal se quitó de los metadatos del proyecto y sus archivos y el paquete temporal se borraron de Cloud Shell.
 
+### Ajuste del encabezado móvil — 29 de septiembre de 2026
+
+- La release `20260929T161936Z-46eb35e-preview` quedó activa en `/var/www/granberta-nueva/preview` tras validar SHA-256 `8e300af0419ae5d58afeee28e3f792a56fc5cc2024e88200c164f58fd7d07cf3` y 130 archivos.
+- Se recuperó «Cambiar color ↻» como último control de la segunda fila móvil; los seis enlaces quedaron agrupados en dos filas con menos separación. En pantallas de hasta 360 px se reducen tipografía y espacios para mantener ese orden.
+- En la página pública se verificó que el control cambió el acento de rojo a naranja y actualizó su etiqueta accesible. `/preview/` y WordPress respondieron HTTP 200; la preview conserva `noindex, nofollow`.
+- El navegador no aplicó el tamaño móvil para una comprobación visual en esta sesión. La clave SSH temporal se revocó, el recuento de claves del proyecto volvió a cero y se borraron los paquetes temporales de la VM y Cloud Shell.
+
 - `https://granbertafilms.com/`: HTTP 200 con Apache/WordPress.
 - `https://www.granbertafilms.com/`: HTTP 301 hacia el dominio sin `www`.
 - `https://granbertafilms.com/preview/`: HTTP 200 y `noindex`. La release activa se consulta con `readlink /var/www/granberta-nueva/preview`; el historial queda registrado en `/var/www/granberta-nueva/deployments.jsonl`.
