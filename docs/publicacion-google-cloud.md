@@ -130,6 +130,13 @@ Comprobar antes de transferir:
 - La URL pública `/preview/` respondió HTTP 200 y mostró el contenido de Totem. El dominio principal respondió HTTP 200 con su página WordPress.
 - El acceso SSH temporal se quitó de los metadatos del proyecto, se borraron sus claves locales de Cloud Shell y se retiró de la VM el archivo temporal de publicación.
 
+### Ajustes de Nosotros y Universo — 29 de septiembre de 2026
+
+- La release `20260929T043906Z-8ba86e0-preview` quedó activa en `/var/www/granberta-nueva/preview` tras validar SHA-256 `6b855517997e49e27897689274998cb341695dba54c0a14c4bac677242e9b798` y 89 archivos.
+- Se quitó el título visible de «Nosotros» para evitar que quedara oculto bajo la navegación; el texto introductorio y las tres frases finales se distribuyen en dos columnas sobre las fotos.
+- Gran Berta, Bani VFX y Totem Rental se muestran en una fila en escritorio. Sus tres logos usan marcos cuadrados iguales y cada tarjeta enlaza a su página; se retiró la frase final de la sección.
+- La URL pública `/preview/` respondió HTTP 200 con las tres tarjetas, los logos cargados y `noindex`; WordPress en `/` siguió respondiendo HTTP 200. El acceso SSH temporal se revocó y el recuento de claves del proyecto volvió a cero.
+
 ## Estado público observado
 
 - `https://granbertafilms.com/`: HTTP 200 con Apache/WordPress.
