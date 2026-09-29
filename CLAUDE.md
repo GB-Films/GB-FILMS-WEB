@@ -61,7 +61,7 @@ confirmada. Si la marca usa otra, se cambia el token `--font-display` en
   Antes tenía flechas; se unificó para que las tres se comporten igual.
 - **El reel completo aparece una sola vez**, dentro de "¿Qué carajo?". La
   portada usa una copia optimizada y más nítida como fondo.
-- **El monograma del nav cambia el acento**: la visita empieza con uno de cinco
+- **El monograma del nav cambia el acento**: la visita empieza con uno de siete
   colores al azar; cada toque avanza al siguiente. `src/data/colores.ts` guarda
   los tonos y `--accent` pinta títulos y controles.
 - **La tienda muestra nueve stickers** extraídos de la plancha original. El

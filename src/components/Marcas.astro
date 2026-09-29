@@ -33,6 +33,11 @@ const conPiezas = marcas.map((m) => ({
     etiqueta: p.titulo ? `${m.nombre} × ${p.titulo}` : m.nombre,
   })),
 }));
+// Cada marca pertenece a una sola fila; las copias sólo cierran el loop de esa fila.
+const filas = [
+  conPiezas.filter((_, i) => i % 2 === 0),
+  conPiezas.filter((_, i) => i % 2 === 1),
+];
 ---
 
 <section id="marcas" class="franja" aria-labelledby="marcas-label">
@@ -42,11 +47,11 @@ const conPiezas = marcas.map((m) => ({
       <p class="franja-label" id="marcas-label">Marcas que confiaron en nosotros</p>
     </div>
 
-    <div class="marquee" data-marquee>
+    {filas.map((fila, indice) => <div class="marquee" data-marquee data-direccion={indice === 0 ? 'izquierda' : 'derecha'}>
     <ul class="pista">
       {
         copias.map((clon) =>
-          conPiezas.map((m) => (
+          fila.map((m) => (
             <li class="marca-item" aria-hidden={clon ? 'true' : undefined}>
               <div
                 class="flip marco"
@@ -97,7 +102,7 @@ const conPiezas = marcas.map((m) => ({
         )
       }
       </ul>
-    </div>
+    </div>)}
   </div>
 
   <div class="telon" data-telon hidden></div>
@@ -166,6 +171,10 @@ const conPiezas = marcas.map((m) => ({
 
   .marquee::-webkit-scrollbar {
     display: none;
+  }
+
+  .marquee + .marquee {
+    margin-top: 16px;
   }
 
   .marquee.auto:not([data-abierta-activa]) {
@@ -540,11 +549,11 @@ const conPiezas = marcas.map((m) => ({
 
   type Pieza = { src: string; vertical: boolean; etiqueta: string };
 
-  const marquee = document.querySelector<HTMLElement>('[data-marquee]');
+  const marquees = [...document.querySelectorAll<HTMLElement>('[data-marquee]')];
   const telon = document.querySelector<HTMLElement>('[data-telon]');
   const escenario = document.querySelector<HTMLElement>('[data-escenario]');
 
-  if (marquee && telon && escenario) {
+  if (marquees.length && telon && escenario) {
     const pila = escenario.querySelector<HTMLElement>('[data-pila]')!;
     const molde = pila.querySelector<HTMLElement>('[data-molde]')!;
     const controles = escenario.querySelector<HTMLElement>('[data-controles]')!;
@@ -573,9 +582,18 @@ const conPiezas = marcas.map((m) => ({
 
     // La franja se mueve con el módulo compartido; ver src/scripts/franja.ts.
     // Se queda quieta con una tarjeta abierta o navegando con teclado.
-    const pista = marquee.querySelector<HTMLElement>('.pista')!;
-    montarFranja(marquee, pista, {
-      frenada: () => !!abierta || (porTeclado && marquee.contains(document.activeElement)),
+    marquees.forEach((marquee) => {
+      const pista = marquee.querySelector<HTMLElement>('.pista')!;
+      let tarjetaApuntada = false;
+      marquee.querySelectorAll<HTMLElement>('.marca-item').forEach((item) => {
+        item.addEventListener('pointerenter', () => (tarjetaApuntada = true));
+        item.addEventListener('pointerleave', () => (tarjetaApuntada = false));
+      });
+      montarFranja(marquee, pista, {
+        reposo: marquee.dataset.direccion === 'derecha' ? -41 : 41,
+        max: marquee.dataset.direccion === 'derecha' ? -240 : 240,
+        frenada: () => !!abierta || tarjetaApuntada || (porTeclado && marquee.contains(document.activeElement)),
+      });
     });
 
     // --- geometría del carrusel -------------------------------------------
@@ -837,6 +855,7 @@ const conPiezas = marcas.map((m) => ({
     const cerrar = () => {
       if (!abierta) return;
       const item = abierta;
+      const marquee = item.closest<HTMLElement>('[data-marquee]');
       const flip = pila.querySelector<HTMLElement>('.flip')!;
       const dorso = flip.querySelector<HTMLElement>('[data-dorso]');
       const boton = flip.querySelector<HTMLButtonElement>('[data-abrir]');
@@ -872,7 +891,7 @@ const conPiezas = marcas.map((m) => ({
         flip.removeAttribute('style');
         delete flip.dataset.off;
         escenario.hidden = true;
-        marquee.removeAttribute('data-abierta-activa');
+        marquee?.removeAttribute('data-abierta-activa');
       };
       flip.addEventListener('transitionend', limpiar, { once: true });
       window.setTimeout(limpiar, MS_TRANSICION + 120); // por si no hay transición
@@ -884,6 +903,7 @@ const conPiezas = marcas.map((m) => ({
     };
 
     const abrir = (item: HTMLElement) => {
+      const marquee = item.closest<HTMLElement>('[data-marquee]');
       const flip = item.querySelector<HTMLElement>('.flip')!;
       const crudo = flip.dataset.piezas;
       if (!crudo) return;
@@ -891,7 +911,7 @@ const conPiezas = marcas.map((m) => ({
       piezas = JSON.parse(crudo) as Pieza[];
       activo = 0;
       abierta = item;
-      marquee.setAttribute('data-abierta-activa', '');
+      marquee?.setAttribute('data-abierta-activa', '');
 
       telon.hidden = false;
       escenario.hidden = false;
@@ -960,7 +980,7 @@ const conPiezas = marcas.map((m) => ({
 
     // --- eventos -----------------------------------------------------------
 
-    marquee.addEventListener('click', (ev) => {
+    marquees.forEach((marquee) => marquee.addEventListener('click', (ev) => {
       const target = ev.target as HTMLElement;
       if (!target.closest('[data-abrir]')) return;
       const item = target.closest<HTMLElement>('.marca-item');
@@ -969,7 +989,7 @@ const conPiezas = marcas.map((m) => ({
       const eraLaMisma = abierta === item;
       cerrar();
       if (!eraLaMisma) abrir(item);
-    });
+    }));
 
     escenario.addEventListener('click', (ev) => {
       const target = ev.target as HTMLElement;

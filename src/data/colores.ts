@@ -4,4 +4,6 @@ export const colores = [
   { nombre: 'naranja', valor: '#ff7417' },
   { nombre: 'verde flúor', valor: '#58e51c' },
   { nombre: 'rosa Bani', valor: '#ed197a' },
+  { nombre: 'azul cian', valor: '#009fd6' },
+  { nombre: 'blanco', valor: '#ffffff' },
 ] as const;
