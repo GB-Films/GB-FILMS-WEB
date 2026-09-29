@@ -279,7 +279,7 @@ export const hermanas: Hermana[] = [
     rol: 'La madre · desde 2015',
     texto:
       'El universo original: contenido propio y comunidad. +2M de seguidores, +400M de vistas, 365 vlogs. Si querés, podés.',
-    url: 'https://linktr.ee/granberta',
+    url: 'https://granberta.com/',
   },
   {
     nombre: 'Bani VFX',
