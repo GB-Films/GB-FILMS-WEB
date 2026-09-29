@@ -62,7 +62,10 @@ const base = import.meta.env.BASE_URL;
   }
 
   .carrusel::-webkit-scrollbar { display: none; }
-  .carrusel.auto { overflow: hidden; }
+  .carrusel.auto { overflow: hidden; touch-action: pan-y; }
+  .carrusel .ip { cursor: grab; user-select: none; }
+  .carrusel.arrastrando .ip { cursor: grabbing; }
+  .carrusel img { -webkit-user-drag: none; }
 
   .pista {
     list-style: none;
@@ -146,25 +149,7 @@ const base = import.meta.env.BASE_URL;
     const tienePuntero = window.matchMedia('(hover: hover)');
     montarFranja(carrusel, pista, {
       frenada: () => tienePuntero.matches && Boolean(carrusel.querySelector('.ip:hover')),
+      arrastrarMouse: true,
     });
-
-    let inicioToque = 0;
-    let huboArrastre = false;
-    carrusel.addEventListener('pointerdown', (ev) => {
-      if (ev.pointerType !== 'mouse') {
-        inicioToque = ev.clientX;
-        huboArrastre = false;
-      }
-    });
-    carrusel.addEventListener('pointermove', (ev) => {
-      if (ev.pointerType !== 'mouse' && ev.buttons && Math.abs(ev.clientX - inicioToque) > 8) {
-        huboArrastre = true;
-      }
-    });
-    carrusel.addEventListener('click', (ev) => {
-      if (!huboArrastre) return;
-      ev.preventDefault();
-      huboArrastre = false;
-    }, true);
   }
 </script>

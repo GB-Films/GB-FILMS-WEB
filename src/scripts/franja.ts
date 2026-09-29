@@ -4,7 +4,7 @@
  * En reposo desfila sola hacia la izquierda. Con el puntero encima, su posición
  * horizontal manda: en el centro la velocidad es cero y hacia los costados
  * acelera, invirtiendo el sentido en cada mitad. En touch se arrastra con el
- * dedo.
+ * dedo; una franja puede habilitar también el arrastre con el mouse.
  *
  * Requisitos del markup:
  * - `pista` tiene que contener el listado **duplicado**, para que el loop no
@@ -21,15 +21,18 @@ export type OpcionesFranja = {
   max?: number;
   /** Si devuelve true la franja se queda quieta (por ejemplo, con una tarjeta abierta). */
   frenada?: () => boolean;
+  /** Permite recorrer la franja manteniendo el clic izquierdo y arrastrando. */
+  arrastrarMouse?: boolean;
 };
 
 export function montarFranja(
   contenedor: HTMLElement,
   pista: HTMLElement,
-  { reposo = 41, max = 240, frenada }: OpcionesFranja = {},
+  { reposo = 41, max = 240, frenada, arrastrarMouse = false }: OpcionesFranja = {},
 ) {
   const sinMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)');
-  if (sinMovimiento.matches) return;
+  if (sinMovimiento.matches && !arrastrarMouse) return;
+  const automatico = !sinMovimiento.matches;
 
   /** null = el mouse no está encima */
   let velMouse: number | null = null;
@@ -71,8 +74,10 @@ export function montarFranja(
     requestAnimationFrame(cuadro);
   };
 
-  contenedor.classList.add('auto');
-  requestAnimationFrame(cuadro);
+  if (automatico) {
+    contenedor.classList.add('auto');
+    requestAnimationFrame(cuadro);
+  }
 
   contenedor.addEventListener('mousemove', (ev) => {
     if (arrastrando) return;
@@ -85,19 +90,26 @@ export function montarFranja(
 
   contenedor.addEventListener('mouseleave', () => (velMouse = null));
 
-  // --- arrastre con el dedo -------------------------------------------------
-  // Sin esto, en celular la franja sólo se puede mirar pasar: no hay mouse que
-  // gobierne la velocidad.
+  // --- arrastre con el dedo o el mouse -------------------------------------
+  // El clic normal sigue abriendo la tarjeta; sólo un desplazamiento real
+  // captura el puntero y cancela el clic que el navegador generaría al soltar.
+  let punteroActivo: number | null = null;
   let xInicial = 0;
   let posInicial = 0;
+  let movio = false;
 
   contenedor.addEventListener(
     'pointerdown',
     (ev) => {
-      if (ev.pointerType === 'mouse') return;
+      if (punteroActivo !== null) return;
+      if (ev.pointerType === 'mouse' && (!arrastrarMouse || ev.button !== 0)) return;
+      if (ev.pointerType !== 'mouse' && !automatico) return;
+      punteroActivo = ev.pointerId;
       arrastrando = true;
+      vel = 0;
+      movio = false;
       xInicial = ev.clientX;
-      posInicial = pos;
+      posInicial = automatico ? pos : contenedor.scrollLeft;
     },
     { passive: true },
   );
@@ -105,16 +117,45 @@ export function montarFranja(
   contenedor.addEventListener(
     'pointermove',
     (ev) => {
-      if (!arrastrando) return;
-      pos = posInicial - (ev.clientX - xInicial);
-      aplicar();
+      if (ev.pointerId !== punteroActivo) return;
+      const delta = ev.clientX - xInicial;
+      if (!movio && Math.abs(delta) <= 6) return;
+      if (!movio) {
+        movio = true;
+        if (ev.pointerType === 'mouse') {
+          contenedor.setPointerCapture(ev.pointerId);
+          contenedor.classList.add('arrastrando');
+        }
+      }
+      if (ev.pointerType === 'mouse') ev.preventDefault();
+      const destino = posInicial - delta * (ev.pointerType === 'mouse' ? 2 : 1);
+      if (automatico) {
+        pos = destino;
+        aplicar();
+      } else {
+        contenedor.scrollLeft = destino;
+      }
     },
-    { passive: true },
   );
 
-  const soltar = () => {
+  const soltar = (ev: PointerEvent) => {
+    if (ev.pointerId !== punteroActivo) return;
+    punteroActivo = null;
     arrastrando = false;
+    if (ev.type === 'pointercancel') movio = false;
+    contenedor.classList.remove('arrastrando');
+    if (contenedor.hasPointerCapture(ev.pointerId)) contenedor.releasePointerCapture(ev.pointerId);
   };
   contenedor.addEventListener('pointerup', soltar, { passive: true });
   contenedor.addEventListener('pointercancel', soltar, { passive: true });
+
+  if (arrastrarMouse) {
+    contenedor.addEventListener('dragstart', (ev) => ev.preventDefault());
+    contenedor.addEventListener('click', (ev) => {
+      if (!movio) return;
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+      movio = false;
+    }, true);
+  }
 }
