@@ -167,6 +167,13 @@ Comprobar antes de transferir:
 - El pie de página distribuye el logo, el lema con las redes y el contacto en tres columnas en escritorio. El copyright queda debajo de una línea divisoria. En móvil las columnas se adaptan al ancho disponible.
 - Se verificó visualmente la página pública; `/preview/` y el WordPress principal respondieron HTTP 200. La clave SSH temporal se revocó y borró, y el recuento final de claves del proyecto volvió a cero.
 
+### Poppins, navegación móvil y arrastre del equipo — 29 de septiembre de 2026
+
+- La release `20260929T154755Z-5c73c63-preview` quedó activa en `/var/www/granberta-nueva/preview` tras validar SHA-256 `d86a8213e3ebadf93f1519eefb5a736462eecf5001eb3db765a3195e57c1097b` y 130 archivos.
+- El cuerpo usa las fuentes Poppins provistas y conserva Anton para los títulos; Anita figura como «Directora». En móvil se oculta la indicación «Cambiar color» y la navegación se acomoda en dos filas.
+- El carrusel de personas permite arrastrar con el botón izquierdo del mouse o con gesto táctil horizontal mediante Pointer Events; `touch-action: pan-y` deja pasar el desplazamiento vertical de la página. Se verificó el movimiento con mouse en la URL pública sin abrir una ficha por accidente. El navegador disponible no aplicó el tamaño móvil solicitado, por lo que no se pudo confirmar el gesto táctil en una emulación o teléfono real.
+- `/preview/` y el WordPress principal respondieron HTTP 200. Se comprobó `noindex`; el acceso SSH temporal se quitó de los metadatos del proyecto y sus archivos y el paquete temporal se borraron de Cloud Shell.
+
 - `https://granbertafilms.com/`: HTTP 200 con Apache/WordPress.
 - `https://www.granbertafilms.com/`: HTTP 301 hacia el dominio sin `www`.
 - `https://granbertafilms.com/preview/`: HTTP 200 y `noindex`. La release activa se consulta con `readlink /var/www/granberta-nueva/preview`; el historial queda registrado en `/var/www/granberta-nueva/deployments.jsonl`.
