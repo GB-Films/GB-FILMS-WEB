@@ -137,6 +137,14 @@ Comprobar antes de transferir:
 - Gran Berta, Bani VFX y Totem Rental se muestran en una fila en escritorio. Sus tres logos usan marcos cuadrados iguales y cada tarjeta enlaza a su página; se retiró la frase final de la sección.
 - La URL pública `/preview/` respondió HTTP 200 con las tres tarjetas, los logos cargados y `noindex`; WordPress en `/` siguió respondiendo HTTP 200. El acceso SSH temporal se revocó y el recuento de claves del proyecto volvió a cero.
 
+### Fichas de ficción y ajustes de portada — 29 de septiembre de 2026
+
+- La release `20260929T050009Z-e9d0964-preview` quedó activa en `/var/www/granberta-nueva/preview` tras validar SHA-256 `e926876c9b2d3e12e2499ca42733d24f9204de5da7454fc104338b29099bc6e7` y 133 archivos.
+- Los nueve pósters de «Nuestras historias» enlazan a fichas individuales con póster, sinopsis y datos confirmados cuando están disponibles. Rendering y Noku tienen la sinopsis indicada como pendiente hasta recibir el texto oficial.
+- El carrusel se detiene al apuntar a una tarjeta para evitar abrir la ficha vecina. Se corrigió el recorte del borde superior y se dio más aire entre menú, título y pósters.
+- La portada escribe «CULOS», borra las dos últimas letras y completa «CULTURA.»; con movimiento reducido muestra directamente el texto final. «Marcas que confiaron en nosotros» usa el color de acento actual.
+- `/preview/`, las nueve fichas y el WordPress principal respondieron HTTP 200. Las páginas de preview conservaron `noindex`. Se retiró el paquete temporal de la VM y la clave SSH del proyecto y de Cloud Shell; el recuento final fue cero.
+
 ## Estado público observado
 
 - `https://granbertafilms.com/`: HTTP 200 con Apache/WordPress.
