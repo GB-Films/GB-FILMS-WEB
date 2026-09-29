@@ -10,32 +10,31 @@ import { hermanas } from '~/data/trabajos';
     <div class="hermanas reveal">
       {
         hermanas.map((h) => (
-          <article class="hermana">
-            <div class:list={['hermana-logo', { 'totem-logo': h.nombre === 'Totem Rental' }]}>
+          <a class="hermana" href={h.url} target="_blank" rel="noopener noreferrer">
+            <div class="hermana-logo">
               <img src={`${import.meta.env.BASE_URL}${h.logo}`} alt={`Logo de ${h.nombre}`} loading="lazy" decoding="async" />
             </div>
             <div class="hermana-info">
               <span class="rol">{h.rol}</span>
               <h3>{h.nombre}</h3>
               <p>{h.texto}</p>
-              {h.url && <a class="visitar" href={h.url} target="_blank" rel="noopener noreferrer">Conocé Totem Rental ↗</a>}
+              <span class="visitar">Conocé {h.nombre} ↗</span>
             </div>
-          </article>
+          </a>
         ))
       }
     </div>
-
-    <p class="herencia reveal">
-      Gran Berta es el origen y el corazón; Bani VFX y GB Films son sus evoluciones
-      profesionales. <b>No es nostalgia: es herencia activa.</b>
-    </p>
   </div>
 </section>
 
 <style>
+  #universo .wrap {
+    max-width: 1500px;
+  }
+
   .hermanas {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 18px;
   }
 
@@ -46,12 +45,20 @@ import { hermanas } from '~/data/trabajos';
     gap: clamp(16px, 2vw, 26px);
     min-width: 0;
     padding: clamp(18px, 2.2vw, 28px);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .hermana:hover,
+  .hermana:focus-visible {
+    border-color: var(--accent);
   }
 
   .hermana-logo {
-    width: clamp(76px, 8.5vw, 116px);
-    height: 140px;
-    flex: 0 0 clamp(76px, 8.5vw, 116px);
+    width: clamp(88px, 8vw, 116px);
+    aspect-ratio: 1;
+    flex: 0 0 clamp(88px, 8vw, 116px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -59,22 +66,9 @@ import { hermanas } from '~/data/trabajos';
   }
 
   .hermana-logo img {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-  }
-
-  .hermana-logo.totem-logo img {
     width: 100%;
     height: 100%;
-    max-width: none;
-    max-height: none;
-    object-fit: cover;
-    object-position: center 72%;
-    transform: scale(2.05);
-    transform-origin: center 72%;
+    object-fit: contain;
   }
 
   .hermana-info {
@@ -112,8 +106,15 @@ import { hermanas } from '~/data/trabajos';
     text-transform: uppercase;
   }
 
-  .visitar:hover {
+  .hermana:hover .visitar,
+  .hermana:focus-visible .visitar {
     color: var(--ink);
+  }
+
+  @media (max-width: 1100px) {
+    .hermanas {
+      grid-template-columns: 1fr;
+    }
   }
 
   @media (max-width: 430px) {
@@ -125,17 +126,6 @@ import { hermanas } from '~/data/trabajos';
     .hermana-logo {
       width: 66px;
       flex-basis: 66px;
-      height: 112px;
     }
-  }
-
-  .herencia {
-    margin-top: 40px;
-    color: var(--dim);
-    font-size: 1rem;
-  }
-
-  .herencia b {
-    color: var(--light);
   }
 </style>

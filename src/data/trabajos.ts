@@ -227,7 +227,7 @@ export type Hermana = {
   rol: string;
   texto: string;
   logo: string;
-  url?: string;
+  url: string;
 };
 
 export const hermanas: Hermana[] = [
@@ -237,6 +237,7 @@ export const hermanas: Hermana[] = [
     rol: 'La madre · desde 2015',
     texto:
       'El universo original: contenido propio y comunidad. +2M de seguidores, +400M de vistas, 365 vlogs. Si querés, podés.',
+    url: 'https://linktr.ee/granberta',
   },
   {
     nombre: 'Bani VFX',
@@ -244,6 +245,7 @@ export const hermanas: Hermana[] = [
     rol: 'Post-producción',
     texto:
       'La empresa de post nacida dentro de Gran Berta. Largometrajes, contenido para The Rock y Zach King, comerciales globales.',
+    url: 'https://bani-vfx.com/',
   },
   {
     nombre: 'Totem Rental',
