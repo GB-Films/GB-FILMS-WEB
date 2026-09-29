@@ -11,24 +11,28 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
 
 <footer>
   <div class="wrap">
-    <a class="foot-logo" href={`${prefix}#top`} aria-label={`${site.shortName} — volver arriba`}>
-      <Logo variant="lockup" height={116} />
-    </a>
-    <nav class="redes" aria-label="Redes sociales">
-      {
-        redes.map((r) => (
-          <a href={r.href} rel="noopener" target="_blank">
-            {r.label}
-          </a>
-        ))
-      }
-    </nav>
-    {/* El foco del sitio hoy son las marcas; el talento queda acá abajo para
-        no competir con el CTA comercial. */}
-    <p class="talento">
-      {talento.texto} <a href={mailtoTalento}>{talento.label}</a>.
-    </p>
-    <p class="foot-slogan">{site.tagline}</p>
+    <div class="foot-main">
+      <a class="foot-logo" href={`${prefix}#top`} aria-label={`${site.shortName} — volver arriba`}>
+        <Logo variant="lockup" height={92} />
+      </a>
+      <div class="foot-centro">
+        <p class="foot-slogan">{site.tagline}</p>
+        <nav class="redes" aria-label="Redes sociales">
+          {
+            redes.map((r) => (
+              <a href={r.href} rel="noopener" target="_blank">
+                {r.label}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+      {/* El foco del sitio hoy son las marcas; el talento queda acá abajo para
+          no competir con el CTA comercial. */}
+      <p class="talento">
+        {talento.texto} <a href={mailtoTalento}>{talento.label} ↗</a>
+      </p>
+    </div>
     <p class="foot-note">© {year} {site.name} · {site.city}, {site.country}</p>
   </div>
 </footer>
@@ -36,13 +40,21 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
 <style>
   footer {
     border-top: 1px solid var(--line);
-    padding: 70px 0 50px;
+    padding: 40px 0 24px;
+  }
+
+  footer .wrap { max-width: 1500px; }
+
+  .foot-main {
+    display: grid;
+    grid-template-columns: 130px minmax(0, 1fr) minmax(220px, 0.52fr);
+    gap: clamp(26px, 3.5vw, 54px);
+    align-items: start;
   }
 
   .foot-logo {
-    display: inline-block;
+    display: inline-flex;
     color: var(--ink);
-    margin-bottom: 44px;
     transition: color 0.4s;
   }
 
@@ -50,11 +62,13 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
     color: var(--light);
   }
 
+  .foot-centro { min-width: 0; }
+
   .redes {
     display: flex;
-    gap: 26px;
+    gap: 10px 20px;
     flex-wrap: wrap;
-    margin-bottom: 40px;
+    margin-top: 20px;
   }
 
   .redes a {
@@ -72,14 +86,15 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
   }
 
   .talento {
-    color: var(--dim);
-    font-size: 0.85rem;
-    margin-bottom: 34px;
+    color: var(--silver);
+    font-size: 0.84rem;
+    line-height: 1.55;
   }
 
   .talento a {
     color: var(--light);
     border-bottom: 1px solid transparent;
+    white-space: nowrap;
   }
 
   .talento a:hover {
@@ -88,20 +103,33 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
 
   .foot-slogan {
     font-family: var(--font-display);
-    font-size: clamp(2rem, 7vw, 4.5rem);
-    color: #141414;
+    font-size: clamp(2rem, 3.9vw, 3.25rem);
+    color: var(--light);
     text-transform: uppercase;
     line-height: 1;
-    transition: color 1.2s;
-  }
-
-  .foot-slogan:hover {
-    color: var(--light);
   }
 
   .foot-note {
-    color: var(--mute);
+    color: #777;
     font-size: 0.75rem;
-    margin-top: 20px;
+    border-top: 1px solid var(--line);
+    margin-top: 28px;
+    padding-top: 16px;
+  }
+
+  @media (max-width: 850px) {
+    .foot-main { grid-template-columns: 108px minmax(0, 1fr); }
+    .foot-logo :global(svg) { height: 80px !important; }
+    .talento { grid-column: 2; }
+  }
+
+  @media (max-width: 560px) {
+    footer { padding-top: 30px; }
+    .foot-main { grid-template-columns: 76px minmax(0, 1fr); gap: 18px; }
+    .foot-logo :global(svg) { height: 64px !important; }
+    .redes { gap: 8px 14px; margin-top: 14px; }
+    .redes a { font-size: 0.68rem; letter-spacing: 0.1em; }
+    .talento { grid-column: 1 / -1; }
+    .foot-note { margin-top: 22px; }
   }
 </style>
