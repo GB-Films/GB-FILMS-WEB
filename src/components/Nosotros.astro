@@ -6,13 +6,11 @@ import { equipo, manifiesto } from '~/data/equipo';
 const copias = [false, true];
 ---
 
-<section id="nosotros">
-  {/* El foco incluye manifiesto y retratos para que entren juntos al navegar. */}
+<section id="nosotros" aria-label="Nosotros">
+  {/* El foco alinea el manifiesto y los retratos al navegar. */}
   <div data-focus>
   <div class="wrap manifiesto-wrap">
     <div class="intro reveal">
-      <h2 class="nosotros-title">Nosotros</h2>
-
       <div class="manifiesto-layout" data-manifiesto>
         <div class="manifiesto-copy">
           {manifiesto.estrofas.slice(0, 2).map((estrofa) => (
@@ -78,49 +76,35 @@ const copias = [false, true];
   }
 
   .intro {
-    margin-bottom: 60px;
-  }
-
-  .nosotros-title {
-    position: relative;
-    width: fit-content;
-    margin-bottom: clamp(28px, 4vw, 56px);
-    font-size: clamp(3.5rem, 9vw, 8rem);
-    line-height: 0.86;
-    letter-spacing: -0.025em;
-  }
-
-  .nosotros-title::after {
-    content: '';
-    display: block;
-    width: clamp(48px, 7vw, 96px);
-    height: 5px;
-    margin-top: 16px;
-    background: var(--accent);
+    margin-bottom: clamp(36px, 4vw, 52px);
   }
 
   .manifiesto-layout {
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
     gap: clamp(36px, 7vw, 120px);
-    align-items: center;
+    align-items: stretch;
   }
 
   .manifiesto-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     border-left: 3px solid var(--accent);
-    padding: 4px 0 4px clamp(18px, 2.2vw, 32px);
+    padding: 8px 0 8px clamp(18px, 2.2vw, 32px);
     color: var(--silver);
     font-size: clamp(1rem, 1.35vw, 1.3rem);
     line-height: 1.65;
   }
 
   .manifiesto-copy p + p {
-    margin-top: 1.25em;
+    margin-top: 0;
   }
 
   .manifiesto-cierre {
-    display: grid;
-    gap: clamp(4px, 0.8vw, 12px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   .cierre-line {
@@ -143,6 +127,16 @@ const copias = [false, true];
     .manifiesto-layout {
       grid-template-columns: 1fr;
       gap: 30px;
+    }
+
+    .manifiesto-copy,
+    .manifiesto-cierre {
+      justify-content: initial;
+      gap: 16px;
+    }
+
+    .manifiesto-copy p + p {
+      margin-top: 0;
     }
 
     .manifiesto-cierre {
