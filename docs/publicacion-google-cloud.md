@@ -161,6 +161,12 @@ Comprobar antes de transferir:
 - Las 21 marcas se distribuyen sin repetirse entre dos carruseles que avanzan en sentidos opuestos. La URL pública mostró ambas filas, sin marcas compartidas, y respondió HTTP 200 con `noindex`. El favicon respondió HTTP 200 y la portada principal de WordPress siguió intacta.
 - Se retiró el paquete temporal de la VM y de Cloud Shell, se revocó y borró la clave SSH temporal, y el recuento final de claves del proyecto volvió a cero.
 
+### Pie de página horizontal — 29 de septiembre de 2026
+
+- La release `20260929T144430Z-dc4d95e-preview` quedó activa en `/var/www/granberta-nueva/preview` tras validar SHA-256 `9cd8f0c9e65cc2c8a8565a36f20a3994fbbb9d20fd8c502a0a29e50b77fafe2b` y 133 archivos.
+- El pie de página distribuye el logo, el lema con las redes y el contacto en tres columnas en escritorio. El copyright queda debajo de una línea divisoria. En móvil las columnas se adaptan al ancho disponible.
+- Se verificó visualmente la página pública; `/preview/` y el WordPress principal respondieron HTTP 200. La clave SSH temporal se revocó y borró, y el recuento final de claves del proyecto volvió a cero.
+
 - `https://granbertafilms.com/`: HTTP 200 con Apache/WordPress.
 - `https://www.granbertafilms.com/`: HTTP 301 hacia el dominio sin `www`.
 - `https://granbertafilms.com/preview/`: HTTP 200 y `noindex`. La release activa se consulta con `readlink /var/www/granberta-nueva/preview`; el historial queda registrado en `/var/www/granberta-nueva/deployments.jsonl`.
