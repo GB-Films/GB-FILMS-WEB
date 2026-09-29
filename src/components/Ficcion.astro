@@ -46,10 +46,11 @@ const base = import.meta.env.BASE_URL;
 
 <style>
   #ficcion { padding-top: 42px; }
+  #ficcion [data-focus] { scroll-margin-top: 36px; }
 
   .sec-title {
     font-size: clamp(2rem, 5vw, 3.6rem);
-    margin-bottom: 28px;
+    margin-bottom: 42px;
   }
 
   .carrusel {
@@ -69,7 +70,7 @@ const base = import.meta.env.BASE_URL;
     gap: 16px;
     width: max-content;
     will-change: transform;
-    padding-block: 3px;
+    padding-block: 12px;
   }
 
   .ip-item { flex: 0 0 clamp(255px, 26vw, 330px); }

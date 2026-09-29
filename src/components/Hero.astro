@@ -10,7 +10,7 @@ const reelPoster = `${import.meta.env.BASE_URL}reel/gb-films-fondo.webp`;
   </div>
   <div class="wrap">
     <p class="hero-kicker">{site.name} · {site.city}</p>
-    <h1 class="hero-title">Hacemos<br /><span>Cultura.</span></h1>
+    <h1 class="hero-title" aria-label="Hacemos cultura.">Hacemos<br /><span class="hero-word" data-hero-word aria-hidden="true">Cultura.</span></h1>
     <p class="hero-sub">
       Publicidades, contenido digital, videoclips y ficción.<br />
       <strong>La cultura no se observa, se hace.</strong>
@@ -75,9 +75,12 @@ const reelPoster = `${import.meta.env.BASE_URL}reel/gb-films-fondo.webp`;
     position: relative;
   }
 
-  .hero-title span {
+  .hero-word {
     color: var(--accent);
+    white-space: nowrap;
   }
+
+  :global(html.js) .hero-word:not(.escribiendo) { visibility: hidden; }
 
   .hero-sub {
     margin-top: 26px;
@@ -117,7 +120,38 @@ const reelPoster = `${import.meta.env.BASE_URL}reel/gb-films-fondo.webp`;
 <script>
   const hero = document.querySelector<HTMLElement>('header#top');
   const video = hero?.querySelector<HTMLVideoElement>('.hero-media video');
+  const palabra = hero?.querySelector<HTMLElement>('[data-hero-word]');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (palabra) {
+    palabra.classList.add('escribiendo');
+    if (!reducedMotion.matches) {
+      const pasos = [
+        ['C', 180], ['CU', 180], ['CUL', 180], ['CULO', 180], ['CULOS', 560],
+        ['CULO', 180], ['CUL', 260], ['CULT', 160], ['CULTU', 160],
+        ['CULTUR', 160], ['CULTURA', 280], ['CULTURA.', 0],
+      ] as const;
+      palabra.textContent = '';
+      let paso = 0;
+      let temporizador: number;
+      const escribir = () => {
+        if (reducedMotion.matches || paso >= pasos.length) {
+          palabra.textContent = 'Cultura.';
+          return;
+        }
+        const [texto, espera] = pasos[paso++];
+        palabra.textContent = texto;
+        temporizador = window.setTimeout(escribir, espera);
+      };
+      temporizador = window.setTimeout(escribir, 280);
+      reducedMotion.addEventListener('change', () => {
+        if (reducedMotion.matches) {
+          window.clearTimeout(temporizador);
+          palabra.textContent = 'Cultura.';
+        }
+      });
+    }
+  }
 
   if (hero && video) {
     const observer = new IntersectionObserver(([entry]) => {

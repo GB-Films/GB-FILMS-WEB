@@ -190,9 +190,10 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
         const libre = window.innerHeight - altoNav;
         const caja = foco.getBoundingClientRect();
         const sobra = Math.max(0, (libre - caja.height) / 2);
+        const respiro = parseFloat(getComputedStyle(foco).scrollMarginTop) || 0;
 
         window.scrollTo({
-          top: window.scrollY + caja.top - altoNav - sobra,
+          top: window.scrollY + caja.top - altoNav - sobra - respiro,
           behavior: comportamiento,
         });
       } else {
