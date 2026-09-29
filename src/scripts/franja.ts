@@ -103,7 +103,6 @@ export function montarFranja(
     (ev) => {
       if (punteroActivo !== null) return;
       if (ev.pointerType === 'mouse' && (!arrastrarMouse || ev.button !== 0)) return;
-      if (ev.pointerType !== 'mouse' && !automatico) return;
       punteroActivo = ev.pointerId;
       arrastrando = true;
       vel = 0;
@@ -122,8 +121,8 @@ export function montarFranja(
       if (!movio && Math.abs(delta) <= 6) return;
       if (!movio) {
         movio = true;
+        contenedor.setPointerCapture(ev.pointerId);
         if (ev.pointerType === 'mouse') {
-          contenedor.setPointerCapture(ev.pointerId);
           contenedor.classList.add('arrastrando');
         }
       }

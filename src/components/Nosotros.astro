@@ -168,6 +168,13 @@ const copias = [false, true];
 
   .team-franja.auto {
     overflow: hidden;
+    touch-action: pan-y;
+    user-select: none;
+    cursor: grab;
+  }
+
+  .team-franja.arrastrando {
+    cursor: grabbing;
   }
 
   .pista {
@@ -302,6 +309,7 @@ const copias = [false, true];
   if (franjaEquipo && pistaEquipo) {
     montarFranja(franjaEquipo, pistaEquipo, {
       frenada: () => !!franjaEquipo.querySelector('.card.open'),
+      arrastrarMouse: true,
     });
   }
 
