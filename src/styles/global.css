@@ -4,6 +4,22 @@
    el <style> de su componente; acá solo lo que se comparte.
    ========================================================================== */
 
+@font-face {
+  font-family: 'Poppins';
+  src: url('../assets/fonts/Poppins-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('../assets/fonts/Poppins-Bold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 :root {
   /* paleta */
   --light: #f2f2f2;
@@ -24,7 +40,7 @@
 
   /* tipografía */
   --font-display: 'Anton', 'Impact', sans-serif;
-  --font-body: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'Poppins', 'Inter', system-ui, -apple-system, sans-serif;
 
   /* layout */
   --wrap: 1100px;
@@ -36,8 +52,7 @@
 
 @media (max-width: 860px) {
   :root {
-    /* los links del nav se apilan en varias líneas */
-    --nav-h: 140px;
+    --nav-h: 54px;
   }
 }
 

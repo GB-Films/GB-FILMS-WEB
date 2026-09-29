@@ -13,7 +13,7 @@ export const equipo: Miembro[] = [
   {
     nombre: 'Anita Serrano',
     foto: 'equipo/anita.webp',
-    rol: 'Directora Creativa',
+    rol: 'Directora',
     linea: 'Crea sin pedir permiso',
     bio: 'La locura y la pasión si estas palabras fueran una persona, en el mejor de los sentidos. Creadora de mundos de terror, humor con una manera única de ver la vida.',
   },
