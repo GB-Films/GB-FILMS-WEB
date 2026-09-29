@@ -50,6 +50,7 @@ export const tienda = {
     { archivo: 'mio-tuyo.webp', descripcion: 'Sticker Mío Tuyo' },
     { archivo: 'gorra.webp', descripcion: 'Sticker de gorra GB Films' },
     { archivo: 'gb-films.webp', descripcion: 'Sticker del logo GB Films' },
+    { archivo: 'agarrate-la-tanga.webp', descripcion: 'Sticker Agarrate la Tanga' },
   ],
 };
 

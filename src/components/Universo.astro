@@ -11,10 +11,15 @@ import { hermanas } from '~/data/trabajos';
       {
         hermanas.map((h) => (
           <article class="hermana">
-            <div class="hermana-logo"><img src={`${import.meta.env.BASE_URL}${h.logo}`} alt={`Logo de ${h.nombre}`} loading="lazy" decoding="async" /></div>
-            <span class="rol">{h.rol}</span>
-            <h3>{h.nombre}</h3>
-            <p>{h.texto}</p>
+            <div class:list={['hermana-logo', { 'totem-logo': h.nombre === 'Totem Rental' }]}>
+              <img src={`${import.meta.env.BASE_URL}${h.logo}`} alt={`Logo de ${h.nombre}`} loading="lazy" decoding="async" />
+            </div>
+            <div class="hermana-info">
+              <span class="rol">{h.rol}</span>
+              <h3>{h.nombre}</h3>
+              <p>{h.texto}</p>
+              {h.url && <a class="visitar" href={h.url} target="_blank" rel="noopener noreferrer">Conocé Totem Rental ↗</a>}
+            </div>
           </article>
         ))
       }
@@ -30,29 +35,51 @@ import { hermanas } from '~/data/trabajos';
 <style>
   .hermanas {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 22px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    gap: 18px;
   }
 
   .hermana {
     border: 1px solid var(--line-2);
-    padding: 34px;
+    display: flex;
+    align-items: center;
+    gap: clamp(16px, 2vw, 26px);
+    min-width: 0;
+    padding: clamp(18px, 2.2vw, 28px);
   }
 
   .hermana-logo {
+    width: clamp(76px, 8.5vw, 116px);
     height: 140px;
+    flex: 0 0 clamp(76px, 8.5vw, 116px);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 26px;
+    overflow: hidden;
   }
 
   .hermana-logo img {
-    max-width: min(100%, 300px);
+    max-width: 100%;
     max-height: 100%;
     width: auto;
     height: auto;
     object-fit: contain;
+  }
+
+  .hermana-logo.totem-logo img {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
+    object-position: center 72%;
+    transform: scale(2.05);
+    transform-origin: center 72%;
+  }
+
+  .hermana-info {
+    min-width: 0;
+    flex: 1;
   }
 
   .hermana h3 {
@@ -73,6 +100,33 @@ import { hermanas } from '~/data/trabajos';
     text-transform: uppercase;
     display: block;
     margin-bottom: 12px;
+  }
+
+  .visitar {
+    display: inline-flex;
+    margin-top: 14px;
+    color: var(--accent);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .visitar:hover {
+    color: var(--ink);
+  }
+
+  @media (max-width: 430px) {
+    .hermana {
+      gap: 14px;
+      padding: 16px;
+    }
+
+    .hermana-logo {
+      width: 66px;
+      flex-basis: 66px;
+      height: 112px;
+    }
   }
 
   .herencia {

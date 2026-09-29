@@ -227,6 +227,7 @@ export type Hermana = {
   rol: string;
   texto: string;
   logo: string;
+  url?: string;
 };
 
 export const hermanas: Hermana[] = [
@@ -239,9 +240,17 @@ export const hermanas: Hermana[] = [
   },
   {
     nombre: 'Bani VFX',
-    logo: 'universo/bani-vfx.webp',
+    logo: 'universo/bani-monograma.webp',
     rol: 'Post-producción',
     texto:
       'La empresa de post nacida dentro de Gran Berta. Largometrajes, contenido para The Rock y Zach King, comerciales globales.',
+  },
+  {
+    nombre: 'Totem Rental',
+    logo: 'universo/totem.webp',
+    rol: 'Rental de producción audiovisual',
+    texto:
+      'Alquiler de utilería, mobiliario y vestuario para cine, TV, publicidad, teatro y contenidos en Buenos Aires. Objetos con carácter para historias que se ven.',
+    url: 'https://gb-films.github.io/Totem/',
   },
 ];
