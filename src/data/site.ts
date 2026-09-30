@@ -20,10 +20,10 @@ export const site = {
 
 export type NavLink = { href: string; label: string };
 
-// Los anclajes siguen el orden de las secciones en index.astro. Trabajos abre
+// Los anclajes siguen el orden de las secciones en index.astro. Portfolio abre
 // el portfolio independiente; la franja de marcas permanece en la portada.
 export const navLinks: NavLink[] = [
-  { href: 'portfolio/', label: 'Trabajos' },
+  { href: 'portfolio/', label: 'Portfolio' },
   { href: '#que', label: '¿Qué carajo?' },
   { href: '#nosotros', label: 'Nosotros' },
   { href: '#ficcion', label: 'Ficción' },
