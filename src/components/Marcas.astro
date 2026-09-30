@@ -1,5 +1,6 @@
 ---
-import { marcas, urlEmbed, esVertical } from '~/data/trabajos';
+import { marcas } from '~/data/trabajos';
+import { vistaPieza } from '~/data/vistasPiezas';
 
 /**
  * Franja de prueba social, justo debajo del hero.
@@ -27,11 +28,15 @@ const copias = [false, true];
 // saber nada de formatos de URL.
 const conPiezas = marcas.map((m) => ({
   ...m,
-  resueltas: (m.piezas ?? []).map((p) => ({
-    src: urlEmbed(p.url),
-    vertical: esVertical(p.url),
-    etiqueta: p.titulo ? `${m.nombre} × ${p.titulo}` : m.nombre,
-  })),
+  resueltas: (m.piezas ?? []).map((p) => {
+    const vista = vistaPieza(p.url, import.meta.env.BASE_URL);
+    return {
+      poster: vista?.poster ?? `${import.meta.env.BASE_URL}${m.logo ?? 'reel/gb-films-fondo.webp'}`,
+      video: vista?.video,
+      vertical: Boolean(vista?.video),
+      etiqueta: p.titulo ? `${m.nombre} × ${p.titulo}` : m.nombre,
+    };
+  }),
 }));
 // Cada marca pertenece a una sola fila; las copias sólo cierran el loop de esa fila.
 const filas = [
@@ -324,22 +329,56 @@ const filas = [
     background: transparent;
   }
 
-  .visor :global(iframe),
   .visor :global(video) {
     width: 100%;
     height: 100%;
     border: 0;
     display: block;
+    object-fit: contain;
   }
 
-  /* Los embeds de Instagram se renderizan a su ancho de diseño (400px) y a la
-     altura que ellos mismos informan, y después se escalan para entrar en la
-     tarjeta. Es la única forma de que no les quede scroll interno. */
-  .visor :global(iframe.ig) {
-    flex: none;
-    width: 400px;
-    transform-origin: center center;
-    background: #fff;
+  .visor :global(.preview-img) {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    filter: brightness(.85);
+  }
+
+  .visor :global(.preview-play) {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 66px;
+    aspect-ratio: 1;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.6);
+    color: #fff;
+    background: rgba(0,0,0,.68);
+    backdrop-filter: blur(12px);
+    font-size: 1.35rem;
+    cursor: pointer;
+    transition: transform .2s, background .2s;
+  }
+
+  .escenario .marco[data-off='0'] .visor:has(.preview-play) { cursor: pointer; }
+  .escenario .marco[data-off='0'] .visor:hover :global(.preview-play) {
+    transform: scale(1.1);
+    background: var(--accent);
+    color: #000;
+  }
+
+  .visor :global(.preview-note) {
+    position: absolute;
+    bottom: 18px;
+    left: 18px;
+    right: 18px;
+    color: #fff;
+    font-size: .65rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    text-shadow: 0 1px 8px #000;
   }
 
   .satelite {
@@ -412,8 +451,7 @@ const filas = [
     -webkit-backface-visibility: visible;
   }
 
-  /* Los satélites son clickeables enteros. El visor deja pasar el click: si no,
-     el iframe de Instagram se lo queda y la tarjeta no responde. */
+  /* Los satélites son clickeables enteros. */
   .escenario .marco[data-off]:not([data-off='0']) {
     cursor: pointer;
   }
@@ -434,6 +472,7 @@ const filas = [
 
   .controles {
     position: absolute;
+    z-index: 30;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -554,7 +593,7 @@ const filas = [
 <script>
   import { montarFranja } from '~/scripts/franja';
 
-  type Pieza = { src: string; vertical: boolean; etiqueta: string };
+  type Pieza = { poster: string; video?: string; vertical: boolean; etiqueta: string };
 
   const marquees = [...document.querySelectorAll<HTMLElement>('[data-marquee]')];
   const telon = document.querySelector<HTMLElement>('[data-telon]');
@@ -566,9 +605,6 @@ const filas = [
     const controles = escenario.querySelector<HTMLElement>('[data-controles]')!;
     const pasador = controles.querySelector<HTMLElement>('[data-pasador]')!;
 
-    const ANCHO_IG = 400;
-    /** Proporción de referencia del embed de Instagram (400 × 640). */
-    const ALTO_IG_REF = 640;
     const ALTO_CONTROLES = 66;
     const ESCALA_SATELITE = 0.62;
     const MS_TRANSICION = 500;
@@ -684,20 +720,14 @@ const filas = [
         el.style.top = `${top}px`;
         el.style.left = `${left}px`;
         colocar(el, offsetDe(i), animar);
+        const play = el.querySelector<HTMLButtonElement>('button.preview-play');
+        if (play) play.tabIndex = offsetDe(i) === 0 ? 0 : -1;
       });
 
       controles.style.top = `${top + caja.h + 16}px`;
     };
 
     // --- contenido ---------------------------------------------------------
-
-    /**
-     * La caja se calcula a partir de la altura REAL que informa cada post. Con
-     * una altura fija de referencia, los posts más bajos entraban chicos y
-     * quedaba una franja negra enorme arriba y abajo. Mientras el post no haya
-     * informado todavía, se usa la referencia y después se ajusta.
-     */
-    const alturas: (number | null)[] = [];
 
     const cajaPara = (i: number) => {
       const vw = window.innerWidth;
@@ -706,64 +736,24 @@ const filas = [
       const anchoMax = vw * 0.92;
 
       if (piezas[i]?.vertical) {
-        const alto = alturas[i] ?? ALTO_IG_REF;
-        let h = Math.min(altoDisponible, alto);
-        let w = h * (ANCHO_IG / alto);
+        let h = Math.min(altoDisponible, 720);
+        let w = h * (9 / 16);
         if (w > anchoMax) {
           w = anchoMax;
-          h = w * (alto / ANCHO_IG);
+          h = w * (16 / 9);
         }
         return { w, h };
       }
 
-      const w = Math.min(880, anchoMax, altoDisponible * (16 / 9));
-      return { w, h: (w * 9) / 16 };
+      const w = Math.min(880, anchoMax, altoDisponible * (3 / 2));
+      return { w, h: (w * 2) / 3 };
     };
 
-    /** Escala el embed para que entre justo en la caja actual. */
-    const encajarIframe = (iframe: HTMLIFrameElement, altoReal: number) => {
-      iframe.style.height = `${altoReal}px`;
-      iframe.style.transform = `scale(${Math.min(caja.w / ANCHO_IG, caja.h / altoReal)})`;
-    };
-
-    /** Reajusta la caja a la pieza activa y reencaja todos los embeds. */
+    /** Reajusta la caja a la pieza activa. */
     const redimensionar = () => {
       caja = cajaPara(activo);
-      marcos.forEach((m, i) => {
-        const f = m.querySelector<HTMLIFrameElement>('iframe.ig');
-        const alto = alturas[i];
-        if (f && alto) encajarIframe(f, alto);
-      });
       acomodar();
     };
-
-    // Instagram avisa la altura por postMessage. Se valida el origen antes de
-    // hacerle caso: es contenido de un tercero.
-    window.addEventListener('message', (ev) => {
-      if (ev.origin !== 'https://www.instagram.com') return;
-
-      const iframe = marcos
-        .map((m) => m.querySelector<HTMLIFrameElement>('iframe.ig'))
-        .find((f) => f && ev.source === f.contentWindow);
-      if (!iframe) return;
-
-      let alto: number | undefined;
-      try {
-        const dato = typeof ev.data === 'string' ? JSON.parse(ev.data) : ev.data;
-        if (dato?.type !== 'MEASURE') return;
-        alto = Number(dato.details?.height);
-      } catch {
-        return;
-      }
-      if (!alto || !Number.isFinite(alto)) return;
-
-      const i = marcos.findIndex((m) => m.querySelector('iframe.ig') === iframe);
-      if (i >= 0) alturas[i] = alto;
-
-      // Si es la que se está viendo, la tarjeta se amolda a su altura real.
-      if (i === activo) redimensionar();
-      else encajarIframe(iframe, alto);
-    });
 
     const actualizarControles = () => {
       const pieza = piezas[activo];
@@ -773,77 +763,65 @@ const filas = [
       if (contador) contador.textContent = `${activo + 1}/${piezas.length}`;
     };
 
-    /**
-     * Monta TODAS las piezas de una, al abrir. Es lo que hace que pasar de una
-     * a otra sea instantáneo: antes se creaba el iframe recién al llegar al
-     * centro y se veía el recuadro en blanco mientras Instagram cargaba.
-     */
+    /** Monta vistas livianas; el video se descarga recién cuando alguien lo reproduce. */
     const montarTodas = () => {
       marcos.forEach((marco, i) => {
         const pieza = piezas[i];
         const visor = marco.querySelector<HTMLElement>('[data-visor]');
         if (!pieza || !visor || visor.hasChildNodes()) return;
 
-        if (/\.(mp4|webm|mov)$/i.test(pieza.src)) {
-          const v = document.createElement('video');
-          v.src = pieza.src;
-          v.controls = true;
-          v.loop = true;
-          v.muted = true;
-          v.playsInline = true;
-          if (i === activo) v.autoplay = true;
-          visor.append(v);
-          return;
-        }
+        const img = document.createElement('img');
+        img.className = 'preview-img';
+        img.src = pieza.poster;
+        img.alt = pieza.etiqueta;
+        visor.append(img);
 
-        const f = document.createElement('iframe');
-        f.src = pieza.src;
-        f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
-        f.allowFullscreen = true;
-        f.title = pieza.etiqueta;
-
-        if (pieza.vertical) {
-          f.classList.add('ig');
-          f.setAttribute('scrolling', 'no');
-          visor.append(f);
-          // medida de arranque; se afina cuando el embed informa la real
-          encajarIframe(f, ALTO_IG_REF);
-          return;
+        if (pieza.video) {
+          const play = document.createElement(marco.classList.contains('flip') ? 'button' : 'span');
+          play.className = 'preview-play';
+          play.textContent = '▶';
+          if (play instanceof HTMLButtonElement) {
+            play.type = 'button';
+            play.setAttribute('aria-label', `Reproducir ${pieza.etiqueta}`);
+          } else {
+            play.setAttribute('aria-hidden', 'true');
+          }
+          visor.append(play);
+        } else {
+          const note = document.createElement('span');
+          note.className = 'preview-note';
+          note.textContent = 'Vista previa';
+          visor.append(note);
         }
-        visor.append(f);
       });
     };
 
-    /**
-     * Corta la reproducción de todo lo que no esté en el centro. Como las
-     * piezas se precargan al abrir la marca, la que queda atrás seguiría
-     * sonando si no se la frena.
-     *
-     * Los <video> se pausan y vuelven al principio. Los embeds de Instagram son
-     * de otro origen y no se pueden controlar por JS, así que se descartan y
-     * `montarTodas` los vuelve a crear: quedan en su estado inicial y de paso
-     * se precargan de nuevo mientras están de satélite, listos para cuando les
-     * toque volver al centro.
-     */
+    /** Corta el video que quedó atrás y recupera su portada. */
     const frenarLasDeAtras = () => {
       marcos.forEach((marco, i) => {
         if (i === activo) return;
-
         const video = marco.querySelector<HTMLVideoElement>('video');
         if (video) {
           video.pause();
-          video.currentTime = 0;
-          return;
+          marco.querySelector<HTMLElement>('[data-visor]')?.replaceChildren();
         }
-
-        const visor = marco.querySelector<HTMLElement>('[data-visor]');
-        if (visor?.querySelector('iframe')) visor.replaceChildren();
       });
-
       montarTodas();
+    };
 
-      // la pieza que llega al centro sí arranca sola (aplica a los .mp4)
-      marcos[activo]?.querySelector<HTMLVideoElement>('video')?.play().catch(() => {});
+    const reproducirActiva = () => {
+      const pieza = piezas[activo];
+      const visor = marcos[activo]?.querySelector<HTMLElement>('[data-visor]');
+      if (!pieza?.video || !visor || visor.querySelector('video')) return;
+      const video = document.createElement('video');
+      video.src = pieza.video;
+      video.poster = pieza.poster;
+      video.controls = true;
+      video.playsInline = true;
+      video.preload = 'metadata';
+      video.setAttribute('aria-label', pieza.etiqueta);
+      visor.replaceChildren(video);
+      video.play().catch(() => {});
     };
 
     const irA = (destino: number) => {
@@ -869,6 +847,7 @@ const filas = [
 
       abierta = null;
       navegando = false;
+      document.body.style.overflow = '';
       // Vuelve a modo 3D: la cara frontal tiene que verse mientras gira de vuelta.
       flip.classList.remove('asentada');
 
@@ -918,6 +897,7 @@ const filas = [
       piezas = JSON.parse(crudo) as Pieza[];
       activo = 0;
       abierta = item;
+      document.body.style.overflow = 'hidden';
       marquee?.setAttribute('data-abierta-activa', '');
 
       telon.hidden = false;
@@ -965,7 +945,6 @@ const filas = [
       //    se cargan todas las piezas de entrada, para que después cambiar de
       //    una a otra no tenga ni parpadeo ni cambio de tamaño.
       flip.style.transform = 'rotateY(180deg)';
-      alturas.length = 0;
       caja = cajaPara(0);
       montarTodas();
       actualizarControles();
@@ -998,11 +977,13 @@ const filas = [
       if (!eraLaMisma) abrir(item);
     }));
 
+    controles.querySelector('[data-cerrar]')?.addEventListener('click', cerrar);
+    controles.querySelector('[data-next]')?.addEventListener('click', () => irA(activo + 1));
+    controles.querySelector('[data-prev]')?.addEventListener('click', () => irA(activo - 1));
+
     escenario.addEventListener('click', (ev) => {
       const target = ev.target as HTMLElement;
-      if (target.closest('[data-cerrar]')) return cerrar();
-      if (target.closest('[data-next]')) return irA(activo + 1);
-      if (target.closest('[data-prev]')) return irA(activo - 1);
+      if (target.closest('[data-controles]')) return;
 
       // Click en cualquier tarjeta de los costados: esa pasa al centro. Se
       // navega por su posición actual, no por un índice fijo — si no, al rotar
@@ -1010,6 +991,7 @@ const filas = [
       const marco = target.closest<HTMLElement>('.marco');
       const off = marco?.dataset.off;
       if (marco && off !== undefined && off !== '0') irA(activo + Number(off));
+      else if (marco && off === '0' && (target.closest('[data-visor]') || marco.classList.contains('satelite'))) reproducirActiva();
     });
 
     telon.addEventListener('click', cerrar);

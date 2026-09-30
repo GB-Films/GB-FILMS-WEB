@@ -21,7 +21,7 @@ Respaldos informados:
 - SQL `/root/wordpress-db-clean-2026-07-30.sql.gz` (verificado en la VM).
 - Cuarentena `/root/wp-quarantine-2026-07-29` (verificada en la VM).
 
-## Producción activa — 30 de septiembre de 2026
+## Primer despliegue de producción — 30 de septiembre de 2026
 
 - `https://granbertafilms.com/` sirve la release estática `20260929T175525Z-1d71daa-production` (130 archivos) desde `/var/www/granberta-nueva/current`. El paquete se comprobó en Cloud Shell y en la VM con SHA-256 `a591b5c6b2df8367f4097ad4d5b60aa2d3902b1da44f40d7b6a3845f4aa07975` y el instalador lo validó antes de activarlo.
 - Antes del cambio se creó y verificó en estado `READY` la instantánea del disco de arranque `gbfilms-pre-static-20260930`.
@@ -207,6 +207,15 @@ Estas consultas públicas son una referencia inicial. No sustituyen la inspecci�
 - Se publicó `20260930T040117Z-0a86755-preview` en `/preview/` y `20260930T040306Z-0a86755-production` en el sitio principal. Ambos paquetes pasaron la validación de integridad y del instalador; la versión anterior de cada canal quedó disponible para revertir.
 - Se verificaron con HTTP 200 la portada, el portfolio nuevo, la vista previa y la ficha `/ficcion/noku/`. El menú público muestra «PORTFOLIO». La vista previa conserva `noindex` y producción no lo incluye.
 - Se retiraron los paquetes temporales de la VM y Cloud Shell. La clave SSH temporal se revocó y el proyecto volvió a cero claves SSH en sus metadatos.
+
+## Portfolio y fichas publicados en producción — 30 de septiembre de 2026
+
+- La release `20260930T140849Z-5ad31cf-production` quedó activa en `/var/www/granberta-nueva/current` con 190 archivos. El paquete se verificó en Cloud Shell y en la VM con SHA-256 `7c48433c4d30f89332583ca2216e0bc251461c0ceb5d4ed571475c2bd619f756`; el instalador conservó la release anterior `20260930T040306Z-0a86755-production` para revertir.
+- El portfolio destaca arriba el último trabajo para Alfajores Jorgito, en lugar del reel. La selección de marcas muestra 26 piezas con 16 videos locales en un reproductor propio y vistas previas estáticas donde no había video disponible; los clics ya no incrustan la interfaz de Instagram.
+- Se completaron las fichas de Noku, Cucaracha y El Diente Negro con la información provista por sus sitios oficiales. «Volver» en las fichas lleva al carrusel de historias.
+- La portada, el portfolio y esas tres fichas respondieron HTTP 200 en producción, sin `noindex`. El reproductor del destacado de Jorgito abrió desde la página pública.
+- Se borró el paquete temporal de la VM y de Cloud Shell. Las claves SSH temporales se retiraron de los metadatos del proyecto, se confirmó que quedaron cero entradas `ssh-keys` y se borraron los archivos de clave de Cloud Shell.
+- La release de `/preview/` sigue siendo la anterior; la versión actualizada está publicada en el dominio principal.
 
 ## Pendientes posteriores al lanzamiento
 

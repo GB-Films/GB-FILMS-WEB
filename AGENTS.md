@@ -8,7 +8,7 @@ El usuario quiere pedir cambios en lenguaje natural y que el agente edite, compr
 - Editar textos y datos en `src/data/`; componentes y estilos solo cuando corresponda.
 - Generar una release con `npm run release:preview`. Los paquetes quedan en `.releases/`, fuera del control de versiones, con manifiesto y SHA-256.
 - Revisar el sitio compilado y los cambios en escritorio y móvil. Dar al usuario un resultado concreto para revisar.
-- Si pidió publicar, completar la publicación dentro del alcance autorizado. No repetir confirmaciones ya concedidas. Si pidió solo una prueba o diseño, entregar la vista previa.
+- El usuario pidió que cada cambio de la web se publique en el sitio público una vez comprobado, sin tener que pedirlo de nuevo. Completar la publicación dentro del alcance autorizado y no repetir confirmaciones ya concedidas. Si pide expresamente solo una prueba o diseño, entregar esa vista previa.
 - Para producción generar un paquete nuevo con `npm run release:production`; nunca publicar como producción un paquete de preview con `noindex`.
 - Mantener historial en Git y releases anteriores en el servidor. No afirmar que algo está publicado sin comprobar la URL pública y la versión servida.
 

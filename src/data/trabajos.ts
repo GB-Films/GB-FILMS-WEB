@@ -9,7 +9,7 @@ import elSonidoDelViento from '../assets/ficcion/el-sonido-del-viento.webp';
 import noku from '../assets/ficcion/noku.webp';
 
 export type Pieza = {
-  /** URL del trabajo: link de Instagram, embed de YouTube/Vimeo o archivo .mp4 */
+  /** URL pública que identifica la pieza y permite asociarle su vista local. */
   url: string;
   /** IP o campaña, si la pieza fue para algo puntual. Se muestra "MARCA × TÍTULO". */
   titulo?: string;
@@ -22,24 +22,6 @@ export type Marca = {
   /** Trabajos de esa marca. Sin piezas, la tarjeta es solo logo y no se clickea. */
   piezas?: Pieza[];
 };
-
-/**
- * Los links de Instagram se aceptan tal cual se copian del navegador (`/p/` o
- * `/reel/`): `urlEmbed()` los convierte al formato embebible.
- *
- * TODO: los embeds de Instagram le ponen la cabecera y el botón "Ver perfil"
- * de Meta encima del trabajo, y son verticales. Cuando estén los mp4 (o los
- * links de YouTube/Vimeo) se reemplazan acá y el resto funciona igual.
- */
-export function urlEmbed(url: string): string {
-  const ig = url.match(/instagram\.com\/(?:p|reel|tv)\/([\w-]+)/);
-  return ig ? `https://www.instagram.com/p/${ig[1]}/embed/` : url;
-}
-
-/** Instagram es vertical; la tarjeta abierta cambia de forma según esto. */
-export function esVertical(url: string): boolean {
-  return /instagram\.com/.test(url);
-}
 
 // El orden del array es el orden en que aparecen en la franja.
 export const marcas: Marca[] = [
@@ -166,6 +148,9 @@ export const marcas: Marca[] = [
   { nombre: 'PedidosYa', logo: 'marcas/pedidosya-mono.webp' },
 ];
 
+// Pieza que ocupa la portada del portfolio; actualizar al publicar un trabajo nuevo.
+export const ultimoTrabajoUrl = 'https://www.instagram.com/p/DZzqHtzOk6S/';
+
 export type Ip = {
   /** slug estable: define la URL pública de su ficha */
   id: string;
@@ -245,15 +230,17 @@ export const ips: Ip[] = [
   },
   {
     id: 'cucaracha', titulo: 'Cucaracha', tipo: 'Short Film', poster: cucaracha, posterContain: true,
-    gancho: 'Una invasión repulsiva. Una lucha por sobrevivir.',
-    sinopsis: 'Un hombre queda atrapado en medio de una invasión de cucarachas. A medida que la amenaza crece, también lo hacen su desesperación y paranoia. Un cortometraje de horror y suspenso que sigue su lucha por sobrevivir.',
+    gancho: 'Todo empieza con una cucaracha en una tostada.',
+    sinopsis: 'Encerrado en su departamento, un hombre encuentra una cucaracha en su tostada. La repulsión inicial se convierte en una espiral de paranoia y desesperación mientras los insectos invaden su hogar y la realidad empieza a desmoronarse. Hasta su propio cuerpo deja de parecerle un refugio.',
     generos: ['Horror', 'Suspenso'], direccion: 'Anita Serrano', guion: 'Anita Serrano',
+    link: { label: 'Conocé Cucaracha', url: 'https://www.anitaserrano.com/cucaracha' },
   },
   {
     id: 'el-diente-negro', titulo: 'El Diente Negro', tipo: 'Short Film', poster: elDienteNegro, posterContain: true,
-    gancho: 'Dos historias unidas por un detalle imposible de ignorar.',
-    sinopsis: 'En un asilo, una mujer mayor revive sus traumas. En paralelo, un hombre enfrenta recuerdos oscuros durante un interrogatorio. Un diente negro conecta ambas historias.',
+    gancho: 'Un huésped maligno entre la memoria y la culpa.',
+    sinopsis: 'En un asilo, un noticiero sobre niños desaparecidos reabre una herida en una mujer. Al mismo tiempo, Daniel enfrenta un interrogatorio mientras lo acorralan voces infantiles y recuerdos fragmentados. La aparición de un diente negro une las dos historias en un rompecabezas donde se confunden la verdad, la memoria y la culpa.',
     generos: ['Horror'], direccion: 'Anita Serrano', guion: 'Anita Serrano',
+    link: { label: 'Conocé El Diente Negro', url: 'https://www.anitaserrano.com/dientenegro' },
   },
   {
     id: 'el-sonido-del-viento', titulo: 'El Sonido del Viento', tipo: 'Short Film', poster: elSonidoDelViento, posterContain: true,
@@ -261,7 +248,12 @@ export const ips: Ip[] = [
     sinopsis: 'Román vive solo en una antigua casa a las afueras de Buenos Aires. Después de postergarlo durante mucho tiempo, decide subir al altillo: un espacio polvoriento que guarda los recuerdos a los que todavía no se había animado a enfrentarse.',
     anio: '2024', duracion: '13 min', direccion: 'Santiago Rey', guion: 'Santiago Rey',
   },
-  { id: 'noku', titulo: 'Noku', tipo: 'Short Film', poster: noku },
+  {
+    id: 'noku', titulo: 'Noku', tipo: 'Short Film', poster: noku,
+    sinopsis: 'En el lejano planeta Noku, una tranquila familia alienígena vive su rutina mientras extraños acontecimientos comienzan a alterar su mundo.',
+    duracion: '10 min 13 s', direccion: 'Guido Boetsch',
+    link: { label: 'Ver Noku en Higgsfield', url: 'https://higgsfield.ai/@bani/projects/noku' },
+  },
 ];
 
 export type Hermana = {
