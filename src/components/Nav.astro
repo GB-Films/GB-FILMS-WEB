@@ -10,8 +10,8 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
 <nav aria-label="Principal">
   <div class="nav-in">
     <button class="logo-link" type="button" aria-label="Cambiar color de GB Films" title="Tocá para cambiar el color">
-      <span class="color-hint" aria-hidden="true">Cambiar<br />color ↻</span>
       <Logo variant="monogram" height={30} />
+      <span class="color-hint" aria-hidden="true">Cambiar<br />color ↻</span>
     </button>
     <div class="nav-links">
       {navLinks.map((l) => <a href={`${prefix}${l.href}`} aria-current={Astro.url.pathname.includes('/portfolio/') && l.href === 'portfolio/' ? 'page' : undefined}>{l.label}</a>)}
@@ -41,7 +41,7 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
     /* El logo se despega bastante más de lo que se separan los links entre sí,
        para que se lea como marca y no como un ítem más del menú.
        Primer valor = separación entre filas cuando el nav se parte en mobile. */
-    gap: 12px clamp(26px, 4vw, 52px);
+    gap: 12px clamp(50px, 6vw, 78px);
     flex-wrap: wrap;
   }
 
@@ -66,7 +66,7 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
     font-size: 0.53rem;
     line-height: 1.2;
     letter-spacing: 0.12em;
-    text-align: right;
+    text-align: left;
     text-transform: uppercase;
     white-space: nowrap;
   }
@@ -133,7 +133,7 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
   @media (max-width: 860px) {
     .nav-in {
       flex-wrap: nowrap;
-      gap: 14px;
+      gap: 30px;
       padding: 10px var(--gutter);
     }
 
@@ -165,9 +165,9 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
   @media (max-width: 480px) {
     .nav-in {
       display: grid;
-      grid-template-columns: 78px minmax(0, 1fr);
+      grid-template-columns: 84px minmax(0, 1fr);
       grid-template-rows: repeat(2, auto);
-      column-gap: 10px;
+      column-gap: 14px;
       row-gap: 5px;
       padding: 8px 12px;
     }
