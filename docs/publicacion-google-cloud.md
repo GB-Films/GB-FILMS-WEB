@@ -21,6 +21,16 @@ Respaldos informados:
 - SQL `/root/wordpress-db-clean-2026-07-30.sql.gz` (verificado en la VM).
 - Cuarentena `/root/wp-quarantine-2026-07-29` (verificada en la VM).
 
+## Producción activa — 30 de septiembre de 2026
+
+- `https://granbertafilms.com/` sirve la release estática `20260929T175525Z-1d71daa-production` (130 archivos) desde `/var/www/granberta-nueva/current`. El paquete se comprobó en Cloud Shell y en la VM con SHA-256 `a591b5c6b2df8367f4097ad4d5b60aa2d3902b1da44f40d7b6a3845f4aa07975` y el instalador lo validó antes de activarlo.
+- Antes del cambio se creó y verificó en estado `READY` la instantánea del disco de arranque `gbfilms-pre-static-20260930`.
+- Apache usa `/etc/apache2/sites-enabled/granberta-static-https.conf`, a partir de [`deploy/apache/production-https.conf`](../deploy/apache/production-https.conf). El servicio quedó activo y su sintaxis validó correctamente. `/etc/apache2/sites-available/wordpress-https.conf` y `/var/www/html` permanecen disponibles para revertir; no se modificaron los archivos de WordPress.
+- La URL principal, `/ficcion/noku/`, `/favicon.svg` y `/preview/` respondieron HTTP 200; una ruta inexistente devolvió 404 y `www` redirigió con 301 al dominio canónico. La portada mostró el sitio nuevo en el navegador. Producción tiene canonical `/`, `robots.txt` con `Allow: /` y no lleva `noindex`; la vista previa conserva `noindex`.
+- Se retiraron los paquetes y el archivo de configuración temporales de la VM y Cloud Shell. La clave SSH temporal se quitó de los metadatos del proyecto, se borraron sus archivos en Cloud Shell y se verificó que quedaron cero claves SSH de proyecto.
+- Para volver a WordPress: ejecutar en la VM `sudo a2dissite granberta-static-https.conf`, `sudo a2ensite wordpress-https.conf`, `sudo apache2ctl -t` y, solo si la sintaxis es válida, `sudo systemctl reload apache2`. Esto no elimina la release estática ni la instantánea.
+- El tratamiento de las URL antiguas, la versión en inglés y los textos de fichas pendientes se acordó para después del lanzamiento. No se cambiaron DNS ni registros de correo.
+
 ## Vista previa activa
 
 - URL: `https://granbertafilms.com/preview/`.
@@ -181,7 +191,7 @@ Comprobar antes de transferir:
 - En la página pública se verificó que el control cambió el acento de rojo a naranja y actualizó su etiqueta accesible. `/preview/` y WordPress respondieron HTTP 200; la preview conserva `noindex, nofollow`.
 - El navegador no aplicó el tamaño móvil para una comprobación visual en esta sesión. La clave SSH temporal se revocó, el recuento de claves del proyecto volvió a cero y se borraron los paquetes temporales de la VM y Cloud Shell.
 
-- `https://granbertafilms.com/`: HTTP 200 con Apache/WordPress.
+- `https://granbertafilms.com/`: HTTP 200 con Apache y la nueva web estática.
 - `https://www.granbertafilms.com/`: HTTP 301 hacia el dominio sin `www`.
 - `https://granbertafilms.com/preview/`: HTTP 200 y `noindex`. La release activa se consulta con `readlink /var/www/granberta-nueva/preview`; el historial queda registrado en `/var/www/granberta-nueva/deployments.jsonl`.
 - A del dominio principal: `34.152.39.181`.
@@ -192,16 +202,12 @@ Comprobar antes de transferir:
 
 Estas consultas públicas son una referencia inicial. No sustituyen la inspección de toda la zona DNS en Cloud, incluidos DKIM y DMARC.
 
-## Antes de pasar a producción
+## Pendientes posteriores al lanzamiento
 
-- Cerrar la revisión de diseño, contenido, enlaces, contacto y correo. Un enlace `mailto:` válido no demuestra entrega de mensajes; la recepción debe comprobarla el titular con una prueba autorizada.
+- Continuar la revisión de contenido, enlaces, contacto y correo. Un enlace `mailto:` válido no demuestra entrega de mensajes; la recepción debe comprobarla el titular con una prueba autorizada.
 - Resolver los pendientes de contenido y las alertas de dependencias.
-- Inventariar URLs actuales desde WordPress/sitemap y acordar equivalencias. La portada actual enlaza `/contacto/`, `/nosotros/`, `/proyectos/`, `/en/home/` y `/https-youtu-be-bxxsot9zusisibbff9lvspou3xkvb/`.
+- Inventariar las URL antiguas desde WordPress/sitemap y acordar equivalencias. La portada anterior enlazaba `/contacto/`, `/nosotros/`, `/proyectos/`, `/en/home/` y `/https-youtu-be-bxxsot9zusisibbff9lvspou3xkvb/`.
 - Posibles equivalencias para revisar: `/contacto/` → `/#contacto`, `/nosotros/` → `/#nosotros`, `/proyectos/` → `/#marcas`. No aplicar todavía: falta el inventario completo y resolver la versión en inglés y la página de proyecto.
-- Crear y verificar una nueva instantánea inmediatamente antes del cambio definitivo.
-- Generar un paquete nuevo con `npm run release:production`. No reutilizar el paquete de preview que lleva `noindex`.
-- Definir y verificar el retorno al VirtualHost anterior. Mantener intacto WordPress durante el cambio.
-- Requerir una instrucción explícita para el cambio definitivo, una vez presentados los resultados de staging. La preparación de staging no implica que ese cambio ya esté autorizado.
 
 ## Referencias
 

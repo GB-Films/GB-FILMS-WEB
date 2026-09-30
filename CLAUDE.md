@@ -145,11 +145,13 @@ Sobre el dominio, verificado por DNS:
   config del sitio ya usa el apex — no cambiar a `www`.
 - **El correo es independiente del registro A**: cambiar el hosting web no lo
   afecta.
-- El dominio hoy sirve WordPress desde la misma VM. La nueva web vive en
-  `/var/www/granberta-nueva`; `/var/www/html` se conserva como rollback.
-- El sitio anterior es multilingüe y tiene URLs propias. Antes del switch hay
-  que acordar sus redirecciones porque la web nueva es una sola página en español.
+- Desde el 30/09/2026 el dominio sirve la web estática desde
+  `/var/www/granberta-nueva/current`. WordPress permanece en `/var/www/html`
+  como opción de reversión.
+- El sitio anterior es multilingüe y tiene URLs propias. Las equivalencias y
+  redirecciones de esas URLs se acordaron para después del lanzamiento.
 
-Procedimiento: publicar preview → validar → crear instantánea → generar release
-de producción → cambiar el VirtualHost de Apache → verificar. No hace falta
-cambiar DNS y WordPress se conserva como rollback.
+El cambio inicial y el procedimiento de reversión están registrados en
+`docs/publicacion-google-cloud.md`. Las próximas releases de producción se
+activan desde el enlace `current` tras validar el paquete; no hace falta
+cambiar DNS.
