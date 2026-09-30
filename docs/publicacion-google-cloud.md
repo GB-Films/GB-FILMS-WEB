@@ -202,6 +202,12 @@ Comprobar antes de transferir:
 
 Estas consultas públicas son una referencia inicial. No sustituyen la inspección de toda la zona DNS en Cloud, incluidos DKIM y DMARC.
 
+## Actualización del portfolio del 30 de septiembre de 2026
+
+- Se publicó `20260930T040117Z-0a86755-preview` en `/preview/` y `20260930T040306Z-0a86755-production` en el sitio principal. Ambos paquetes pasaron la validación de integridad y del instalador; la versión anterior de cada canal quedó disponible para revertir.
+- Se verificaron con HTTP 200 la portada, el portfolio nuevo, la vista previa y la ficha `/ficcion/noku/`. El menú público muestra «PORTFOLIO». La vista previa conserva `noindex` y producción no lo incluye.
+- Se retiraron los paquetes temporales de la VM y Cloud Shell. La clave SSH temporal se revocó y el proyecto volvió a cero claves SSH en sus metadatos.
+
 ## Pendientes posteriores al lanzamiento
 
 - Continuar la revisión de contenido, enlaces, contacto y correo. Un enlace `mailto:` válido no demuestra entrega de mensajes; la recepción debe comprobarla el titular con una prueba autorizada.
