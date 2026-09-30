@@ -103,6 +103,9 @@ const filas = [
       }
       </ul>
     </div>)}
+    <div class="wrap portfolio-link-wrap">
+      <a class="portfolio-link" href={`${import.meta.env.BASE_URL}portfolio/`}>Explorá el portfolio completo <span aria-hidden="true">↗</span></a>
+    </div>
   </div>
 
   <div class="telon" data-telon hidden></div>
@@ -172,6 +175,10 @@ const filas = [
   .marquee::-webkit-scrollbar {
     display: none;
   }
+
+  .portfolio-link-wrap { text-align: right; margin-top: 22px; }
+  .portfolio-link { display: inline-block; padding: 10px 0; border-bottom: 1px solid var(--accent); color: var(--accent); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; }
+  .portfolio-link:hover { color: var(--light); border-color: var(--light); }
 
   .marquee + .marquee {
     margin-top: 16px;

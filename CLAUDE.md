@@ -123,11 +123,9 @@ Ficción → Tienda → Universo → **Contacto**.
 
 Dos reglas que hay que sostener si se agregan o mueven secciones:
 
-1. **`navLinks` (en `src/data/site.ts`) tiene que ir en el mismo orden que las
-   secciones.** Si no, recorrer el menú de izquierda a derecha hace saltar hacia
-   atrás. Y hay un motivo menos obvio: el scrollspy resuelve los empates —cuando
-   dos secciones tocan la franja central— tomando la primera del array, así que
-   con el orden desalineado enciende el link equivocado.
+1. **Los anclajes de `navLinks` (en `src/data/site.ts`) tienen que ir en el mismo
+   orden que las secciones.** «Trabajos» abre `/portfolio/`; el resto de los
+   enlaces recorre la portada. El scrollspy sólo observa los anclajes.
 2. **Contacto va último**, justo antes del footer: la página cierra con el
    pedido y no con storytelling.
 

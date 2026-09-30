@@ -1,7 +1,7 @@
 # Gran Berta Films — sitio
 
-Sitio de una página (Astro, sin framework de UI) construido a partir del mockup
-`sala-oscura-v2.html`.
+Sitio institucional y portfolio (Astro, sin framework de UI) construido a partir
+del mockup `sala-oscura-v2.html`.
 
 ## Correr el proyecto
 
@@ -68,10 +68,15 @@ src/
   data/         contenido editable (textos, equipo, IPs, marcas, redes)
   components/   una sección de la home por componente
   layouts/      Base.astro — <head>, SEO, script de reveal
-  pages/        index.astro y 404.astro
+  pages/        portada, portfolio, fichas de ficción y 404
   styles/       global.css — tokens de color/tipografía y utilidades
 public/         favicon y assets estáticos
 ```
+
+`/portfolio/` reúne las piezas confirmadas de `src/data/trabajos.ts`. Las
+miniaturas locales de Instagram se obtienen con
+`node scripts/sync-portfolio-thumbnails.mjs`; al agregar una URL de YouTube, su
+miniatura aparece automáticamente y el video se reproduce dentro de la página.
 
 **Para cambiar textos no hace falta tocar componentes**: todo el copy vive en
 `src/data/`. Los estilos de cada sección están en el `<style>` de su componente

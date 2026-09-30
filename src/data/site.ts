@@ -20,12 +20,10 @@ export const site = {
 
 export type NavLink = { href: string; label: string };
 
-// El orden tiene que ser el mismo que el de las secciones en index.astro. Si no,
-// recorrer el menú de izquierda a derecha hace saltar hacia atrás, y el
-// scrollspy (que resuelve empates por este orden) enciende el link equivocado.
+// Los anclajes siguen el orden de las secciones en index.astro. Trabajos abre
+// el portfolio independiente; la franja de marcas permanece en la portada.
 export const navLinks: NavLink[] = [
-  // "Trabajos" apunta a la franja de marcas, que va primero.
-  { href: '#marcas', label: 'Trabajos' },
+  { href: 'portfolio/', label: 'Trabajos' },
   { href: '#que', label: '¿Qué carajo?' },
   { href: '#nosotros', label: 'Nosotros' },
   { href: '#ficcion', label: 'Ficción' },

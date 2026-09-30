@@ -36,7 +36,7 @@ function inspect(directory) {
   }
 }
 inspect(dist);
-for (const page of ['index.html', '404.html']) {
+for (const page of ['index.html', 'portfolio/index.html', '404.html']) {
   const html = readFileSync(join(dist, page), 'utf8');
   const noindex = /<meta\s+name="robots"\s+content="noindex, nofollow"/.test(html);
   if (noindex !== (channel === 'preview')) throw new Error(`Indexación incorrecta: ${page}`);

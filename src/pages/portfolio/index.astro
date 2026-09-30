@@ -1,0 +1,209 @@
+---
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import Base from '~/layouts/Base.astro';
+import Nav from '~/components/Nav.astro';
+import Footer from '~/components/Footer.astro';
+import { marcas, urlEmbed } from '~/data/trabajos';
+
+const base = import.meta.env.BASE_URL;
+const youtubeId = (raw: string) => {
+  try {
+    const url = new URL(raw);
+    if (url.hostname === 'youtu.be') return url.pathname.slice(1);
+    if (url.hostname.endsWith('youtube.com')) {
+      return url.searchParams.get('v') || url.pathname.match(/^\/(?:embed|shorts)\/([^/]+)/)?.[1];
+    }
+  } catch { /* URL no compatible: se abrirá como enlace externo. */ }
+  return undefined;
+};
+
+type Trabajo = {
+  url: string;
+  embed: string;
+  titulo: string;
+  marcas: string[];
+  miniatura: string;
+  plataforma: 'YouTube' | 'Instagram' | 'Video';
+};
+const trabajos: Trabajo[] = [];
+
+for (const marca of marcas) {
+  for (const [index, pieza] of (marca.piezas ?? []).entries()) {
+    const existente = trabajos.find((trabajo) => trabajo.url === pieza.url);
+    if (existente) {
+      existente.marcas.push(marca.nombre);
+      continue;
+    }
+    const id = youtubeId(pieza.url);
+    const instagram = pieza.url.match(/instagram\.com\/(?:p|reel|tv)\/([\w-]+)/)?.[1];
+    const miniaturaLocal = instagram && existsSync(join(process.cwd(), 'public', 'portfolio', `${instagram}.webp`));
+    trabajos.push({
+      url: pieza.url,
+      embed: id ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1` : urlEmbed(pieza.url),
+      titulo: pieza.titulo || `Pieza ${String(index + 1).padStart(2, '0')}`,
+      marcas: [marca.nombre],
+      miniatura: id
+        ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
+        : miniaturaLocal
+          ? `${base}portfolio/${instagram}.webp`
+          : `${base}${marca.logo ?? 'reel/gb-films-fondo.webp'}`,
+      plataforma: id ? 'YouTube' : instagram ? 'Instagram' : 'Video',
+    });
+  }
+}
+const marcasConTrabajos = marcas.filter((marca) => marca.piezas?.length).map((marca) => marca.nombre);
+---
+
+<Base title="Portfolio de trabajos — Gran Berta Films" description="Explorá los trabajos audiovisuales de Gran Berta Films para marcas y plataformas. Videos, campañas y piezas digitales en un solo lugar.">
+  <Nav homeLinks />
+  <main id="main" class="portfolio">
+    <div class="wrap portfolio-in">
+      <div class="intro">
+        <a class="volver" href={base}>← Volver al inicio</a>
+        <p class="kicker">GB Films / Portfolio</p>
+        <h1>Trabajos <span>que hablan.</span></h1>
+        <p class="intro-copy">Ideas que salieron al mundo. Explorá las piezas que hicimos junto a marcas y plataformas.</p>
+      </div>
+
+      <a class="reel" href="https://www.youtube.com/watch?v=JZ1AOExsHRM" data-play data-embed="https://www.youtube-nocookie.com/embed/JZ1AOExsHRM?autoplay=1" data-platform="YouTube" aria-label="Reproducir reel de GB Films">
+        <img src={`${base}reel/gb-films-fondo.webp`} alt="Fotograma del reel de GB Films" loading="eager" />
+        <span class="reel-overlay" aria-hidden="true">
+          <span class="reel-label">En un minuto</span>
+          <strong>Mirá el reel <span>▶</span></strong>
+        </span>
+      </a>
+
+      <div class="listado-head">
+        <div>
+          <p class="kicker">Una selección de nuestro trabajo</p>
+          <h2>Las piezas.</h2>
+        </div>
+        <p class="cantidad"><span data-count>{trabajos.length}</span> piezas</p>
+      </div>
+
+      <div class="filtros" aria-label="Filtrar trabajos por marca">
+        <button type="button" class="filtro activo" data-filter="todos" aria-pressed="true">Todos</button>
+        {marcasConTrabajos.map((nombre) => <button type="button" class="filtro" data-filter={nombre} aria-pressed="false">{nombre}</button>)}
+      </div>
+
+      <div class="grilla" data-grid>
+        {trabajos.map((trabajo) => <article class="trabajo" data-brands={trabajo.marcas.join('|').toLowerCase()}>
+          <a href={trabajo.url} target="_blank" rel="noopener noreferrer" class="trabajo-link" data-play data-embed={trabajo.embed} data-platform={trabajo.plataforma} aria-label={`Ver ${trabajo.titulo} de ${trabajo.marcas.join(' y ')}`}>
+            <span class="imagen">
+              <img src={trabajo.miniatura} alt={`Miniatura de ${trabajo.titulo} de ${trabajo.marcas.join(' y ')}`} loading="lazy" decoding="async" />
+              <span class="ver" aria-hidden="true">▶</span>
+            </span>
+            <span class="datos">
+              <span class="marca">{trabajo.marcas.join(' × ')}</span>
+              <strong>{trabajo.titulo}</strong>
+              <span class="tipo">{trabajo.plataforma} ↗</span>
+            </span>
+          </a>
+        </article>)}
+      </div>
+    </div>
+  </main>
+  <Footer homeLinks />
+
+  <dialog class="visor" aria-label="Reproductor de trabajo" data-dialog>
+    <div class="visor-head">
+      <span>GB Films / Portfolio</span>
+      <button type="button" data-close aria-label="Cerrar video">✕</button>
+    </div>
+    <div class="visor-video" data-player></div>
+    <a data-original target="_blank" rel="noopener noreferrer">Abrir video original ↗</a>
+  </dialog>
+</Base>
+
+<style>
+  .portfolio { padding: calc(var(--nav-h) + 42px) 0 110px; }
+  .portfolio-in { max-width: 1500px; }
+  .intro { max-width: 900px; margin-bottom: 40px; }
+  .volver { display: inline-block; color: var(--dim); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 60px; }
+  .volver:hover { color: var(--accent); }
+  .intro .kicker { color: var(--accent); }
+  h1 { font-size: clamp(4.2rem, 11vw, 10rem); line-height: .95; }
+  h1 span { color: var(--accent); }
+  .intro-copy { color: var(--silver); font-size: clamp(.95rem, 1.4vw, 1.2rem); max-width: 560px; margin-top: 24px; }
+  .reel { position: relative; display: block; height: clamp(260px, 42vw, 560px); overflow: hidden; background: var(--surface); border: 1px solid var(--line-2); }
+  .reel img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) brightness(.66); transition: transform .6s, filter .6s; }
+  .reel:hover img { transform: scale(1.025); filter: grayscale(.6) brightness(.72); }
+  .reel-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; padding: clamp(24px, 4vw, 54px); background: linear-gradient(transparent 40%, rgba(0,0,0,.75)); }
+  .reel-label { color: var(--accent); font-size: .75rem; text-transform: uppercase; letter-spacing: .2em; }
+  .reel strong { font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 6rem); text-transform: uppercase; font-weight: 400; line-height: 1.15; }
+  .reel strong span { color: var(--accent); font-family: var(--font-body); font-size: .55em; vertical-align: middle; }
+  .listado-head { display: flex; justify-content: space-between; align-items: end; gap: 20px; padding: 100px 0 26px; }
+  .listado-head h2 { font-size: clamp(2.6rem, 6vw, 5.5rem); line-height: 1; }
+  .cantidad { color: var(--dim); font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; }
+  .filtros { display: flex; gap: 8px; overflow-x: auto; padding: 0 0 22px; scrollbar-width: thin; scrollbar-color: var(--line-2) transparent; }
+  .filtro { flex: 0 0 auto; border: 1px solid var(--line-2); background: var(--surface); color: var(--silver); padding: 9px 15px; font: inherit; font-size: .72rem; cursor: pointer; }
+  .filtro:hover, .filtro.activo { border-color: var(--accent); color: var(--accent); }
+  .grilla { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 18px; }
+  .trabajo[hidden] { display: none; }
+  .trabajo-link { display: block; height: 100%; border: 1px solid var(--line-2); background: var(--surface-2); transition: border-color .25s; }
+  .trabajo-link:hover { border-color: var(--accent); }
+  .imagen { position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden; background: #171717; }
+  .imagen img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s, filter .5s; }
+  .trabajo-link:hover img { transform: scale(1.04); filter: brightness(.65); }
+  .ver { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: grid; place-items: center; width: 58px; aspect-ratio: 1; border-radius: 50%; background: var(--accent); color: #000; opacity: 0; transition: opacity .25s; }
+  .trabajo-link:hover .ver, .trabajo-link:focus-visible .ver { opacity: 1; }
+  .datos { display: flex; flex-direction: column; min-height: 108px; padding: 16px 18px 18px; }
+  .marca, .tipo { color: var(--dim); font-size: .65rem; text-transform: uppercase; letter-spacing: .15em; }
+  .datos strong { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.2rem, 2.3vw, 1.8rem); text-transform: uppercase; line-height: 1.15; margin: 6px 0 auto; }
+  .tipo { margin-top: 8px; color: var(--accent); }
+  .visor { position: fixed; width: min(900px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 0; margin: auto; border: 1px solid var(--line-2); background: #090909; color: var(--light); }
+  .visor::backdrop { background: rgba(0,0,0,.9); }
+  .visor-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; color: var(--accent); font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; }
+  .visor-head button { border: 0; background: none; color: var(--light); font-size: 1.3rem; cursor: pointer; }
+  .visor-video { display: grid; place-items: center; min-height: 240px; }
+  .visor-video :global(iframe) { width: 100%; height: min(70dvh, 610px); border: 0; }
+  .visor > a { display: inline-block; padding: 14px 18px; color: var(--accent); font-size: .72rem; text-transform: uppercase; letter-spacing: .13em; }
+  @media (max-width: 800px) { .grilla { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .portfolio { padding-top: calc(var(--nav-h) + 32px); } .volver { margin-bottom: 40px; } .intro { margin-bottom: 30px; } .listado-head { padding-top: 64px; } .grilla { grid-template-columns: 1fr; gap: 18px; } .ver { opacity: 1; width: 46px; } }
+</style>
+
+<script>
+  const filtros = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+  const tarjetas = [...document.querySelectorAll<HTMLElement>('[data-brands]')];
+  const contador = document.querySelector<HTMLElement>('[data-count]');
+  filtros.forEach((boton) => boton.addEventListener('click', () => {
+    const filtro = boton.dataset.filter?.toLowerCase();
+    let visibles = 0;
+    tarjetas.forEach((tarjeta) => {
+      const mostrar = filtro === 'todos' || tarjeta.dataset.brands?.split('|').includes(filtro ?? '');
+      tarjeta.hidden = !mostrar;
+      if (mostrar) visibles++;
+    });
+    filtros.forEach((item) => {
+      item.classList.toggle('activo', item === boton);
+      item.setAttribute('aria-pressed', String(item === boton));
+    });
+    if (contador) contador.textContent = String(visibles);
+  }));
+
+  const dialog = document.querySelector<HTMLDialogElement>('[data-dialog]');
+  const player = document.querySelector<HTMLElement>('[data-player]');
+  const original = document.querySelector<HTMLAnchorElement>('[data-original]');
+  const close = () => {
+    dialog?.close();
+    player?.replaceChildren();
+  };
+  document.querySelector<HTMLButtonElement>('[data-close]')?.addEventListener('click', close);
+  dialog?.addEventListener('close', () => player?.replaceChildren());
+  dialog?.addEventListener('click', (event) => { if (event.target === dialog) close(); });
+  document.querySelectorAll<HTMLAnchorElement>('[data-play]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      if (link.dataset.platform !== 'YouTube' || !dialog || !player || !original || !link.dataset.embed) return;
+      event.preventDefault();
+      const iframe = document.createElement('iframe');
+      iframe.src = link.dataset.embed;
+      iframe.title = link.getAttribute('aria-label') || 'Trabajo de GB Films';
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      iframe.allowFullscreen = true;
+      original.href = link.href;
+      dialog.showModal();
+      player.replaceChildren(iframe);
+    });
+  });
+</script>
