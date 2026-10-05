@@ -29,11 +29,12 @@ const copias = [false, true];
 const conPiezas = marcas.map((m) => ({
   ...m,
   resueltas: (m.piezas ?? []).map((p) => {
-    const vista = vistaPieza(p.url, import.meta.env.BASE_URL);
+    const vista = vistaPieza(p.url, import.meta.env.BASE_URL, p);
     return {
       poster: vista?.poster ?? `${import.meta.env.BASE_URL}${m.logo ?? 'reel/gb-films-fondo.webp'}`,
       video: vista?.video,
-      vertical: Boolean(vista?.video),
+      vertical: Boolean(vista?.video) && !p.horizontal,
+      horizontal: Boolean(vista?.video) && Boolean(p.horizontal),
       etiqueta: p.titulo ? `${m.nombre} × ${p.titulo}` : m.nombre,
     };
   }),
@@ -593,7 +594,7 @@ const filas = [
 <script>
   import { montarFranja } from '~/scripts/franja';
 
-  type Pieza = { poster: string; video?: string; vertical: boolean; etiqueta: string };
+  type Pieza = { poster: string; video?: string; vertical: boolean; horizontal: boolean; etiqueta: string };
 
   const marquees = [...document.querySelectorAll<HTMLElement>('[data-marquee]')];
   const telon = document.querySelector<HTMLElement>('[data-telon]');
@@ -743,6 +744,11 @@ const filas = [
           h = w * (16 / 9);
         }
         return { w, h };
+      }
+
+      if (piezas[i]?.horizontal) {
+        const w = Math.min(960, anchoMax, altoDisponible * (16 / 9));
+        return { w, h: w * (9 / 16) };
       }
 
       const w = Math.min(880, anchoMax, altoDisponible * (3 / 2));

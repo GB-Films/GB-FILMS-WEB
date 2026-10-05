@@ -13,6 +13,10 @@ export type Pieza = {
   url: string;
   /** IP o campaña, si la pieza fue para algo puntual. Se muestra "MARCA × TÍTULO". */
   titulo?: string;
+  /** Recursos propios que reemplazan la vista asociada a la URL pública. */
+  video?: string;
+  poster?: string;
+  horizontal?: boolean;
 };
 
 export type Marca = {
@@ -96,7 +100,12 @@ export const marcas: Marca[] = [
   {
     nombre: 'Alfajores Jorgito',
     logo: 'marcas/jorgito-mono.webp',
-    piezas: [{ url: 'https://www.instagram.com/p/DZzqHtzOk6S/' }],
+    piezas: [{
+      url: 'https://www.instagram.com/p/DZzqHtzOk6S/',
+      video: 'portfolio/videos/DZzqHtzOk6S-horizontal.mp4',
+      poster: 'portfolio/videos/DZzqHtzOk6S-horizontal.webp',
+      horizontal: true,
+    }],
   },
   {
     nombre: 'Sprite',
