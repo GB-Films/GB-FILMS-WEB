@@ -5,6 +5,9 @@ import { navLinks, navCta } from '~/data/site';
 interface Props { homeLinks?: boolean; }
 const { homeLinks = false } = Astro.props;
 const prefix = homeLinks ? import.meta.env.BASE_URL : '';
+const links = import.meta.env.PUBLIC_GAME_PROTOTYPE === '1'
+  ? [...navLinks, { href: 'juego/', label: 'Juego' }]
+  : navLinks;
 ---
 
 <nav aria-label="Principal">
@@ -14,7 +17,7 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
       <span class="color-hint" aria-hidden="true">Cambiar<br />color ↻</span>
     </button>
     <div class="nav-links">
-      {navLinks.map((l) => <a href={`${prefix}${l.href}`} aria-current={Astro.url.pathname.includes('/portfolio/') && l.href === 'portfolio/' ? 'page' : undefined}>{l.label}</a>)}
+      {links.map((l) => <a href={`${prefix}${l.href}`} aria-current={(Astro.url.pathname.includes('/portfolio/') && l.href === 'portfolio/') || (Astro.url.pathname.includes('/juego/') && l.href === 'juego/') ? 'page' : undefined}>{l.label}</a>)}
     </div>
     <a class="nav-cta" href={`${prefix}${navCta.href}`}>{navCta.label}</a>
   </div>
@@ -200,6 +203,7 @@ const prefix = homeLinks ? import.meta.env.BASE_URL : '';
     .nav-links a:nth-child(4) { grid-column: 1; grid-row: 2; }
     .nav-links a:nth-child(5) { grid-column: 2; grid-row: 2; }
     .nav-links a:nth-child(6) { grid-column: 3; grid-row: 2; }
+    .nav-links a:nth-child(7) { grid-column: 4; grid-row: 2; }
   }
 
   @media (max-width: 360px) {

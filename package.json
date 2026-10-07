@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "game:preview": "node scripts/preview-game.mjs",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro check && astro build",
@@ -19,6 +20,10 @@
     "@fontsource-variable/inter": "^5.1.1",
     "@fontsource/anton": "^5.1.1",
     "astro": "^5.1.1",
+    "three": "^0.186.1",
     "typescript": "^5.7.2"
+  },
+  "devDependencies": {
+    "@types/three": "^0.186.0"
   }
 }

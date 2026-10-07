@@ -116,6 +116,19 @@ Buscá `TODO(brief)` para encontrarlos todos:
 - Los logos de marcas están en `public/marcas/`; las rutas están en
   `src/data/trabajos.ts`.
 
+## Juego 3D: prueba local
+
+`npm run game:preview` compila y abre una vista previa en
+`http://127.0.0.1:4335/juego/`. Incluye una pestaña **Juego**, un set de filmación
+con Norberto, cinco claquetas para encontrar, cámara giratoria y controles de
+teclado y táctiles. WASD/flechas para caminar, Shift para correr, Espacio para
+saltar, Escape para pausar y R para reiniciar.
+
+La ruta y la pestaña solo se generan con `PUBLIC_GAME_PROTOTYPE=1`. Los builds
+y paquetes habituales las excluyen. Este comando no publica ni conecta con el
+servidor; usa una vista previa local con `noindex`. La escena usa Three.js y
+requiere WebGL.
+
 ## Notas de implementación
 
 - **Logo** (`Logo.astro`): vectorizado desde `gb-logo.svg` de la marca. Se pinta

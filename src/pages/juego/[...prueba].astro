@@ -1,0 +1,102 @@
+---
+import Base from '~/layouts/Base.astro';
+import Nav from '~/components/Nav.astro';
+import { juego } from '~/data/juego';
+
+// Esta ruta solo existe en el build local de la prueba. Una release habitual
+// no genera /juego/ ni muestra su pestaña en el menú.
+export function getStaticPaths() {
+  return import.meta.env.PUBLIC_GAME_PROTOTYPE === '1'
+    ? [{ params: { prueba: undefined } }]
+    : [];
+}
+---
+
+<Base title="El set — juego 3D de GB Films (prueba local)">
+  <Nav homeLinks />
+  <main id="main" class="playground">
+    <div id="game-stage" role="application" aria-label="Set de filmación 3D. Usá WASD o las flechas para moverte, espacio para saltar y Escape para pausar." tabindex="0">
+      <div class="scene-loading" data-loading>Cargando el set…</div>
+    </div>
+    <div class="game-ui">
+      <div class="game-heading"><span class="eyebrow">GB Films / Playground</span><h1>El <em>set.</em></h1></div>
+      <div class="game-top">
+        <span class="local-tag">Prueba local</span>
+        <div class="score" data-score role="status" aria-label="Claquetas encontradas: 0 de 5">▰ <b>0</b><span>/ 5</span></div>
+        <button class="icon-btn" data-pause aria-label="Pausar juego" title="Pausar">Ⅱ</button>
+        <button class="icon-btn" data-reset aria-label="Reiniciar juego" title="Reiniciar">↻</button>
+      </div>
+      <p class="mission" data-mission>{juego.goal}</p>
+      <div class="desktop-controls"><span><kbd>W A S D</kbd> / <kbd>↑ ↓ ← →</kbd> Mover</span><span><kbd>Shift</kbd> Correr</span><span><kbd>Espacio</kbd> Saltar</span><span>Arrastrá para girar la cámara</span></div>
+      <div class="touch-controls">
+        <div class="joystick" data-stick role="group" aria-label="Control táctil de movimiento"><span class="stick-knob" data-knob></span><span class="stick-label">Mover</span></div>
+        <button class="jump-btn" data-jump aria-label="Saltar">↑<small>Saltar</small></button>
+      </div>
+    </div>
+    <div class="game-overlay" data-overlay>
+      <div class="intro-card">
+        <span class="eyebrow">Una prueba del universo GB</span>
+        <h2 data-overlay-title>{juego.title}</h2>
+        <p data-overlay-copy>{juego.description}</p>
+        <button class="start-btn" data-start>{juego.ready}<span>↗</span></button>
+        <small>Con teclado y mouse, o con los controles táctiles.</small>
+      </div>
+    </div>
+    <noscript>Activá JavaScript para entrar al juego.</noscript>
+  </main>
+</Base>
+
+<style>
+  .playground { position: fixed; inset: var(--nav-h) 0 0; background: #101415; }
+  #game-stage { position: absolute; inset: 0; touch-action: none; outline: none; cursor: grab; }
+  #game-stage:active { cursor: grabbing; }
+  #game-stage :global(canvas) { display: block; width: 100%; height: 100%; }
+  .scene-loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--dim); }
+  .game-ui { position: absolute; inset: 0; pointer-events: none; padding: 28px 34px; }
+  .game-heading .eyebrow, .intro-card .eyebrow { color: var(--accent); font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.2em; }
+  .game-heading h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.2; margin-top: 5px; }
+  h1 em { color: var(--accent); font-style: normal; }
+  .game-top { position: absolute; right: 34px; top: 28px; display: flex; gap: 8px; align-items: center; }
+  .local-tag { color: #b7bcc1; font-size: 0.57rem; letter-spacing: 0.15em; text-transform: uppercase; margin-right: 12px; }
+  .score, .icon-btn { height: 42px; border: 1px solid #ffffff30; background: #101416cc; color: var(--light); padding: 0 14px; font-family: var(--font-body); }
+  .score { color: var(--accent); display: flex; align-items: center; gap: 12px; }
+  .score span { color: #92989d; font-size: 0.72rem; }
+  .icon-btn { pointer-events: auto; cursor: pointer; font-size: 1.15rem; }
+  .mission { position: absolute; top: 142px; left: 34px; max-width: 280px; font-size: 0.72rem; color: #b7bcc1; }
+  .desktop-controls { position: absolute; bottom: 24px; left: 34px; right: 34px; display: flex; flex-wrap: wrap; gap: 12px 24px; color: #c2c7cb; font-size: 0.63rem; padding: 15px 0 0; border-top: 1px solid #ffffff20; }
+  kbd { color: #fff; font-family: var(--font-body); font-size: 0.62rem; background: #ffffff0c; border: 1px solid #ffffff28; padding: 4px 7px; margin-right: 6px; }
+  .game-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: flex-end; padding: 40px clamp(24px, 7vw, 100px); background: linear-gradient(90deg, transparent 25%, #080d10c9 100%); }
+  .game-overlay[hidden] { display: none; }
+  .intro-card { max-width: 375px; padding: 30px; background: #080d10e8; border: 1px solid #ffffff24; box-shadow: 0 25px 90px #0008; }
+  .intro-card h2 { font-size: clamp(2.6rem, 4.8vw, 4.3rem); line-height: 1.07; margin: 18px 0; }
+  .intro-card p { color: #b7bcc1; font-size: 0.8rem; line-height: 1.85; }
+  .start-btn { width: 100%; display: flex; justify-content: space-between; align-items: center; margin: 27px 0 15px; padding: 14px 17px; border: 0; background: var(--accent); color: #000; font-family: var(--font-body); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em; cursor: pointer; }
+  .start-btn span { font-size: 1.2rem; }
+  .intro-card small { display: block; font-size: 0.59rem; color: #7d868d; }
+  .touch-controls { display: none; }
+  :global(body:has(.playground) .wa) { display: none; }
+  @media (pointer: coarse), (max-width: 700px) {
+    .game-ui { padding: 18px; }
+    .game-heading h1 { font-size: 2.3rem; }
+    .game-heading .eyebrow { font-size: 0.48rem; }
+    .game-top { right: 16px; top: 18px; gap: 5px; }
+    .local-tag { display: none; }
+    .score, .icon-btn { height: 36px; padding: 0 11px; }
+    .mission { top: 95px; left: 18px; font-size: 0.63rem; max-width: 190px; }
+    .desktop-controls { display: none; }
+    .touch-controls { display: block; position: absolute; bottom: max(25px, env(safe-area-inset-bottom)); left: 20px; right: 20px; }
+    .joystick { position: absolute; bottom: 0; left: 0; width: 106px; height: 106px; border-radius: 50%; border: 1px solid #ffffff44; background: #ffffff09; pointer-events: auto; touch-action: none; }
+    .stick-knob { position: absolute; width: 46px; height: 46px; top: 29px; left: 29px; border-radius: 50%; background: var(--accent); box-shadow: 0 3px 15px #0006; opacity: 0.8; }
+    .stick-label { position: absolute; bottom: -18px; left: 0; width: 100%; text-align: center; color: #acb2b8; font-size: 0.5rem; letter-spacing: 0.14em; text-transform: uppercase; }
+    .jump-btn { position: absolute; right: 0; bottom: 10px; width: 70px; height: 70px; border: 1px solid #ffffff44; border-radius: 50%; background: #101416b8; color: var(--accent); pointer-events: auto; touch-action: none; font-size: 1.65rem; }
+    .jump-btn small { display: block; font-family: var(--font-body); font-size: 0.48rem; text-transform: uppercase; }
+    .game-overlay { padding: 18px; align-items: center; background: #080d1070; }
+    .intro-card { padding: 23px; margin: auto; max-width: 330px; }
+  }
+  @media (max-height: 500px) { .intro-card { max-width: 480px; padding: 18px 24px; } .intro-card h2 { font-size: 2.3rem; margin: 8px 0; } .start-btn { margin-top: 14px; } .intro-card small { display: none; } }
+</style>
+
+<script>
+  import { iniciarSet } from '~/scripts/juego';
+  iniciarSet();
+</script>
