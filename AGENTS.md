@@ -11,6 +11,7 @@ El usuario quiere pedir cambios en lenguaje natural y que el agente edite, compr
 - El usuario pidió que cada cambio de la web se publique en el sitio público una vez comprobado, sin tener que pedirlo de nuevo. Completar la publicación dentro del alcance autorizado y no repetir confirmaciones ya concedidas. Si pide expresamente solo una prueba o diseño, entregar esa vista previa.
 - Para producción generar un paquete nuevo con `npm run release:production`; nunca publicar como producción un paquete de preview con `noindex`.
 - Mantener historial en Git y releases anteriores en el servidor. No afirmar que algo está publicado sin comprobar la URL pública y la versión servida.
+- El repositorio de GitHub vigente es `https://github.com/GB-Films/GB-FILMS-WEB` (`origin`). Por pedido del usuario, guardar y subir allí cada cambio de la web después de comprobarlo, sin volver a pedir autorización. Verificar que el commit remoto coincida con el local antes de dar la sincronización por terminada. Si el usuario pide una prueba local, también respaldar su código en GitHub, pero respetar la indicación de no publicarla en la web. No usar el remoto `origin-anterior` para nuevas actualizaciones.
 
 ## Acceso y límites
 
