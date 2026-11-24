@@ -31,6 +31,18 @@ SHA-256; el servidor guarda releases separadas para poder volver a la anterior.
 La configuración y los límites están en `AGENTS.md` y el procedimiento técnico
 en `docs/publicacion-google-cloud.md`.
 
+Con Google Cloud SDK autorizado, la publicación puede hacerse por terminal,
+sin controlar Chrome. Después de generar y revisar una release de producción:
+
+```powershell
+./scripts/publish-site.ps1 -Bundle .releases/<release>-production.tar.gz -ExpectedCurrent releases/<release-publica>-production/site
+```
+
+`ExpectedCurrent` es el destino comprobado de `current`; el comando se detiene
+si otra publicación lo cambió. `-ValidateOnly` comprueba el paquete sin acceder
+al servidor. La sesión de Google y las claves quedan fuera del repositorio;
+las claves SSH de publicación expiran a los 15 minutos.
+
 ## Otras formas de mostrarlo antes del lanzamiento
 
 Tres caminos, de menos a más definitivo:
