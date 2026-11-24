@@ -89,8 +89,9 @@ Buscá `TODO(brief)` para encontrarlos todos:
 - **Dominio real** (`astro.config.mjs`) — hoy apunta a
   `granbertafilms.com`. Se usa para canonical, Open Graph y sitemap.
 - El reel completo se reproduce desde YouTube en "¿Qué carajo?".
-  El fondo de la portada usa una copia optimizada y sin sonido en `public/reel/`
-  (2,3 MB), derivada del máster local. Se pausa al salir de la portada y si el
+  El fondo de la portada usa una copia optimizada y sin sonido del reel 2026 v06
+  en `public/reel/` (6,9 MB). Su origen y exportación están en
+  `docs/assets-reel.md`. Se pausa al salir de la portada y si el
   visitante prefiere menos movimiento.
 - Los logos de las 21 marcas están en `public/marcas/`. Sus fuentes se registran
   en `docs/assets-marcas.md`.

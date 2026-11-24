@@ -217,6 +217,25 @@ Estas consultas públicas son una referencia inicial. No sustituyen la inspecci�
 - Se borró el paquete temporal de la VM y de Cloud Shell. Las claves SSH temporales se retiraron de los metadatos del proyecto, se confirmó que quedaron cero entradas `ssh-keys` y se borraron los archivos de clave de Cloud Shell.
 - La release de `/preview/` sigue siendo la anterior; la versión actualizada está publicada en el dominio principal.
 
+## Reel de portada preparado localmente — 24 de noviembre de 2026
+
+- Se reemplazó el fondo por una copia optimizada de `gbf_reel-2026_v06.mp4`,
+  completa (102,44 segundos), sin audio y con su propio fotograma. Los archivos
+  públicos llevan `v06` para renovar la caché. El origen y los parámetros están
+  en `docs/assets-reel.md`.
+- Preview y producción se compilaron y empaquetaron con validación de integridad
+  e indexación. La release de producción preparada es
+  `20261124T174002Z-63a60de-production`, SHA-256
+  `00a9ee3f39a25808af35e8616c976818dbe02806f5970cf482b1e953478bc904`.
+  Su manifiesto registra cambios locales (`dirty: true`).
+- Se revisó el build de producción en 1440 × 900 y 390 × 844: reproducción
+  automática, loop, silencio, pausa al salir de pantalla, reanudación y
+  movimiento reducido correctos; sin desborde horizontal ni errores de JavaScript.
+  Se comprobó la decodificación de los 2561 fotogramas y el inicio rápido del MP4.
+- Esta actualización todavía no se transfirió ni activó en el servidor. El
+  acceso mediante control del navegador se detuvo al no poder verificar la URL
+  de Chrome. Los paquetes permanecen en `.releases/` para retomar la publicación.
+
 ## Pendientes posteriores al lanzamiento
 
 - Continuar la revisión de contenido, enlaces, contacto y correo. Un enlace `mailto:` válido no demuestra entrega de mensajes; la recepción debe comprobarla el titular con una prueba autorizada.
