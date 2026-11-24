@@ -6,7 +6,6 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$projectRoot = Split-Path -Parent $PSScriptRoot
 if (-not $GcloudSdk) {
     $sdkCache = Join-Path $env:USERPROFILE '.cache/gb-films-tools'
     $sdkCandidate = Get-ChildItem -LiteralPath $sdkCache -Directory -ErrorAction SilentlyContinue |
@@ -50,24 +49,38 @@ function Invoke-Cloud {
 }
 
 $activeAccount = Invoke-Cloud -GcloudArguments @('auth', 'list', '--filter=status:ACTIVE', '--format=value(account)')
-if ($activeAccount.Trim() -ne 'info@granbertafilms.com') {
+if (([string]$activeAccount).Trim() -ne 'info@granbertafilms.com') {
     throw 'Iniciar sesión de Google Cloud SDK con info@granbertafilms.com antes de publicar.'
 }
 $taskKeyDirectory = Join-Path ([IO.Path]::GetTempPath()) ('gbfilms-publish-ssh-' + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $taskKeyDirectory | Out-Null
 $taskKeyFile = Join-Path $taskKeyDirectory 'id_rsa'
-$common = @('--project=gran-berta-films', '--zone=northamerica-northeast1-a', '--quiet', "--ssh-key-file=$taskKeyFile", '--ssh-key-expire-after=15m')
+$keyExpiration = [DateTime]::UtcNow.AddMinutes(15).ToString("yyyy-MM-ddTHH:mm:ssZ")
+$common = @('--project=gran-berta-films', '--zone=northamerica-northeast1-a', '--quiet', "--ssh-key-file=$taskKeyFile", "--ssh-key-expiration=$keyExpiration")
 $instance = 'info@wordpress-1-vm'
-$remoteBundle = "/home/info/$bundleName"
+$remoteStage = $null
 try {
     $current = Invoke-Cloud -GcloudArguments (@('compute', 'ssh', $instance, '--command=readlink /var/www/granberta-nueva/current') + $common)
     if ($current.Trim() -ne $ExpectedCurrent) { throw "Cambió la versión pública: $current. Revisar antes de publicar." }
-    Invoke-Cloud -GcloudArguments (@('compute', 'scp', $bundlePath, "${instance}:$remoteBundle") + $common) | Write-Output
-    $checkCommand = "/usr/local/sbin/granberta-deploy $remoteBundle --sha256 $bundleHash --channel production --check-only"
+    $previousId = $ExpectedCurrent.Split('/')[1]
+    $previousManifest = Join-Path (Split-Path -Parent $bundlePath) "$previousId/manifest.json"
+    & $sdkPython (Join-Path $PSScriptRoot 'pack-changes.py') $bundlePath $previousManifest $taskKeyDirectory
+    if ($LASTEXITCODE -ne 0) { throw 'Falló la preparación de los archivos modificados.' }
+    $changes = Join-Path $taskKeyDirectory 'changes.tar.gz'
+    $reuseList = Join-Path $taskKeyDirectory 'reuse.list'
+    $changesHash = (Get-FileHash -LiteralPath $changes).Hash.ToLowerInvariant()
+    $listHash = (Get-FileHash -LiteralPath $reuseList).Hash.ToLowerInvariant()
+    $remoteStage = (Invoke-Cloud -GcloudArguments (@('compute', 'ssh', $instance, '--command=mktemp -d /tmp/gbfilms-publish.XXXXXXXXXX') + $common)).Trim()
+    if ($remoteStage -cnotmatch '^/tmp/gbfilms-publish\.[A-Za-z0-9]{10}$') { throw 'Carpeta de transferencia inesperada.' }
+    $remoteBundle = "$remoteStage/site.tar.gz"
+    Invoke-Cloud -GcloudArguments (@('compute', 'scp', $changes, $reuseList, "${instance}:$remoteStage/") + $common) | Write-Output
+    $prepare = "cd $remoteStage && echo '$changesHash  changes.tar.gz' | sha256sum -c --status && echo '$listHash  reuse.list' | sha256sum -c --status && gzip -dc changes.tar.gz > site.tar && tar --append --file=$remoteStage/site.tar --directory=/var/www/granberta-nueva/releases/$previousId --null --files-from=$remoteStage/reuse.list && gzip -1 site.tar && sha256sum site.tar.gz"
+    $digestLine = Invoke-Cloud -GcloudArguments (@('compute', 'ssh', $instance, "--command=$prepare") + $common)
+    if ($digestLine.Trim() -cnotmatch '^([0-9a-f]{64})  site\.tar\.gz$') { throw 'La VM no confirmó el paquete reconstruido.' }
+    $installedHash = $Matches[1]
+    $checkCommand = "/usr/local/sbin/granberta-deploy $remoteBundle --sha256 $installedHash --channel production --check-only"
     Invoke-Cloud -GcloudArguments (@('compute', 'ssh', $instance, "--command=$checkCommand") + $common) | Write-Output
-    $current = Invoke-Cloud -GcloudArguments (@('compute', 'ssh', $instance, '--command=readlink /var/www/granberta-nueva/current') + $common)
-    if ($current.Trim() -ne $ExpectedCurrent) { throw 'Otra publicación cambió la versión activa durante la transferencia.' }
-    $deployCommand = "sudo /usr/local/sbin/granberta-deploy $remoteBundle --sha256 $bundleHash --channel production"
+    $deployCommand = "sudo flock /var/www/granberta-nueva/.publish.lock sh -c 'test `"`$(readlink /var/www/granberta-nueva/current)`" = $ExpectedCurrent && /usr/local/sbin/granberta-deploy $remoteBundle --sha256 $installedHash --channel production'"
     Invoke-Cloud -GcloudArguments (@('compute', 'ssh', $instance, "--command=$deployCommand") + $common) | Write-Output
     $response = Invoke-WebRequest -Uri 'https://granbertafilms.com/' -UseBasicParsing
     $publicBytes = $response.RawContentStream.ToArray()
@@ -75,9 +88,14 @@ try {
     if ($response.StatusCode -ne 200 -or $publicHash -ne $manifest.files.'index.html') {
         throw 'La respuesta pública todavía no coincide con la release. Revisar el servidor antes de darla por publicada.'
     }
-    [pscustomobject]@{ published = $true; release = $releaseId; url = 'https://granbertafilms.com/'; sha256 = $bundleHash } | ConvertTo-Json
+    [pscustomobject]@{ published = $true; release = $releaseId; url = 'https://granbertafilms.com/'; sourceSha256 = $bundleHash; installedSha256 = $installedHash } | ConvertTo-Json
 }
 finally {
+    if ($remoteStage -cmatch '^/tmp/gbfilms-publish\.[A-Za-z0-9]{10}$') {
+        $cleanup = "cd $remoteStage && rm -f -- changes.tar.gz reuse.list site.tar site.tar.gz && rmdir -- $remoteStage"
+        try { Invoke-Cloud -GcloudArguments (@('compute', 'ssh', $instance, "--command=$cleanup") + $common) | Out-Null }
+        catch { Write-Warning "Revisar la limpieza de $remoteStage en la VM." }
+    }
     $resolvedKeyDirectory = [IO.Path]::GetFullPath($taskKeyDirectory)
     $resolvedTempDirectory = [IO.Path]::GetFullPath([IO.Path]::GetTempPath())
     if (-not $resolvedKeyDirectory.StartsWith($resolvedTempDirectory, [StringComparison]::OrdinalIgnoreCase) -or

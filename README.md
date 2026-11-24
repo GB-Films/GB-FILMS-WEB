@@ -25,9 +25,10 @@ La vista previa estable está en:
 
 `https://granbertafilms.com/preview/`
 
-El flujo habitual es: pedir el cambio en ChatGPT, revisar esa URL y, después de
-aprobarlo, publicar una release nueva. Cada paquete lleva un manifiesto y un
-SHA-256; el servidor guarda releases separadas para poder volver a la anterior.
+Pedí el cambio en ChatGPT. El agente comprueba el resultado en escritorio y
+móvil, lo guarda en GitHub, publica la versión de producción y verifica la web.
+Si querés revisar una prueba antes de publicarla, indicá «solo vista previa».
+Cada paquete lleva un manifiesto y un SHA-256. El servidor conserva las versiones anteriores.
 La configuración y los límites están en `AGENTS.md` y el procedimiento técnico
 en `docs/publicacion-google-cloud.md`.
 
@@ -41,7 +42,10 @@ sin controlar Chrome. Después de generar y revisar una release de producción:
 `ExpectedCurrent` es el destino comprobado de `current`; el comando se detiene
 si otra publicación lo cambió. `-ValidateOnly` comprueba el paquete sin acceder
 al servidor. La sesión de Google y las claves quedan fuera del repositorio;
-las claves SSH de publicación expiran a los 15 minutos.
+las claves SSH de publicación expiran a los 15 minutos. Cuando la copia local
+incluye el manifiesto de la versión anterior, se transfieren únicamente los
+archivos que cambiaron. La VM reconstruye el paquete, verifica cada archivo
+y activa el sitio. El contenido completo se transfiere si ese manifiesto falta.
 
 ## Otras formas de mostrarlo antes del lanzamiento
 

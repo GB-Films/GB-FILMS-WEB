@@ -258,16 +258,30 @@ Estas consultas públicas son una referencia inicial. No sustituyen la inspecci�
   segundos, loop y silencio, sin error del reproductor. Se retiraron los paquetes
   temporales de la VM y se cerró la conexión SSH al terminar.
 
-## Actualización del reel de YouTube preparada — 24 de noviembre de 2026
+## Reel de YouTube y portfolio publicados — 24 de noviembre de 2026
 
 - El reproductor de «¿Qué carajo?» usa el nuevo enlace provisto por el usuario:
   `https://www.youtube.com/watch?v=3XmSSSB9Cwg`, del canal Gran Berta Films.
 - Se renovó su imagen con la miniatura oficial del video, optimizada en WebP,
   y el rótulo identifica la edición 2026. El fondo de portada v06 ya publicado
   se conserva.
-- Esta actualización del reproductor aún no está publicada: al intentar abrir
-  Google Cloud, el control del navegador se detuvo porque no pudo determinar
-  la URL de Chrome con confianza suficiente. No se modificó el servidor.
+- El acceso directo de Google Cloud SDK permitió publicar
+  `20261124T184634Z-0c721fe-production`, con SHA-256
+  `b42061d11707f06976d764eb2a0908269bfa7447f6ea069f48829ac8bf85b826`.
+- A continuación se publicó `20261124T195142Z-2fe154e-production`. Esta
+  versión suma Samsung Mundial 2026 al portfolio y actualiza el destacado
+  existente a Convocatoria Jorgito 2026. El reel anterior en el historial de
+  publicaciones queda disponible para revertir.
+- Para la segunda publicación se enviaron cuatro archivos modificados en un
+  paquete de 51.642 bytes junto a la lista de 190 archivos reutilizados.
+  El instalador verificó los 194 archivos antes de activar la web. SHA-256
+  del paquete local: `376283542ec8cd4c1def6b54fe290724d6eebd5e96d7438130335c324f74e91c`.
+  SHA-256 del paquete reconstruido en la VM:
+  `e9313161d42651da573e3939687d1333d839b321090e49eef16a1caef0ffd6c6`.
+- La portada, el portfolio, robots.txt, la imagen del reel y el fondo v06
+  respondieron HTTP 200 con contenido idéntico al compilado. En escritorio
+  y móvil se comprobaron los botones y el filtro de Samsung. En el dominio
+  público se confirmó que avanzaba la reproducción de los tres videos de YouTube.
 
 ## Pendientes posteriores al lanzamiento
 
