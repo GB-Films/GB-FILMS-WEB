@@ -217,7 +217,7 @@ Estas consultas públicas son una referencia inicial. No sustituyen la inspecci�
 - Se borró el paquete temporal de la VM y de Cloud Shell. Las claves SSH temporales se retiraron de los metadatos del proyecto, se confirmó que quedaron cero entradas `ssh-keys` y se borraron los archivos de clave de Cloud Shell.
 - La release de `/preview/` sigue siendo la anterior; la versión actualizada está publicada en el dominio principal.
 
-## Reel de portada preparado localmente — 24 de noviembre de 2026
+## Reel de portada publicado — 24 de noviembre de 2026
 
 - Se reemplazó el fondo por una copia optimizada de `gbf_reel-2026_v06.mp4`,
   completa (102,44 segundos), sin audio y con su propio fotograma. Los archivos
@@ -237,11 +237,26 @@ Estas consultas públicas son una referencia inicial. No sustituyen la inspecci�
   y se comprobó su coincidencia con el remoto. Git Credential Manager tiene dos
   cuentas guardadas: la configuración local `credential.https://github.com.username`
   selecciona `GB-Films` para evitar que una subida no interactiva espere la selección.
-- Esta actualización todavía no se transfirió ni activó en el servidor. Google
-  Cloud abrió inicialmente con una cuenta sin permisos; al seleccionar la cuenta
-  autorizada `info@granbertafilms.com`, Google solicitó una verificación de
-  identidad que debe completar el usuario directamente en el navegador. El paquete
-  permanece en `.releases/` para continuar después de esa verificación.
+- Tras restablecer la sesión autorizada, se activó esta release en
+  `/var/www/granberta-nueva/current`. La anterior,
+  `releases/20261005T142309Z-4ba8d12-production/site`, permanece disponible
+  para reversión. No se cambiaron DNS, Apache ni WordPress.
+- La transferencia completa resultó lenta y se canceló. Se enviaron 85 archivos
+  generados y el manifiesto en un paquete de 4,8 MB, se reutilizaron 105 archivos
+  idénticos de la release anterior y se descargaron tres del commit público
+  `6f4a3e3538c4830b4baf509b1f4092145eb1a141` de GitHub. Se verificó el SHA-256
+  de cada uno de los 193 archivos contra el manifiesto original; los finales de
+  línea del favicon se restauraron para coincidir exactamente con ese manifiesto.
+- El paquete reconstruido en la VM tiene SHA-256
+  `6f1d517c303270ef8b6d0236a35328dde313435e25e48bb4865554859db8b228`.
+  El instalador lo validó con `--check-only` y después activó producción,
+  registrando la release anterior en `deployments.jsonl`.
+- En la URL pública, portada, portfolio, robots, video v06 y su imagen
+  respondieron HTTP 200 y sus SHA-256 coincidieron con el build probado.
+  El MP4 público pesa 6.909.546 bytes y se entrega como `video/mp4`.
+- En el navegador público se confirmó reproducción activa, duración de 102,44
+  segundos, loop y silencio, sin error del reproductor. Se retiraron los paquetes
+  temporales de la VM y se cerró la conexión SSH al terminar.
 
 ## Pendientes posteriores al lanzamiento
 
