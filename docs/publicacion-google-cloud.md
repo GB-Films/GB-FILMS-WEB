@@ -258,6 +258,17 @@ Estas consultas públicas son una referencia inicial. No sustituyen la inspecci�
   segundos, loop y silencio, sin error del reproductor. Se retiraron los paquetes
   temporales de la VM y se cerró la conexión SSH al terminar.
 
+## Actualización del reel de YouTube preparada — 24 de noviembre de 2026
+
+- El reproductor de «¿Qué carajo?» usa el nuevo enlace provisto por el usuario:
+  `https://www.youtube.com/watch?v=3XmSSSB9Cwg`, del canal Gran Berta Films.
+- Se renovó su imagen con la miniatura oficial del video, optimizada en WebP,
+  y el rótulo identifica la edición 2026. El fondo de portada v06 ya publicado
+  se conserva.
+- Esta actualización del reproductor aún no está publicada: al intentar abrir
+  Google Cloud, el control del navegador se detuvo porque no pudo determinar
+  la URL de Chrome con confianza suficiente. No se modificó el servidor.
+
 ## Pendientes posteriores al lanzamiento
 
 - Continuar la revisión de contenido, enlaces, contacto y correo. Un enlace `mailto:` válido no demuestra entrega de mensajes; la recepción debe comprobarla el titular con una prueba autorizada.

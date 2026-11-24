@@ -13,5 +13,13 @@ exportado con libwebp y calidad 82. Los nombres incluyen la versión para que
 las visitas que tienen el reel anterior en caché descarguen el nuevo.
 
 El fondo conserva loop, reproducción silenciada y en línea, pausa al salir de
-pantalla y respeto por la preferencia de movimiento reducido. El video de
-YouTube en «¿Qué carajo?» y su imagen `gb-films-fondo.webp` se mantienen.
+pantalla y respeto por la preferencia de movimiento reducido.
+
+## Reel completo
+
+El reproductor de «¿Qué carajo?» usa el video de YouTube provisto por el usuario,
+`https://www.youtube.com/watch?v=3XmSSSB9Cwg` («Gran Berta Films | REEL 2026»).
+La portada del reproductor, `public/reel/gb-films-reel-2026.webp`, procede de
+`https://i.ytimg.com/vi/3XmSSSB9Cwg/maxresdefault.jpg`, convertida a WebP con
+calidad 85. El rótulo identifica la edición 2026 sin atribuirle una duración
+sin verificar.
