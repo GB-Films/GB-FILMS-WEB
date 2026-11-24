@@ -225,16 +225,23 @@ Estas consultas públicas son una referencia inicial. No sustituyen la inspecci�
   en `docs/assets-reel.md`.
 - Preview y producción se compilaron y empaquetaron con validación de integridad
   e indexación. La release de producción preparada es
-  `20261124T174002Z-63a60de-production`, SHA-256
-  `00a9ee3f39a25808af35e8616c976818dbe02806f5970cf482b1e953478bc904`.
-  Su manifiesto registra cambios locales (`dirty: true`).
+  `20261124T174933Z-6f4a3e3-production`, SHA-256
+  `85b791d582e65c4a49d5451ef12c3fcc55fe6cfd044313819fc7bdc2f10dd87e`.
+  Se regeneró desde el commit guardado en GitHub; el manifiesto registra
+  `dirty: false`. El instalador también la validó con `--check-only` (193 archivos).
 - Se revisó el build de producción en 1440 × 900 y 390 × 844: reproducción
   automática, loop, silencio, pausa al salir de pantalla, reanudación y
   movimiento reducido correctos; sin desborde horizontal ni errores de JavaScript.
   Se comprobó la decodificación de los 2561 fotogramas y el inicio rápido del MP4.
-- Esta actualización todavía no se transfirió ni activó en el servidor. El
-  acceso mediante control del navegador se detuvo al no poder verificar la URL
-  de Chrome. Los paquetes permanecen en `.releases/` para retomar la publicación.
+- El commit `6f4a3e3538c4830b4baf509b1f4092145eb1a141` se subió a `origin/main`
+  y se comprobó su coincidencia con el remoto. Git Credential Manager tiene dos
+  cuentas guardadas: la configuración local `credential.https://github.com.username`
+  selecciona `GB-Films` para evitar que una subida no interactiva espere la selección.
+- Esta actualización todavía no se transfirió ni activó en el servidor. Google
+  Cloud abrió inicialmente con una cuenta sin permisos; al seleccionar la cuenta
+  autorizada `info@granbertafilms.com`, Google solicitó una verificación de
+  identidad que debe completar el usuario directamente en el navegador. El paquete
+  permanece en `.releases/` para continuar después de esa verificación.
 
 ## Pendientes posteriores al lanzamiento
 
