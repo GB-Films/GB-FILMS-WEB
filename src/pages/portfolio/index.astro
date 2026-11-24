@@ -8,16 +8,6 @@ import { marcas, ultimoTrabajoUrl } from '~/data/trabajos';
 import { vistaPieza } from '~/data/vistasPiezas';
 
 const base = import.meta.env.BASE_URL;
-const youtubeId = (raw: string) => {
-  try {
-    const url = new URL(raw);
-    if (url.hostname === 'youtu.be') return url.pathname.slice(1);
-    if (url.hostname.endsWith('youtube.com')) {
-      return url.searchParams.get('v') || url.pathname.match(/^\/(?:embed|shorts)\/([^/]+)/)?.[1];
-    }
-  } catch { /* URL no compatible: se abrirá como enlace externo. */ }
-  return undefined;
-};
 
 type Trabajo = {
   url: string;
@@ -37,28 +27,27 @@ for (const marca of marcas) {
       existente.marcas.push(marca.nombre);
       continue;
     }
-    const id = youtubeId(pieza.url);
     const instagram = pieza.url.match(/instagram\.com\/(?:p|reel|tv)\/([\w-]+)/)?.[1];
     const miniaturaLocal = instagram && existsSync(join(process.cwd(), 'public', pieza.poster ?? `portfolio/${instagram}.webp`));
     const vista = vistaPieza(pieza.url, base, pieza);
     trabajos.push({
       url: pieza.url,
-      embed: id ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1` : '',
+      embed: vista?.embed ?? '',
       video: vista?.video,
       titulo: pieza.titulo || `Pieza ${String(index + 1).padStart(2, '0')}`,
       marcas: [marca.nombre],
-      miniatura: id
-        ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
+      miniatura: vista?.embed
+        ? vista.poster
         : miniaturaLocal
           ? vista?.poster || `${base}portfolio/${instagram}.webp`
           : `${base}${marca.logo ?? 'reel/gb-films-fondo.webp'}`,
-      plataforma: id ? 'YouTube' : vista?.video ? 'Video' : 'Vista previa',
+      plataforma: vista?.embed ? 'YouTube' : vista?.video ? 'Video' : 'Vista previa',
     });
   }
 }
 const marcasConTrabajos = marcas.filter((marca) => marca.piezas?.length).map((marca) => marca.nombre);
 const ultimoTrabajo = trabajos.find((trabajo) => trabajo.url === ultimoTrabajoUrl);
-if (!ultimoTrabajo?.video) throw new Error('El último trabajo necesita una pieza y un video local para destacarse.');
+if (!ultimoTrabajo?.video && !ultimoTrabajo?.embed) throw new Error('El último trabajo necesita un video para destacarse.');
 ---
 
 <Base title="Portfolio de trabajos — Gran Berta Films" description="Explorá los trabajos audiovisuales de Gran Berta Films para marcas y plataformas. Videos, campañas y piezas digitales en un solo lugar.">
@@ -72,14 +61,14 @@ if (!ultimoTrabajo?.video) throw new Error('El último trabajo necesita una piez
         <p class="intro-copy">Ideas que salieron al mundo. Explorá las piezas que hicimos junto a marcas y plataformas.</p>
       </div>
 
-      <button type="button" class="destacado" data-play data-video={ultimoTrabajo.video} data-poster={ultimoTrabajo.miniatura} data-platform="Video" aria-label="Ver el último trabajo para Alfajores Jorgito">
+      <button type="button" class="destacado" data-play data-url={ultimoTrabajo.url} data-embed={ultimoTrabajo.embed} data-video={ultimoTrabajo.video} data-poster={ultimoTrabajo.miniatura} data-platform={ultimoTrabajo.plataforma} aria-label={`Ver ${ultimoTrabajo.titulo} de ${ultimoTrabajo.marcas.join(' y ')}`}>
         <span class="destacado-media" aria-hidden="true">
           <img class="destacado-poster" src={ultimoTrabajo.miniatura} alt="" loading="eager" />
         </span>
         <span class="destacado-play" aria-hidden="true">▶</span>
         <span class="destacado-copy">
           <span class="destacado-label">Último trabajo</span>
-          <strong>Alfajores Jorgito.</strong>
+          <strong>{ultimoTrabajo.marcas.join(' × ')}.</strong>
         </span>
       </button>
 
@@ -98,7 +87,7 @@ if (!ultimoTrabajo?.video) throw new Error('El último trabajo necesita una piez
 
       <div class="grilla" data-grid>
         {trabajos.map((trabajo) => <article class="trabajo" data-brands={trabajo.marcas.join('|').toLowerCase()}>
-          <button type="button" class="trabajo-link" data-play data-embed={trabajo.embed} data-video={trabajo.video} data-poster={trabajo.miniatura} data-platform={trabajo.plataforma} aria-label={`Ver ${trabajo.titulo} de ${trabajo.marcas.join(' y ')}`}>
+          <button type="button" class="trabajo-link" data-play data-url={trabajo.url} data-embed={trabajo.embed} data-video={trabajo.video} data-poster={trabajo.miniatura} data-platform={trabajo.plataforma} aria-label={`Ver ${trabajo.titulo} de ${trabajo.marcas.join(' y ')}`}>
             <span class="imagen">
               <img src={trabajo.miniatura} alt={`Miniatura de ${trabajo.titulo} de ${trabajo.marcas.join(' y ')}`} loading="lazy" decoding="async" />
               <span class="ver" aria-hidden="true">▶</span>
@@ -219,7 +208,7 @@ if (!ultimoTrabajo?.video) throw new Error('El último trabajo necesita una piez
         iframe.allowFullscreen = true;
         contenido = iframe;
         original.hidden = false;
-        original.href = (link as HTMLAnchorElement).href;
+        original.href = link.dataset.url!;
       } else if (link.dataset.video) {
         const video = document.createElement('video');
         video.src = link.dataset.video;

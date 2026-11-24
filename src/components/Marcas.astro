@@ -33,8 +33,9 @@ const conPiezas = marcas.map((m) => ({
     return {
       poster: vista?.poster ?? `${import.meta.env.BASE_URL}${m.logo ?? 'reel/gb-films-fondo.webp'}`,
       video: vista?.video,
+      embed: vista?.embed,
       vertical: Boolean(vista?.video) && !p.horizontal,
-      horizontal: Boolean(vista?.video) && Boolean(p.horizontal),
+      horizontal: Boolean(vista?.video || vista?.embed) && Boolean(p.horizontal),
       etiqueta: p.titulo ? `${m.nombre} × ${p.titulo}` : m.nombre,
     };
   }),
@@ -330,7 +331,8 @@ const filas = [
     background: transparent;
   }
 
-  .visor :global(video) {
+  .visor :global(video),
+  .visor :global(iframe) {
     width: 100%;
     height: 100%;
     border: 0;
@@ -594,7 +596,7 @@ const filas = [
 <script>
   import { montarFranja } from '~/scripts/franja';
 
-  type Pieza = { poster: string; video?: string; vertical: boolean; horizontal: boolean; etiqueta: string };
+  type Pieza = { poster: string; video?: string; embed?: string; vertical: boolean; horizontal: boolean; etiqueta: string };
 
   const marquees = [...document.querySelectorAll<HTMLElement>('[data-marquee]')];
   const telon = document.querySelector<HTMLElement>('[data-telon]');
@@ -782,7 +784,7 @@ const filas = [
         img.alt = pieza.etiqueta;
         visor.append(img);
 
-        if (pieza.video) {
+        if (pieza.video || pieza.embed) {
           const play = document.createElement(marco.classList.contains('flip') ? 'button' : 'span');
           play.className = 'preview-play';
           play.textContent = '▶';
@@ -806,9 +808,9 @@ const filas = [
     const frenarLasDeAtras = () => {
       marcos.forEach((marco, i) => {
         if (i === activo) return;
-        const video = marco.querySelector<HTMLVideoElement>('video');
-        if (video) {
-          video.pause();
+        const reproductor = marco.querySelector('video, iframe');
+        if (reproductor) {
+          if (reproductor instanceof HTMLVideoElement) reproductor.pause();
           marco.querySelector<HTMLElement>('[data-visor]')?.replaceChildren();
         }
       });
@@ -818,7 +820,17 @@ const filas = [
     const reproducirActiva = () => {
       const pieza = piezas[activo];
       const visor = marcos[activo]?.querySelector<HTMLElement>('[data-visor]');
-      if (!pieza?.video || !visor || visor.querySelector('video')) return;
+      if (!pieza || !visor || visor.querySelector('video, iframe')) return;
+      if (pieza.embed) {
+        const iframe = document.createElement('iframe');
+        iframe.src = pieza.embed;
+        iframe.title = pieza.etiqueta;
+        iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+        iframe.allowFullscreen = true;
+        visor.replaceChildren(iframe);
+        return;
+      }
+      if (!pieza.video) return;
       const video = document.createElement('video');
       video.src = pieza.video;
       video.poster = pieza.poster;

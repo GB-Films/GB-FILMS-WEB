@@ -27,6 +27,8 @@ export type Marca = {
   piezas?: Pieza[];
 };
 
+export const ultimoTrabajoUrl = 'https://youtu.be/kSsZMVwo__w';
+
 // El orden del array es el orden en que aparecen en la franja.
 export const marcas: Marca[] = [
   {
@@ -52,6 +54,7 @@ export const marcas: Marca[] = [
     piezas: [
       { url: 'https://www.instagram.com/p/DMtCnCfS6Ax/' },
       { url: 'https://www.instagram.com/reel/DXKIOdQk15C/' },
+      { url: 'https://youtu.be/Mqo1aXziVUM', titulo: 'Mundial 2026', horizontal: true },
     ],
   },
   {
@@ -101,9 +104,8 @@ export const marcas: Marca[] = [
     nombre: 'Alfajores Jorgito',
     logo: 'marcas/jorgito-mono.webp',
     piezas: [{
-      url: 'https://www.instagram.com/p/DZzqHtzOk6S/',
-      video: 'portfolio/videos/DZzqHtzOk6S-horizontal.mp4',
-      poster: 'portfolio/videos/DZzqHtzOk6S-horizontal.webp',
+      url: ultimoTrabajoUrl,
+      titulo: 'Convocatoria Jorgito 2026',
       horizontal: true,
     }],
   },
@@ -156,9 +158,6 @@ export const marcas: Marca[] = [
   { nombre: 'Adidas', logo: 'marcas/adidas-mono.webp' },
   { nombre: 'PedidosYa', logo: 'marcas/pedidosya-mono.webp' },
 ];
-
-// Pieza que ocupa la portada del portfolio; actualizar al publicar un trabajo nuevo.
-export const ultimoTrabajoUrl = 'https://www.instagram.com/p/DZzqHtzOk6S/';
 
 export type Ip = {
   /** slug estable: define la URL pública de su ficha */
