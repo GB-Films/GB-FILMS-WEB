@@ -54,7 +54,13 @@ export const marcas: Marca[] = [
     piezas: [
       { url: 'https://www.instagram.com/p/DMtCnCfS6Ax/' },
       { url: 'https://www.instagram.com/reel/DXKIOdQk15C/' },
-      { url: 'https://youtu.be/Mqo1aXziVUM', titulo: 'Mundial 2026', horizontal: true },
+      {
+        url: 'https://youtu.be/Mqo1aXziVUM',
+        titulo: 'Mundial 2026',
+        video: 'portfolio/videos/samsung-mundial-2026.mp4',
+        poster: 'portfolio/videos/samsung-mundial-2026.webp',
+        horizontal: true,
+      },
     ],
   },
   {
@@ -78,7 +84,7 @@ export const marcas: Marca[] = [
     nombre: 'HBO Max',
     logo: 'marcas/hbo-max-mono.webp',
     piezas: [
-      { url: 'https://www.instagram.com/p/C8nTxrhvhk3/', titulo: 'House of the Dragon' },
+      { url: 'https://www.instagram.com/p/C8nTxrhvhk3/', titulo: 'House of the Dragon', horizontal: true },
     ],
   },
   {
@@ -87,7 +93,7 @@ export const marcas: Marca[] = [
     nombre: 'Mercado Libre',
     logo: 'marcas/mercado-libre-mono.webp',
     piezas: [
-      { url: 'https://www.instagram.com/p/C8nTxrhvhk3/', titulo: 'House of the Dragon' },
+      { url: 'https://www.instagram.com/p/C8nTxrhvhk3/', titulo: 'House of the Dragon', horizontal: true },
     ],
   },
   {
@@ -106,6 +112,8 @@ export const marcas: Marca[] = [
     piezas: [{
       url: ultimoTrabajoUrl,
       titulo: 'Convocatoria Jorgito 2026',
+      video: 'portfolio/videos/DZzqHtzOk6S-horizontal.mp4',
+      poster: 'portfolio/videos/DZzqHtzOk6S-horizontal.webp',
       horizontal: true,
     }],
   },

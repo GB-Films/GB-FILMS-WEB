@@ -1,6 +1,4 @@
 ---
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
 import Base from '~/layouts/Base.astro';
 import Nav from '~/components/Nav.astro';
 import Footer from '~/components/Footer.astro';
@@ -11,12 +9,10 @@ const base = import.meta.env.BASE_URL;
 
 type Trabajo = {
   url: string;
-  embed: string;
   video?: string;
   titulo: string;
   marcas: string[];
   miniatura: string;
-  plataforma: 'YouTube' | 'Video' | 'Vista previa';
 };
 const trabajos: Trabajo[] = [];
 
@@ -27,27 +23,19 @@ for (const marca of marcas) {
       existente.marcas.push(marca.nombre);
       continue;
     }
-    const instagram = pieza.url.match(/instagram\.com\/(?:p|reel|tv)\/([\w-]+)/)?.[1];
-    const miniaturaLocal = instagram && existsSync(join(process.cwd(), 'public', pieza.poster ?? `portfolio/${instagram}.webp`));
     const vista = vistaPieza(pieza.url, base, pieza);
     trabajos.push({
       url: pieza.url,
-      embed: vista?.embed ?? '',
       video: vista?.video,
       titulo: pieza.titulo || `Pieza ${String(index + 1).padStart(2, '0')}`,
       marcas: [marca.nombre],
-      miniatura: vista?.embed
-        ? vista.poster
-        : miniaturaLocal
-          ? vista?.poster || `${base}portfolio/${instagram}.webp`
-          : `${base}${marca.logo ?? 'reel/gb-films-fondo.webp'}`,
-      plataforma: vista?.embed ? 'YouTube' : vista?.video ? 'Video' : 'Vista previa',
+      miniatura: vista?.poster || `${base}${marca.logo ?? 'reel/gb-films-fondo-v06.webp'}`,
     });
   }
 }
 const marcasConTrabajos = marcas.filter((marca) => marca.piezas?.length).map((marca) => marca.nombre);
 const ultimoTrabajo = trabajos.find((trabajo) => trabajo.url === ultimoTrabajoUrl);
-if (!ultimoTrabajo?.video && !ultimoTrabajo?.embed) throw new Error('El último trabajo necesita un video para destacarse.');
+if (!ultimoTrabajo?.video) throw new Error('El último trabajo necesita un video propio para destacarse.');
 ---
 
 <Base title="Portfolio de trabajos — Gran Berta Films" description="Explorá los trabajos audiovisuales de Gran Berta Films para marcas y plataformas. Videos, campañas y piezas digitales en un solo lugar.">
@@ -61,7 +49,7 @@ if (!ultimoTrabajo?.video && !ultimoTrabajo?.embed) throw new Error('El último 
         <p class="intro-copy">Ideas que salieron al mundo. Explorá las piezas que hicimos junto a marcas y plataformas.</p>
       </div>
 
-      <button type="button" class="destacado" data-play data-url={ultimoTrabajo.url} data-embed={ultimoTrabajo.embed} data-video={ultimoTrabajo.video} data-poster={ultimoTrabajo.miniatura} data-platform={ultimoTrabajo.plataforma} aria-label={`Ver ${ultimoTrabajo.titulo} de ${ultimoTrabajo.marcas.join(' y ')}`}>
+      <button type="button" class="destacado" data-play data-video={ultimoTrabajo.video} data-poster={ultimoTrabajo.miniatura} aria-label={`Ver ${ultimoTrabajo.titulo} de ${ultimoTrabajo.marcas.join(' y ')}`}>
         <span class="destacado-media" aria-hidden="true">
           <img class="destacado-poster" src={ultimoTrabajo.miniatura} alt="" loading="eager" />
         </span>
@@ -87,15 +75,17 @@ if (!ultimoTrabajo?.video && !ultimoTrabajo?.embed) throw new Error('El último 
 
       <div class="grilla" data-grid>
         {trabajos.map((trabajo) => <article class="trabajo" data-brands={trabajo.marcas.join('|').toLowerCase()}>
-          <button type="button" class="trabajo-link" data-play data-url={trabajo.url} data-embed={trabajo.embed} data-video={trabajo.video} data-poster={trabajo.miniatura} data-platform={trabajo.plataforma} aria-label={`Ver ${trabajo.titulo} de ${trabajo.marcas.join(' y ')}`}>
+          <button type="button" class="trabajo-link" data-play data-video={trabajo.video} data-poster={trabajo.miniatura} aria-label={`Ver ${trabajo.titulo} de ${trabajo.marcas.join(' y ')}`}>
             <span class="imagen">
               <img src={trabajo.miniatura} alt={`Miniatura de ${trabajo.titulo} de ${trabajo.marcas.join(' y ')}`} loading="lazy" decoding="async" />
-              <span class="ver" aria-hidden="true">▶</span>
+              {trabajo.video
+                ? <span class="ver" aria-hidden="true">▶</span>
+                : <span class="imagen-fija" aria-hidden="true">Solo imagen</span>}
             </span>
             <span class="datos">
               <span class="marca">{trabajo.marcas.join(' × ')}</span>
               <strong>{trabajo.titulo}</strong>
-              <span class="tipo">{trabajo.plataforma} ↗</span>
+              <span class="tipo">{trabajo.video ? 'Video' : 'Solo imagen'}</span>
             </span>
           </button>
         </article>)}
@@ -110,7 +100,6 @@ if (!ultimoTrabajo?.video && !ultimoTrabajo?.embed) throw new Error('El último 
       <button type="button" data-close aria-label="Cerrar video">✕</button>
     </div>
     <div class="visor-video" data-player></div>
-    <a data-original target="_blank" rel="noopener noreferrer">Abrir video original ↗</a>
   </dialog>
 </Base>
 
@@ -158,15 +147,18 @@ if (!ultimoTrabajo?.video && !ultimoTrabajo?.embed) throw new Error('El último 
   .visor-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; color: var(--accent); font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; }
   .visor-head button { border: 0; background: none; color: var(--light); font-size: 1.3rem; cursor: pointer; }
   .visor-video { display: grid; place-items: center; min-height: 240px; }
-  .visor-video :global(iframe) { width: 100%; height: min(70dvh, 610px); border: 0; }
-  .visor-video :global(video) { display: block; width: 100%; max-height: 70dvh; background: #000; }
+  .visor-video :global(video) { max-height: 70dvh; }
+  .visor-video :global(.reproductor-pieza:fullscreen > video) { max-height: none; }
   .visor-video :global(img) { display: block; width: 100%; max-height: 70dvh; object-fit: contain; }
-  .visor > a:not([hidden]) { display: inline-block; padding: 14px 18px; color: var(--accent); font-size: .72rem; text-transform: uppercase; letter-spacing: .13em; }
+  .imagen-fija, .visor-video :global(.imagen-fija) { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 10px 14px; background: #111; color: #fff; font-size: .65rem; letter-spacing: .13em; text-transform: uppercase; white-space: nowrap; }
+  .visor-video { position: relative; }
   @media (max-width: 800px) { .grilla { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 560px) { .portfolio { padding-top: calc(var(--nav-h) + 24px); } .volver { margin-bottom: 24px; } .intro { margin-bottom: 24px; } h1 { font-size: clamp(2.7rem, 10vw, 3.5rem); } .intro-copy { font-size: .88rem; } .destacado-copy { bottom: 14px; left: 16px; gap: 3px; } .destacado-copy strong { font-size: clamp(1.25rem, 5.6vw, 1.7rem); } .destacado-label { font-size: .57rem; } .listado-head { padding-top: 64px; } .grilla { grid-template-columns: 1fr; gap: 18px; } .ver { opacity: 1; width: 46px; } }
 </style>
 
 <script>
+  import { montarReproductorPieza } from '~/scripts/reproductorPieza';
+
   const filtros = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
   const tarjetas = [...document.querySelectorAll<HTMLElement>('[data-brands]')];
   const contador = document.querySelector<HTMLElement>('[data-count]');
@@ -187,47 +179,31 @@ if (!ultimoTrabajo?.video && !ultimoTrabajo?.embed) throw new Error('El último 
 
   const dialog = document.querySelector<HTMLDialogElement>('[data-dialog]');
   const player = document.querySelector<HTMLElement>('[data-player]');
-  const original = document.querySelector<HTMLAnchorElement>('[data-original]');
-  const close = () => {
-    dialog?.close();
+  const limpiar = () => {
+    player?.querySelector('video')?.pause();
     player?.replaceChildren();
   };
+  const close = () => dialog?.close();
   document.querySelector<HTMLButtonElement>('[data-close]')?.addEventListener('click', close);
-  dialog?.addEventListener('close', () => player?.replaceChildren());
+  dialog?.addEventListener('close', limpiar);
   dialog?.addEventListener('click', (event) => { if (event.target === dialog) close(); });
   document.querySelectorAll<HTMLElement>('[data-play]').forEach((link) => {
     link.addEventListener('click', (event) => {
-      if (!dialog || !player || !original) return;
+      if (!dialog || !player) return;
       event.preventDefault();
-      let contenido: HTMLElement;
-      if (link.dataset.platform === 'YouTube' && link.dataset.embed) {
-        const iframe = document.createElement('iframe');
-        iframe.src = link.dataset.embed;
-        iframe.title = link.getAttribute('aria-label') || 'Trabajo de GB Films';
-        iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
-        iframe.allowFullscreen = true;
-        contenido = iframe;
-        original.hidden = false;
-        original.href = link.dataset.url!;
-      } else if (link.dataset.video) {
-        const video = document.createElement('video');
-        video.src = link.dataset.video;
-        video.poster = link.dataset.poster || '';
-        video.controls = true;
-        video.playsInline = true;
-        video.preload = 'metadata';
-        contenido = video;
-        original.hidden = true;
-      } else {
-        const imagen = document.createElement('img');
-        imagen.src = link.dataset.poster || '';
-        imagen.alt = link.getAttribute('aria-label') || 'Vista previa del trabajo';
-        contenido = imagen;
-        original.hidden = true;
-      }
+      const titulo = link.getAttribute('aria-label') || 'Trabajo de GB Films';
       dialog.showModal();
-      player.replaceChildren(contenido);
-      if (contenido instanceof HTMLVideoElement) contenido.play().catch(() => {});
+      if (link.dataset.video) {
+        montarReproductorPieza(player, link.dataset.video, link.dataset.poster || '', titulo);
+        return;
+      }
+      const imagen = document.createElement('img');
+      imagen.src = link.dataset.poster || '';
+      imagen.alt = titulo;
+      const nota = document.createElement('span');
+      nota.className = 'imagen-fija';
+      nota.textContent = 'Solo imagen';
+      player.replaceChildren(imagen, nota);
     });
   });
 </script>

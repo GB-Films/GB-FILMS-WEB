@@ -31,11 +31,10 @@ const conPiezas = marcas.map((m) => ({
   resueltas: (m.piezas ?? []).map((p) => {
     const vista = vistaPieza(p.url, import.meta.env.BASE_URL, p);
     return {
-      poster: vista?.poster ?? `${import.meta.env.BASE_URL}${m.logo ?? 'reel/gb-films-fondo.webp'}`,
+      poster: vista?.poster || `${import.meta.env.BASE_URL}${m.logo ?? 'reel/gb-films-fondo-v06.webp'}`,
       video: vista?.video,
-      embed: vista?.embed,
       vertical: Boolean(vista?.video) && !p.horizontal,
-      horizontal: Boolean(vista?.video || vista?.embed) && Boolean(p.horizontal),
+      horizontal: Boolean(vista?.video) && Boolean(p.horizontal),
       etiqueta: p.titulo ? `${m.nombre} × ${p.titulo}` : m.nombre,
     };
   }),
@@ -331,8 +330,7 @@ const filas = [
     background: transparent;
   }
 
-  .visor :global(video),
-  .visor :global(iframe) {
+  .visor :global(video) {
     width: 100%;
     height: 100%;
     border: 0;
@@ -374,9 +372,12 @@ const filas = [
 
   .visor :global(.preview-note) {
     position: absolute;
-    bottom: 18px;
-    left: 18px;
-    right: 18px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px 15px;
+    background: #111;
+    white-space: nowrap;
     color: #fff;
     font-size: .65rem;
     letter-spacing: .16em;
@@ -595,8 +596,9 @@ const filas = [
 
 <script>
   import { montarFranja } from '~/scripts/franja';
+  import { montarReproductorPieza } from '~/scripts/reproductorPieza';
 
-  type Pieza = { poster: string; video?: string; embed?: string; vertical: boolean; horizontal: boolean; etiqueta: string };
+  type Pieza = { poster: string; video?: string; vertical: boolean; horizontal: boolean; etiqueta: string };
 
   const marquees = [...document.querySelectorAll<HTMLElement>('[data-marquee]')];
   const telon = document.querySelector<HTMLElement>('[data-telon]');
@@ -784,7 +786,7 @@ const filas = [
         img.alt = pieza.etiqueta;
         visor.append(img);
 
-        if (pieza.video || pieza.embed) {
+        if (pieza.video) {
           const play = document.createElement(marco.classList.contains('flip') ? 'button' : 'span');
           play.className = 'preview-play';
           play.textContent = '▶';
@@ -798,7 +800,7 @@ const filas = [
         } else {
           const note = document.createElement('span');
           note.className = 'preview-note';
-          note.textContent = 'Vista previa';
+          note.textContent = 'Solo imagen';
           visor.append(note);
         }
       });
@@ -808,9 +810,9 @@ const filas = [
     const frenarLasDeAtras = () => {
       marcos.forEach((marco, i) => {
         if (i === activo) return;
-        const reproductor = marco.querySelector('video, iframe');
+        const reproductor = marco.querySelector('video');
         if (reproductor) {
-          if (reproductor instanceof HTMLVideoElement) reproductor.pause();
+          reproductor.pause();
           marco.querySelector<HTMLElement>('[data-visor]')?.replaceChildren();
         }
       });
@@ -820,26 +822,8 @@ const filas = [
     const reproducirActiva = () => {
       const pieza = piezas[activo];
       const visor = marcos[activo]?.querySelector<HTMLElement>('[data-visor]');
-      if (!pieza || !visor || visor.querySelector('video, iframe')) return;
-      if (pieza.embed) {
-        const iframe = document.createElement('iframe');
-        iframe.src = pieza.embed;
-        iframe.title = pieza.etiqueta;
-        iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
-        iframe.allowFullscreen = true;
-        visor.replaceChildren(iframe);
-        return;
-      }
-      if (!pieza.video) return;
-      const video = document.createElement('video');
-      video.src = pieza.video;
-      video.poster = pieza.poster;
-      video.controls = true;
-      video.playsInline = true;
-      video.preload = 'metadata';
-      video.setAttribute('aria-label', pieza.etiqueta);
-      visor.replaceChildren(video);
-      video.play().catch(() => {});
+      if (!pieza?.video || !visor || visor.querySelector('video')) return;
+      montarReproductorPieza(visor, pieza.video, pieza.poster, pieza.etiqueta);
     };
 
     const irA = (destino: number) => {
@@ -870,7 +854,10 @@ const filas = [
       flip.classList.remove('asentada');
 
       // Vaciar el visor corta la reproducción; si no, el video sigue sonando.
-      marcos.forEach((m) => m.querySelector<HTMLElement>('[data-visor]')?.replaceChildren());
+      marcos.forEach((marco) => {
+        marco.querySelector('video')?.pause();
+        marco.querySelector<HTMLElement>('[data-visor]')?.replaceChildren();
+      });
       marcos.filter((m) => m !== flip).forEach((m) => m.remove());
       marcos = [];
       piezas = [];
@@ -1015,14 +1002,18 @@ const filas = [
     telon.addEventListener('click', cerrar);
 
     document.addEventListener('keydown', (ev) => {
-      if (!abierta) return;
+      if (!abierta || document.fullscreenElement) return;
       if (ev.key === 'Escape') cerrar();
+      else if (ev.target instanceof HTMLInputElement) return;
       else if (ev.key === 'ArrowRight') irA(activo + 1);
       else if (ev.key === 'ArrowLeft') irA(activo - 1);
     });
 
     // Al reacomodarse la pantalla el centro calculado deja de valer.
-    window.addEventListener('resize', cerrar);
+    window.addEventListener('resize', () => {
+      if (abierta && !pila.querySelector('.reproductor-pieza')) cerrar();
+      else if (abierta) redimensionar();
+    });
 
   }
 </script>
