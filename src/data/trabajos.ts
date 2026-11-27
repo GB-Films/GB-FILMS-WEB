@@ -99,7 +99,7 @@ export const marcas: Marca[] = [
   {
     nombre: 'Axe',
     logo: 'marcas/axe-mono.webp',
-    piezas: [{ url: 'https://www.instagram.com/p/C8XQ3xsuMa3/' }],
+    piezas: [{ url: 'https://www.instagram.com/p/C8XQ3xsuMa3/', titulo: 'El Rulero' }],
   },
   {
     nombre: 'ICBC',

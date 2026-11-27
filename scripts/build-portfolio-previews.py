@@ -16,6 +16,7 @@ rebuild = os.environ.get('GB_PREVIEW_REBUILD') == '1'
 
 # Instagram post ID -> exact studio delivery. Do not guess: unmatched pieces use a still.
 sources = {
+    'C8XQ3xsuMa3': 'We Are Catch/24-05-12_WC-0006_Axe-Rulero/ar_offline_v04.mp4',
     'DSp6FnfAFvt': 'CheNetflix/25-12-03_NE-0006_ST5-Rural/str_online_v12.mp4',
     'DSIXPVvAib2': 'CheNetflix/25-12-03_NE-0004_ST5-Comic-Con/st-cc_online_v08.mp4',
     'DRxSYgujkkG': 'CheNetflix/25-11-13_NE-0003_ST-Cinema/st-c_online_v05_version-corta.mp4',
